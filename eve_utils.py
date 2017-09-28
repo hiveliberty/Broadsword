@@ -1,11 +1,14 @@
 #============================================================================
 #Все связанное с API запросами
+#TODO - переписать оповещения под ESI
 #============================================================================
 
 import asyncio
 import aiohttp
 import xml.etree.ElementTree as ET
 import config
+#import lxml
+
 from lxml import etree
 #===================================================================================
 
@@ -27,14 +30,10 @@ async def getCharInfo(name): #TODO - Развернутую стату (EVE-Kill
             cid = root[1][0][0].get("characterID")
             if cid == "0": #Неверное имя персонажа
                 return "Неверное имя персонажа!"
-            #async with aiohttp.get("https://beta.eve-kill.net/api/charInfo/characterID/%s" % cid) as r2:
-             #   if r.status == 200:
-              #      js = await r.json()
-            
             js = "https://zkillboard.com/character/%s/" % cid
             return js
 
-async def getNotifications(): #TODO - дописать нужные ID нотификаций
+async def getNotifications():
     js = ""
     print("DEBUG API: %s  vcode :%s" % (config.API.keyID, config.API.vCode))
     async with aiohttp.get("https://api.eveonline.com/char/Notifications.xml.aspx?keyID=%s&vCode=%s" %(config.API.keyID, config.API.vCode)) as r:
@@ -57,14 +56,14 @@ async def getNotifications(): #TODO - дописать нужные ID ноти�
                     return stmp
 
                 js += " %s" % notification.attrib
-return 0
+    return 0
 
 
-async def getNotificationText(notid): #TODO - Найти способ отпарсить CDATA блок в xml
+async def getNotificationText(notid):
     async with aiohttp.get("https://api.eveonline.com/char/NotificationTexts.xml.aspx?keyID=%s&vCode=%s&IDs=%s" %(config.API.keyID, config.API.vCode, notid)) as r:
          if r.status == 200:
              stmp = await r.text()
-             
+             #CDATA
              print(stmp)
              return stmp
              

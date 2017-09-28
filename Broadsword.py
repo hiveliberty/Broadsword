@@ -2,14 +2,20 @@ VERSION = "0.3"
 
 import discord
 import asyncio
+#import pman
 client = discord.Client()
 
 #Инклуды======================================================================
 import config
 import eve_utils
 import utils
-#=============================================================================
 
+
+
+
+
+
+#=============================================================================
 #Евенты дискорда==============================================================
 @client.event
 async def on_ready():
@@ -29,7 +35,7 @@ async def on_socket_raw_send(msg):
     tick()
     #print('raws')
 @client.event
-async def on_message(message):
+async def on_message(message): #TODO - обработчик комманд
     if message.content.startswith('!test'):
         counter = 0
         tmp = await client.send_message(message.channel, 'Calculating messages...')
@@ -59,7 +65,7 @@ def tick():
     #if minsPassed(30) ==true:
         pass
         
-client.run('token goes here')
+client.run('token')
 
 
 
