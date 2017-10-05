@@ -6,7 +6,7 @@ import asyncio
 client = discord.Client()
 
 #Инклуды======================================================================
-import config
+import config/config
 import eve_utils
 import utils
 
