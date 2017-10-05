@@ -65,7 +65,7 @@ def tick():
     #if minsPassed(30) ==true:
         pass
         
-client.run('token')
+client.run(config.Bot_Tocken)
 
 
 

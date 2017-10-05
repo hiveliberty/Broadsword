@@ -9,6 +9,6 @@ class ApiKey:
         self.keyID = keyID
         self.vCode = vCode
 
-
+Bot_Tocken = ""
 API = ApiKey("keyID","vCode")
 
