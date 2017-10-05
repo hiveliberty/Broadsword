@@ -1,4 +1,4 @@
-VERSION = "0.3.1.b00001"
+VERSION = "0.3.1.b00002"
 
 import discord
 import asyncio
@@ -65,7 +65,7 @@ def tick():
     #if minsPassed(30) ==true:
         pass
         
-client.run(config.Bot_Tocken)
+client.run(config.Bot_Token)
 
 
 
