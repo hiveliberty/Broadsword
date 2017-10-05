@@ -1,4 +1,4 @@
-VERSION = "0.3"
+VERSION = "0.3.1.b00001"
 
 import discord
 import asyncio
@@ -6,9 +6,9 @@ import asyncio
 client = discord.Client()
 
 #Инклуды======================================================================
-import config/config
-import lib/eve_utils
-import lib/utils
+from config import config/config
+from lib import lib/eve_utils
+from lib import lib/utils
 
 
 
