@@ -1,19 +1,25 @@
-VERSION = "0.3.1.b00002"
+VERSION = "0.3.1.b03"
 
 import discord
 import asyncio
+import logging
 #import pman
+
+#Log
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='log/discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
+
 client = discord.Client()
 
-#Инклуды======================================================================
+#	Loading config.py
 from config import config
+
+#	Loading other libs
 from lib import eve_utils
 from lib import utils
-
-
-
-
-
 
 #=============================================================================
 #Евенты дискорда==============================================================
@@ -57,6 +63,7 @@ async def on_message(message): #TODO - обработчик комманд
     elif message.content.startswith('!not'):
         stmp = await eve_utils.getNotifications()
         await client.send_message(message.channel,"response is: %s" % stmp)
+		
 #==============================================================================
 #Таймер - т.к. исполнение клиента дискорда это уже отдельный цикл, у меня пока не хватает скилла прикрутить точный таймер
 #так, чтобы не нарушить работу бота, поэтому используем способ без циклов и таймеров от старины Y_Less :)
@@ -64,7 +71,8 @@ async def on_message(message): #TODO - обработчик комманд
 def tick():
     #if minsPassed(30) ==true:
         pass
-        
+
+#Running bot with token from config.py
 client.run(config.Bot_Token)
 
 
