@@ -7,8 +7,8 @@ client = discord.Client()
 
 #Инклуды======================================================================
 import config/config
-import eve_utils
-import utils
+import lib/eve_utils
+import lib/utils
 
 
 
