@@ -1,4 +1,4 @@
-VERSION = "0.3.1.b03"
+VERSION = "0.3.1.b04"
 
 import discord
 import asyncio
@@ -12,8 +12,6 @@ handler = logging.FileHandler(filename='logs/discord.log', encoding='utf-8', mod
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-client = discord.Client()
-
 #	Loading config.py
 from config import config
 
@@ -21,25 +19,27 @@ from config import config
 from lib import eve_utils
 from lib import utils
 
+client = discord.Client()
 #=============================================================================
 #Евенты дискорда==============================================================
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('Version v.' + VERSION)
-    print('------')
+	logger.info('Logged in as %s, id: %s', client.user.name, client.user.id)
+	logger.info('Version v.%s', VERSION)
+    print('Bot started')
     #SETTING GAME
     await client.change_presence(game=discord.Game(name='EVE Online'))
+
 @client.event
 async def on_socket_raw_receive(msg):
     tick()
     #print('rawr')
+
 @client.event
 async def on_socket_raw_send(msg):
     tick()
     #print('raws')
+
 @client.event
 async def on_message(message): #TODO - обработчик комманд
     if message.content.startswith('!test'):
