@@ -18,12 +18,12 @@ handler_discord = logging.FileHandler(filename='logs/discord.log', encoding='utf
 handler_discord.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger_discord.addHandler(handler_discord)
 
-#   Loading config.py
-from config import config
-
 #   Loading other libs
 from lib import eve_utils
 from lib import utils
+
+#   Loading config.py
+from config import config
 
 client = discord.Client()
 #=============================================================================
