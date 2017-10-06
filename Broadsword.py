@@ -5,17 +5,23 @@ import asyncio
 import logging
 #import pman
 
-#Log
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='logs/discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+#   Log
+logger_bot = logging.getLogger('bot')
+logger_bot.setLevel(logging.DEBUG)
+handler_bot = logging.FileHandler(filename='logs/bot.log', encoding='utf-8', mode='w')
+handler_bot.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger_bot.addHandler(handler_bot)
 
-#	Loading config.py
+logger_discord = logging.getLogger('discord')
+logger_discord.setLevel(logging.DEBUG)
+handler_discord = logging.FileHandler(filename='logs/discord.log', encoding='utf-8', mode='w')
+handler_discord.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger_discord.addHandler(handler_discord)
+
+#   Loading config.py
 from config import config
 
-#	Loading other libs
+#   Loading other libs
 from lib import eve_utils
 from lib import utils
 
@@ -24,11 +30,11 @@ client = discord.Client()
 #Евенты дискорда==============================================================
 @client.event
 async def on_ready():
-	logger.info('Logged in as %s, id: %s', client.user.name, client.user.id)
-	logger.info('Version v.%s', VERSION)
-    print('Bot started')
+    logger_bot.info('Logged in as %s, id: %s', client.user.name, client.user.id)
+    logger_bot.info('Version v.%s', VERSION)
+    logger_bot.info('Bot started')
     #SETTING GAME
-    await client.change_presence(game=discord.Game(name='EVE Online'))
+    #await client.change_presence(game=discord.Game(name='EVE Online'))
 
 @client.event
 async def on_socket_raw_receive(msg):
@@ -74,6 +80,3 @@ def tick():
 
 #Running bot with token from config.py
 client.run(config.Bot_Token)
-
-
-
