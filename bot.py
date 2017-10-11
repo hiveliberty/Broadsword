@@ -1,3 +1,5 @@
+VERSION = "0.3.1.b05"
+
 import discord
 from discord.ext import commands
 
@@ -16,6 +18,7 @@ async def on_ready():
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
+    print('Version v.' + VERSION)
     print('------')
 
 @bot.command(pass_context=True)
