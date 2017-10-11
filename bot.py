@@ -21,7 +21,7 @@ async def on_ready():
     print('Version v.' + VERSION)
     print('------')
 
-@bot.command(pass_context=True)
+@bot.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
 async def evestatus(ctx):
     try:
         author = ctx.message.author
@@ -31,7 +31,7 @@ async def evestatus(ctx):
     except:
         print('Error with obtain eve status')
         
-@bot.command(pass_context=True)
+@bot.command(pass_context=True, description='''Это команда получения информации о персонаже.''')
 async def charinfo(ctx, char):
 #    try:
         author = ctx.message.author
