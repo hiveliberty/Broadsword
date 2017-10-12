@@ -1,4 +1,4 @@
-# BroadswordBot
+# Broadsword Bot for Discord
 
 This is adaptation of https://github.com/shibdib/Dramiel for the officially vetted library https://github.com/Rapptz/discord.py <br/>
 At the moment, there is a slow development. The bot is not ready for use. <br/>

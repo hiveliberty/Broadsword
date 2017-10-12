@@ -2,16 +2,19 @@ VERSION = "0.3.1.b05"
 
 import discord
 from discord.ext import commands
+import json
 
-from lib.evelib import EVE_Basic
+from lib.libeve import EVE_Basic
 #from lib import utils
 
 from config import config
 
+prefix = config.bot["command_prefix"]
+token = config.bot["token"]
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
 There are a number of utility commands being showcased here.'''
-bot = commands.Bot(command_prefix='!', description=description)
+bot = commands.Bot(command_prefix=prefix, description=description)
 
 @bot.event
 async def on_ready():
@@ -41,5 +44,5 @@ async def charinfo(ctx, char):
 #    except:
 #        print('Error with obtain eve status')
 
-bot.run(config.token)
+bot.run(token)
 bot.close()
