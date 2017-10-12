@@ -1,3 +1,4 @@
 __pycache__/
 config/config.py
 Thumbs.db
+libtemp*
