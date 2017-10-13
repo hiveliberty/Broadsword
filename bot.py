@@ -3,11 +3,7 @@ VERSION = "0.3.2.b02"
 from discord.ext import commands
 from config import config
 
-modules = (
-    'modules.eveapi',
-    'modules.auth'
-)
-
+modules = config.plugins
 broadsword = commands.Bot(command_prefix=config.bot["prefix"])
 
 def main():
