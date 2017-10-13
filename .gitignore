@@ -3,3 +3,4 @@ config/config.py
 config/config.json
 Thumbs.db
 libtemp*
+bot_old.py
