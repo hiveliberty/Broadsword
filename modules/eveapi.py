@@ -6,25 +6,14 @@ class EVEApi:
         self.broadsword = broadsword
 
     @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def evestatus(ctx):
+    async def evestatus(self, ctx):
         try:
             author = ctx.message.author
             status = await EVE_Basic.getTQOnline()
             stmp = '{0.mention} **TQ Status:**  {1} players online. **Version:** {2}'.format(author, status['userCount'], status['serverVersion'])
-            await ctx.say(stmp)
+            await self.broadsword.say(stmp)
         except:
-            await ctx.say('Ошибка при получении статуса сервера Tranquility')
-
-
-
-    @broadsword.command()
-    async def hello(self, ctx):
-        """*hello
-        A command that will respond with a random greeting.
-        """
-
-        choices = ('Hey!', 'Hello!', 'Hi!', 'Hallo!', 'Bonjour!', 'Hola!')
-        await ctx.send(random.choice(choices))
+            await self.broadsword.say('Ошибка при получении статуса сервера Tranquility')
 
 def setup(broadsword):
     broadsword.add_cog(EVEApi(broadsword))

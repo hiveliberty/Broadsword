@@ -3,13 +3,14 @@
 #============================================================================
 bot = {
     "token": "input your token here",
-    "command_prefix": "!"
+    "prefix": "!",
+    "guild": "your guildID"
 }
 
 db = {
+    "user": "user",
+    "password": "password",
     "host": "localhost",
     "port": "3306",
-    "name": "name",
-    "user": "user",
-    "pass": "pass"
+    "database": "dbname"
 }
