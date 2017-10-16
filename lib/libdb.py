@@ -6,16 +6,18 @@ import asyncio
 import mysql.connector as mysqldb
 from mysql.connector import errorcode
 
-class db:
-    async def __init__(self, cfg):
-        self.cnx = mysqldb.connect(** cfg)
-        return None
+from config import config
+dbcfg = config.db
 
-    async def test(self):
+class db:
+    async def connect(self):
+        self.cnx = mysqldb.connect(** dbcfg)
+
+    async def isconnected(self):
         try:
             if self.cnx.is_connected():
-                print('Connected to MySQL database')
+                return('Connected to MySQL database')
         except Error as e:
-            print(e)
+            return(e)
         finally:
             cnx.close()

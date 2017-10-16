@@ -4,7 +4,8 @@
 bot = {
     "token": "input your token here",
     "prefix": "!",
-    "guild": "your guildID"
+    "guild": "your guildID",
+    "auth_url": "url"
 }
 
 db = {
@@ -13,4 +14,13 @@ db = {
     "host": "localhost",
     "port": "3306",
     "database": "dbname"
+}
+
+plugins = {
+    "modules.eveapi": {
+        "enabled": False,
+    },
+    "modules.auth": {
+        "enabled": False,
+    },
 }

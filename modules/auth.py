@@ -1,9 +1,11 @@
 from discord.ext import commands as broadsword
+from lib import libdb
 import random
 
 class Auth:
-    def __init__(self, broadsword):
+    def __init__(self, broadsword, db):
         self.broadsword = broadsword
+        self.db = db
 
     @broadsword.command(pass_context=True, description='''Тестовая команда.''')
     async def test(self, ctx):
@@ -14,5 +16,10 @@ class Auth:
         choices = ('Hey!', 'Hello!', 'Hi!', 'Hallo!', 'Bonjour!', 'Hola!')
         await self.broadsword.say(random.choice(choices))
 
+    @broadsword.command(pass_context=True, description='''Тестовая команда.''')
+    async def dbtest(self, ctx):
+        iscon = self.db.isconnected(self)
+        await self.broadsword.say(iscon)
+
 def setup(broadsword):
-    broadsword.add_cog(Auth(broadsword))
+    broadsword.add_cog(Auth(broadsword, db))
