@@ -1,16 +1,5 @@
 from discord.ext import commands as broadsword
 from config.config import plugins as plugins
-#import asyncio
-#import traceback
-#import discord
-#import inspect
-#import textwrap
-#from contextlib import redirect_stdout
-#import io
-
-# to expose to the eval command
-#import datetime
-#from collections import Counter
 
 class Admin:
     """Admin-only commands that make the bot dynamic."""
@@ -59,6 +48,7 @@ class Admin:
     @broadsword.command(pass_context=True, name='reloadall', hidden=True)
     async def _reloadall(self, ctx):
         """Reloads all modules."""
+        msg = '```Reloaded modules:\n'
         for module, options in self.plugins.items():
             try:
                 self.broadsword.unload_extension(module)
@@ -70,7 +60,9 @@ class Admin:
                 await self.broadsword.say('```py\n{}\n```'.format(module, exc))
             else:
                 print("{} reloaded.".format(module))
-        await self.broadsword.say("All modules reloaded.")
+                msg = msg + module + '\n'
+        msg = msg + '```'
+        await self.broadsword.say("{}".format(msg))
 
 def setup(broadsword):
     broadsword.add_cog(Admin(broadsword, plugins))

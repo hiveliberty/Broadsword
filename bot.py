@@ -1,4 +1,4 @@
-VERSION = "0.3.2.b03"
+VERSION = "0.3.2.b04"
 
 from discord.ext import commands
 from config import config
