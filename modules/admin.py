@@ -60,10 +60,10 @@ class Admin:
     async def _reloadall(self, ctx):
         """Reloads all modules."""
         for module, options in self.plugins.items():
-            if not options.get('enabled', True):
-                continue
             try:
                 self.broadsword.unload_extension(module)
+                if not options.get('enabled', True):
+                    continue
                 self.broadsword.load_extension(module)
             except Exception as e:
                 exc = '{}: {}'.format(type(e).__name__, e)
