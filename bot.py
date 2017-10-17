@@ -4,7 +4,7 @@ from discord.ext import commands
 from config import config
 import os
 
-modules = config.plugins2
+modules = config.plugins
 
 print('Connecting...')
 broadsword = commands.Bot(command_prefix=config.bot["prefix"])
