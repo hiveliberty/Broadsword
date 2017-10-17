@@ -2,8 +2,8 @@ from discord.ext import commands as broadsword
 from lib.libeve import EVE_Basic
 
 class EVEApi:
-    def __init__(self, broadsword):
-        self.broadsword = broadsword
+    def __init__(self, bot):
+        self.broadsword = bot
 
     @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def evestatus(self, ctx):

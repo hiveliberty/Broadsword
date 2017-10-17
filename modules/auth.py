@@ -1,10 +1,10 @@
 from discord.ext import commands as broadsword
-from lib import libdb
+from lib.libdb import db
 import random
 
 class Auth:
-    def __init__(self, broadsword, db):
-        self.broadsword = broadsword
+    def __init__(self, bot, db):
+        self.broadsword = bot
         self.db = db
 
     @broadsword.command(pass_context=True, description='''Тестовая команда.''')
