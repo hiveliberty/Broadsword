@@ -1,5 +1,5 @@
 from discord.ext import commands as broadsword
-from lib.libeve import EVE_Basic
+from lib.libeve import EVEBasic
 
 class EVEApi:
     def __init__(self, bot):
@@ -9,7 +9,7 @@ class EVEApi:
     async def evestatus(self, ctx):
         try:
             author = ctx.message.author
-            status = await EVE_Basic.getTQOnline()
+            status = await EVEBasic.getTQOnline()
             stmp = '{0.mention} **TQ Status:**  {1} players online. **Version:** {2}'.format(author, status['userCount'], status['serverVersion'])
             await self.broadsword.say(stmp)
         except:
