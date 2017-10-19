@@ -1,6 +1,6 @@
 #==============================================================================
-#Все связанное с API запросами
-#TODO - переписать оповещения под ESI
+#   Все связанное с API запросами
+#
 #==============================================================================
 import asyncio
 import aiohttp
@@ -10,7 +10,7 @@ import config
 from lxml import etree
 #==============================================================================
 
-class EVE_Basic:
+class EVEBasic:
     async def getTQOnline():
         async with aiohttp.get('https://crest-tq.eveonline.com/') as r:
             if r.status == 200:
@@ -31,3 +31,47 @@ class EVE_Basic:
                     return "Неверное имя персонажа!"
                 js = "https://zkillboard.com/character/%s/" % cid
                 return js
+
+
+class EVEApi:
+    def charName(self, charID):
+        pass
+
+    def charID(charName):
+        pass
+
+    def charDetails(charID):
+        pass
+
+    def corpID(corpName):
+        pass
+
+    def corpName(corpID):
+        pass
+
+    def corpDetails(corpID):
+        pass
+
+    def allianceName(allianceID):
+        pass
+
+    def systemName(systemID):
+        pass
+
+    def systemID(systemName):
+        pass
+
+    def systemDetails(systemID):
+        pass
+
+    def regionDetails(regionID):
+        pass
+
+    def apiTypeName(typeID):
+        pass
+
+    def apiTypeID(apiTypeName):
+        pass
+
+    def apiMoonName(moonID):
+        pass
