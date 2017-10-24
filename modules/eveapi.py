@@ -36,10 +36,21 @@ class EVE_API:
             self.api = EVEApi()
             self.charID = await self.api.searchCharID(name)
             self.response = await self.api.getCharDetails(self.charID)
-            self.stmp = '{0.mention}\nCharacter info:\nName: {1}'.format(self.author, self.response.name)
+            self.stmp = '{0.mention}\nCharacter info:\nName: {1}\nBirthday: {2}\nAlliance: {3}\nCorporation: {4}'.format(self.author, self.response.name, self.response.birthday, self.response.alliance_id, self.response.corporation_id)
             await self.broadsword.say(self.stmp)
         except:
-            await self.broadsword.say('Ошибка при получении статуса сервера Tranquility\n```{}```'.format(self.response))
+            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
+
+    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
+    async def testapi(self, ctx, *, name):
+        try:
+            self.author = ctx.message.author
+            self.api = EVEApi()
+            self.response = await self.api.searchCharID(name)
+            self.stmp = '{0.mention}\nCharacter info:\n```Content:\n {1}```'.format(self.author, self.response[0])
+            await self.broadsword.say(self.stmp)
+        except:
+            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
 
 def setup(broadsword):
     broadsword.add_cog(EVE_API(broadsword))

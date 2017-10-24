@@ -66,13 +66,13 @@ class EVEApi:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
 
     async def searchCharID(self, name):
-        self.categories = 'character'
+        self.categories = ['character']
         #print(name)
         #self.search = charName
         try:
             self.api_instance = self.api.SearchApi()
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
-            return self.api_response.character
+            return self.api_response.character[0]
         except ApiException as e:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
 
