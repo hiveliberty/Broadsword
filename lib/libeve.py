@@ -2,12 +2,16 @@
 #   Все связанное с API запросами
 #
 #==============================================================================
+
 import asyncio
 import aiohttp
 import xml.etree.ElementTree as ET
 import config
 #import lxml
 from lxml import etree
+from vendor import swagger_client
+from vendor.swagger_client.rest import ApiException
+
 #==============================================================================
 
 class EVEBasic:
@@ -34,14 +38,53 @@ class EVEBasic:
 
 
 class EVEApi:
-    def charName(self, charID):
-        pass
+    def __init__(self):
+        self.api = swagger_client
+        self.datasource = 'tranquility'
+        self.user_agent = 'BroadswordBot'
+        self.x_user_agent = self.user_agent
+        self.language = 'en-us'
+        self.strict = False
 
-    def charID(charName):
-        pass
+    async def statusTQ(self):
+        try:
+            self.api_instance = self.api.StatusApi()
+            #self.api_response = self.api_instance.get_status(datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            self.api_response = self.api_instance.get_status()
+            return self.api_response
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
 
-    def charDetails(charID):
-        pass
+    async def getCharName(self, id):
+        try:
+            self.api_instance = self.api.CharacterApi()
+            self.api_instance.api_client.set_default_header('User-Agent', 'BroadswordBot') # Set a relevant user agent so we know which software is actually using ESI
+            self.api_instance.api_client.host = "https://esi.tech.ccp.is"
+            self.api_response = self.api_instance.get_characters_character_id(id)
+            return self.api_response.name
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def searchCharID(self, name):
+        self.categories = 'character'
+        #print(name)
+        #self.search = charName
+        try:
+            self.api_instance = self.api.SearchApi()
+            self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response.character
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getCharDetails(self, id):
+        try:
+            self.api_instance = self.api.CharacterApi()
+            self.api_instance.api_client.set_default_header('User-Agent', 'BroadswordBot') # Set a relevant user agent so we know which software is actually using ESI
+            self.api_instance.api_client.host = "https://esi.tech.ccp.is"
+            self.api_response = self.api_instance.get_characters_character_id(id)
+            return self.api_response
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
 
     def corpID(corpName):
         pass

@@ -63,6 +63,19 @@ class Admin:
                 msg = msg + module + '\n'
         msg = msg + '```'
         await self.broadsword.say("{}".format(msg))
-
+        
+    @broadsword.command(pass_context=True, hidden=False)
+    async def clearchat(self, ctx):
+        """Clear chat."""
+        self.mgs = []
+        self.number = 100
+        try:
+            async for x in self.broadsword.logs_from(ctx.message.channel, limit = self.number):
+                self.mgs.append(x)
+            await self.broadsword.delete_messages(self.mgs)
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            await self.broadsword.say('```py\n{}\n```'.format(module, exc))
+            
 def setup(broadsword):
     broadsword.add_cog(Admin(broadsword, plugins))
