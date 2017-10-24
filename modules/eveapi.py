@@ -2,6 +2,7 @@
 from discord.ext import commands as broadsword
 from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
+from lib.libeve import zKillboardAPI
 
 class EVE_API:
     def __init__(self, bot):
@@ -36,7 +37,7 @@ class EVE_API:
             self.api = EVEApi()
             self.charID = await self.api.searchCharID(name)
             self.response = await self.api.getCharDetails(self.charID)
-            self.stmp = '{0.mention}\nCharacter info:\nName: {1}\nBirthday: {2}\nAlliance: {3}\nCorporation: {4}'.format(self.author, self.response.name, self.response.birthday, self.response.alliance_id, self.response.corporation_id)
+            self.stmp = '{0.mention}\nCharacter info:\nName: {1}\nBirthday: {2}\nAlliance: {3}\nCorporation: {4}\nzKillboard: https://zkillboard.com/character/{5}/'.format(self.author, self.response.name, self.response.birthday, self.response.alliance_id, self.response.corporation_id, self.charID)
             await self.broadsword.say(self.stmp)
         except:
             await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
@@ -45,9 +46,10 @@ class EVE_API:
     async def testapi(self, ctx, *, name):
         try:
             self.author = ctx.message.author
-            self.api = EVEApi()
-            self.response = await self.api.searchCharID(name)
-            self.stmp = '{0.mention}\nCharacter info:\n```Content:\n {1}```'.format(self.author, self.response[0])
+            self.api = zKillboardAPI(name)
+            self.response = await self.api.getLastShipTypeID()
+            self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
+            del self.api
             await self.broadsword.say(self.stmp)
         except:
             await self.broadsword.say('Ошибка\n```{}```'.format(self.response))

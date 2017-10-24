@@ -8,6 +8,7 @@ import aiohttp
 import xml.etree.ElementTree as ET
 import config
 #import lxml
+import json
 from lxml import etree
 from vendor import swagger_client
 from vendor.swagger_client.rest import ApiException
@@ -86,35 +87,62 @@ class EVEApi:
         except ApiException as e:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
 
-    def corpID(corpName):
+    def getCorpID(self, name):
         pass
 
-    def corpName(corpID):
+    def getCorpName(self, id):
         pass
 
-    def corpDetails(corpID):
+    def getCorpDetails(self, id):
         pass
 
-    def allianceName(allianceID):
+    def getAllianceName(self, id):
         pass
 
-    def systemName(systemID):
+    def getSystemName(self, id):
         pass
 
-    def systemID(systemName):
+    def getSystemID(self, name):
         pass
 
-    def systemDetails(systemID):
+    def getSystemDetails(self, id):
         pass
 
-    def regionDetails(regionID):
+    def getRegionDetails(self, id):
         pass
 
-    def apiTypeName(typeID):
+    def getApiTypeName(self, id):
         pass
 
-    def apiTypeID(apiTypeName):
+    def getApiTypeID(self, name):
         pass
 
-    def apiMoonName(moonID):
+    def getApiMoonName(self, id):
         pass
+
+class zKillboardAPI:
+    def __init__(self, id):
+        self.base_url = "https://zkillboard.com/api/"
+        self.req_url = self.base_url + "characterID/{}/limit/1/finalblow-only/".format(id)
+        #self.user_agent = 'BroadswordBot'
+
+    def __del__(self):
+        del self.base_url
+        
+    async def getLatestSystem(self):
+        async with aiohttp.get(self.req_url) as self.req:
+            if self.req.status == 200:
+                self.jtmp = await self.req.json()
+        return self.jtmp[0]['solar_system_id']
+
+    async def getLastShipTypeID(self):
+        async with aiohttp.get(self.req_url) as self.req:
+            if self.req.status == 200:
+                self.jtmp = await self.req.json()
+        return self.jtmp[0]['victim']['ship_type_id']
+        
+    async def getLastSeenDate(self):
+        async with aiohttp.get(self.req_url) as self.req:
+            if self.req.status == 200:
+                self.jtmp = await self.req.json()
+        return self.jtmp[0]['killmail_time']
