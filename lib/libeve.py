@@ -182,8 +182,9 @@ class zKillboardAPI:
     #   https://github.com/zKillboard/zKillboard/wiki/API-(Killmails)
     #==============================================================================
     def __init__(self, id):
+        self.id = id
         self.base_url = "https://zkillboard.com/api/"
-        self.req_url = self.base_url + "characterID/{}/limit/1/finalblow-only/".format(id)
+        self.req_url = self.base_url + "characterID/{}/limit/1/no-items/".format(self.id)
         self.eveapi = EVEApi()
         #self.user_agent = 'BroadswordBot'
 
@@ -201,10 +202,25 @@ class zKillboardAPI:
         async with aiohttp.get(self.req_url) as self.req:
             if self.req.status == 200:
                 self.jtmp = await self.req.json()
-        return self.jtmp[0]['victim']['ship_type_id']
+        try:
+            if self.jtmp[0]['victim']['character_id'] == self.id:
+                return self.jtmp[0]['victim']['ship_type_id']
+            else:
+                for self.x in self.jtmp[0]['attackers']:
+                    if self.x['character_id'] in self.x:
+                        if self.x['character_id'] == self.id:
+                            return self.x['character_id']
+        except:
+            return("Failed to get ship type.")
         
     async def getLastSeenDate(self):
         async with aiohttp.get(self.req_url) as self.req:
             if self.req.status == 200:
                 self.jtmp = await self.req.json()
         return self.jtmp[0]['killmail_time']
+        
+    async def getLastKillmailID(self):
+        async with aiohttp.get(self.req_url) as self.req:
+            if self.req.status == 200:
+                self.jtmp = await self.req.json()
+        return self.jtmp[0]['killmail_id']
