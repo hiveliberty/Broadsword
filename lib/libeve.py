@@ -5,6 +5,8 @@
 
 import asyncio
 import aiohttp
+import urllib.request
+import urllib.parse
 import xml.etree.ElementTree as ET
 import config
 #import lxml
@@ -136,22 +138,44 @@ class EVEApi:
     async def getSystemDetails(self, id):
         try:
             self.api_instance = self.api.UniverseApi()
-            self.api_response = self.api_instance.get_universe_systems_system_id(id, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            self.api_response = self.api_instance.get_universe_systems_system_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response
         except ApiException as e:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
 
     async def getRegionDetails(self, id):
-        pass
+        try:
+            self.api_instance = self.api.UniverseApi()
+            self.api_response = self.api_instance.get_universe_regions_region_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
 
     async def getApiTypeName(self, id):
-        pass
+        try:
+            self.api_instance = self.api.UniverseApi()
+            self.api_response = self.api_instance.get_universe_types_type_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response.name
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
 
     async def getApiTypeID(self, name):
-        pass
+        self.name = urllib.parse.quote(name, safe = '')
+        self.req_url = "https://www.fuzzwork.co.uk/api/typeid.php?typename={}".format(self.name)
+        try:
+            self.response = urllib.request.urlopen(self.req_url)
+            self.jtmp = json.loads(self.response.read().decode())
+            return self.jtmp['typeID']
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
 
     async def getApiMoonName(self, id):
-        pass
+        try:
+            self.api_instance = self.api.UniverseApi()
+            self.api_response = self.api_instance.get_universe_moons_moon_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response.name
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
 
 class zKillboardAPI:
     #==============================================================================

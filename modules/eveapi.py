@@ -51,11 +51,12 @@ class EVE_API:
     async def testapi(self, ctx, *, name):
         try:
             self.author = ctx.message.author
-            self.api = zKillboardAPI(name)
-            self.response = await self.api.getLastShipTypeID()
+            self.api = EVEApi()
+            self.response = await self.api.getApiMoonName(name)
             self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
-            del self.api
             await self.broadsword.say(self.stmp)
+            #del self.api
+            #del self.stmp
         except:
             await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
 
