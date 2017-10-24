@@ -35,14 +35,14 @@ class EVE_API:
             self.author = ctx.message.author
             self.msg = ''
             self.api = EVEApi()
-            self.charID = await self.api.searchCharID(name)
+            self.charID = await self.api.getCharID(name)
             self.response = await self.api.getCharDetails(self.charID)
             self.msg += '{0.mention}\n```Character info:\n'.format(self.author)
             self.msg += 'Name: {}\n'.format(self.response.name)
             self.msg += 'Birthday: {}\n'.format(self.response.birthday)
-            self.msg += 'Alliance: {}\n'.format(self.response.alliance_id)
-            self.msg += 'Corporation: {}\n'.format(self.response.corporation_id)
-            self.msg += 'zKillboard Link: https://zkillboard.com/character/{}/```'.format(self.charID)
+            self.msg += 'Alliance: {}\n'.format(await self.api.getAllianceName(self.response.alliance_id))
+            self.msg += 'Corporation: {}```\n'.format(await self.api.getCorpName(self.response.corporation_id))
+            self.msg += 'zKillboard Link: https://zkillboard.com/character/{}/'.format(self.charID)
             await self.broadsword.say(self.msg)
         except:
             await self.broadsword.say('Ошибка\n```{}```'.format(self.response))

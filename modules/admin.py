@@ -1,3 +1,4 @@
+from memory_profiler import memory_usage
 from discord.ext import commands as broadsword
 from config.config import plugins as plugins
 
@@ -75,7 +76,17 @@ class Admin:
             await self.broadsword.delete_messages(self.mgs)
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(module, exc))
+            await self.broadsword.say('```py\n{}\n```'.format(exc))
+
+    @broadsword.command(pass_context=True, hidden=False)
+    async def memory(self, ctx):
+        """Memory usage."""
+        try:
+            self.mem_usage = memory_usage(-1, interval=.2, timeout=1)
+            await self.broadsword.say("```Memory usage:\n{}```".format(self.mem_usage))
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            await self.broadsword.say('```py\n{}\n```'.format(exc))
             
 def setup(broadsword):
     broadsword.add_cog(Admin(broadsword, plugins))

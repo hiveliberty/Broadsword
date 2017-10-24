@@ -58,18 +58,18 @@ class EVEApi:
 
     async def getCharName(self, id):
         try:
-            self.api_instance = self.api.CharacterApi()
-            self.api_instance.api_client.set_default_header('User-Agent', 'BroadswordBot') # Set a relevant user agent so we know which software is actually using ESI
-            self.api_instance.api_client.host = "https://esi.tech.ccp.is"
-            self.api_response = self.api_instance.get_characters_character_id(id)
-            return self.api_response.name
+            self.charinfo = await self.getCharDetails(id)
+            return self.charinfo.name
+            #self.api_instance = self.api.CharacterApi()
+            #self.api_instance.api_client.set_default_header('User-Agent', 'BroadswordBot') # Set a relevant user agent so we know which software is actually using ESI
+            #self.api_instance.api_client.host = "https://esi.tech.ccp.is"
+            #self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            #return self.api_response.name
         except ApiException as e:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
 
-    async def searchCharID(self, name):
+    async def getCharID(self, name):
         self.categories = ['character']
-        #print(name)
-        #self.search = charName
         try:
             self.api_instance = self.api.SearchApi()
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
@@ -80,44 +80,77 @@ class EVEApi:
     async def getCharDetails(self, id):
         try:
             self.api_instance = self.api.CharacterApi()
-            self.api_instance.api_client.set_default_header('User-Agent', 'BroadswordBot') # Set a relevant user agent so we know which software is actually using ESI
-            self.api_instance.api_client.host = "https://esi.tech.ccp.is"
-            self.api_response = self.api_instance.get_characters_character_id(id)
+            self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response
         except ApiException as e:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
 
-    def getCorpID(self, name):
+    async def getCorpID(self, name):
+        self.categories = ['corporation']
+        try:
+            self.api_instance = self.api.SearchApi()
+            self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response.character[0]
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getCorpName(self, id):
+        try:
+            self.corpinfo = await self.getCorpDetails(id)
+            return self.corpinfo.corporation_name
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getCorpDetails(self, id):
+        try:
+            self.api_instance = self.api.CorporationApi()
+            self.api_response = self.api_instance.get_corporations_corporation_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getAllianceName(self, id):
+        try:
+            self.api_instance = self.api.AllianceApi()
+            self.api_response = self.api_instance.get_alliances_alliance_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response.alliance_name
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getSystemName(self, id):
+        try:
+            self.systeminfo = await self.getSystemDetails(id)
+            return self.systeminfo.name
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getSystemID(self, name):
+        self.categories = ['solarsystem']
+        try:
+            self.api_instance = self.api.SearchApi()
+            self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response.character[0]
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getSystemDetails(self, id):
+        try:
+            self.api_instance = self.api.UniverseApi()
+            self.api_response = self.api_instance.get_universe_systems_system_id(id, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            return self.api_response
+        except ApiException as e:
+            print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def getRegionDetails(self, id):
         pass
 
-    def getCorpName(self, id):
+    async def getApiTypeName(self, id):
         pass
 
-    def getCorpDetails(self, id):
+    async def getApiTypeID(self, name):
         pass
 
-    def getAllianceName(self, id):
-        pass
-
-    def getSystemName(self, id):
-        pass
-
-    def getSystemID(self, name):
-        pass
-
-    def getSystemDetails(self, id):
-        pass
-
-    def getRegionDetails(self, id):
-        pass
-
-    def getApiTypeName(self, id):
-        pass
-
-    def getApiTypeID(self, name):
-        pass
-
-    def getApiMoonName(self, id):
+    async def getApiMoonName(self, id):
         pass
 
 class zKillboardAPI:
@@ -127,6 +160,7 @@ class zKillboardAPI:
     def __init__(self, id):
         self.base_url = "https://zkillboard.com/api/"
         self.req_url = self.base_url + "characterID/{}/limit/1/finalblow-only/".format(id)
+        self.eveapi = EVEApi()
         #self.user_agent = 'BroadswordBot'
 
     def __del__(self):
@@ -136,6 +170,7 @@ class zKillboardAPI:
         async with aiohttp.get(self.req_url) as self.req:
             if self.req.status == 200:
                 self.jtmp = await self.req.json()
+        #self.stmp = self.eveapi.getCorpName()
         return self.jtmp[0]['solar_system_id']
 
     async def getLastShipTypeID(self):
