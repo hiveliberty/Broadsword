@@ -121,6 +121,9 @@ class EVEApi:
         pass
 
 class zKillboardAPI:
+    #==============================================================================
+    #   https://github.com/zKillboard/zKillboard/wiki/API-(Killmails)
+    #==============================================================================
     def __init__(self, id):
         self.base_url = "https://zkillboard.com/api/"
         self.req_url = self.base_url + "characterID/{}/limit/1/finalblow-only/".format(id)

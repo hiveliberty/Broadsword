@@ -31,14 +31,19 @@ class EVE_API:
 
     @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def charinfo(self, ctx, *, name):
-        #self.name = name
         try:
             self.author = ctx.message.author
+            self.msg = ''
             self.api = EVEApi()
             self.charID = await self.api.searchCharID(name)
             self.response = await self.api.getCharDetails(self.charID)
-            self.stmp = '{0.mention}\nCharacter info:\nName: {1}\nBirthday: {2}\nAlliance: {3}\nCorporation: {4}\nzKillboard: https://zkillboard.com/character/{5}/'.format(self.author, self.response.name, self.response.birthday, self.response.alliance_id, self.response.corporation_id, self.charID)
-            await self.broadsword.say(self.stmp)
+            self.msg += '{0.mention}\n```Character info:\n'.format(self.author)
+            self.msg += 'Name: {}\n'.format(self.response.name)
+            self.msg += 'Birthday: {}\n'.format(self.response.birthday)
+            self.msg += 'Alliance: {}\n'.format(self.response.alliance_id)
+            self.msg += 'Corporation: {}\n'.format(self.response.corporation_id)
+            self.msg += 'zKillboard Link: https://zkillboard.com/character/{}/```'.format(self.charID)
+            await self.broadsword.say(self.msg)
         except:
             await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
 
