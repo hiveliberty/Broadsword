@@ -5,13 +5,16 @@
 
 import asyncio
 import aiohttp
+import requests
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
-import config
+import time
 #import lxml
 import json
 from lxml import etree
+
+import config
 from vendor import swagger_client
 from vendor.swagger_client.rest import ApiException
 
@@ -68,7 +71,7 @@ class EVEApi:
             #self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             #return self.api_response.name
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
     async def getCharID(self, name):
         self.categories = ['character']
@@ -77,7 +80,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.character[0]
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling SearchApi->get_status: %s\n" % e)
 
     async def getCharDetails(self, id):
         try:
@@ -85,7 +88,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
     async def getCorpID(self, name):
         self.categories = ['corporation']
@@ -94,14 +97,14 @@ class EVEApi:
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.character[0]
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling SearchApi->get_status: %s\n" % e)
 
     async def getCorpName(self, id):
         try:
             self.corpinfo = await self.getCorpDetails(id)
             return self.corpinfo.corporation_name
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling CorporationApi->get_status: %s\n" % e)
 
     async def getCorpDetails(self, id):
         try:
@@ -109,7 +112,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_corporations_corporation_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling CorporationApi->get_status: %s\n" % e)
 
     async def getAllianceName(self, id):
         try:
@@ -117,14 +120,14 @@ class EVEApi:
             self.api_response = self.api_instance.get_alliances_alliance_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.alliance_name
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling AllianceApi->get_status: %s\n" % e)
 
     async def getSystemName(self, id):
         try:
             self.systeminfo = await self.getSystemDetails(id)
             return self.systeminfo.name
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling UniverseApi->get_status: %s\n" % e)
 
     async def getSystemID(self, name):
         self.categories = ['solarsystem']
@@ -133,7 +136,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.character[0]
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling SearchApi->get_status: %s\n" % e)
 
     async def getSystemDetails(self, id):
         try:
@@ -141,7 +144,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_systems_system_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling UniverseApi->get_status: %s\n" % e)
 
     async def getRegionDetails(self, id):
         try:
@@ -149,7 +152,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_regions_region_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling UniverseApi->get_status: %s\n" % e)
 
     async def getApiTypeName(self, id):
         try:
@@ -157,7 +160,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_types_type_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.name
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling UniverseApi->get_status: %s\n" % e)
 
     async def getApiTypeID(self, name):
         self.name = urllib.parse.quote(name, safe = '')
@@ -167,7 +170,7 @@ class EVEApi:
             self.jtmp = json.loads(self.response.read().decode())
             return self.jtmp['typeID']
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling getApiTypeID->get_status: %s\n" % e)
 
     async def getApiMoonName(self, id):
         try:
@@ -175,7 +178,7 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_moons_moon_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.name
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            print("Exception when calling UniverseApi->get_status: %s\n" % e)
 
 class zKillboardAPI:
     #==============================================================================
@@ -183,44 +186,84 @@ class zKillboardAPI:
     #==============================================================================
     def __init__(self, id):
         self.id = id
+        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(VERSION)}
+        print(self.user_agent)
         self.base_url = "https://zkillboard.com/api/"
-        self.req_url = self.base_url + "characterID/{}/limit/1/no-items/".format(self.id)
-        self.eveapi = EVEApi()
-        #self.user_agent = 'BroadswordBot'
-
-    def __del__(self):
-        del self.base_url
-        
-    async def getLatestSystem(self):
-        async with aiohttp.get(self.req_url) as self.req:
-            if self.req.status == 200:
-                self.jtmp = await self.req.json()
-        #self.stmp = self.eveapi.getCorpName()
-        return self.jtmp[0]['solar_system_id']
-
-    async def getLastShipTypeID(self):
-        async with aiohttp.get(self.req_url) as self.req:
-            if self.req.status == 200:
-                self.jtmp = await self.req.json()
+        self.eve_api = EVEApi()
+        self.request_url = self.base_url + "characterID/{}/limit/1/no-items/".format(self.id)
         try:
-            if self.jtmp[0]['victim']['character_id'] == self.id:
-                return self.jtmp[0]['victim']['ship_type_id']
+            self.response = requests.get(self.request_url)
+            print(self.response)
+            if self.response.status_code == 200:
+                self.response = self.response.json()
+                print(self.response)
+        except Exception as e:
+            print("Exception when calling __init__: %s\n" % e)
+
+    # This method is not good
+    async def init(self):
+        try:
+            async with aiohttp.get(self.request_url) as self.response:
+                print(self.response)
+                if self.response.status == 200:
+                    self.response = await self.response.json()
+                    print(self.response)
+        except Exception as e:
+            print("Exception when calling init: %s\n" % e)
+
+    async def getLatestSystem(self):
+        #async with aiohttp.get(self.request_url) as self.response:
+        #    if self.response.status == 200:
+        #        self.response = await self.response.json()
+        try:
+            self.temp = await self.eve_api.getSystemName(self.response[0]['solar_system_id'])
+            print(self.temp)
+            return self.temp
+        except Exception as e:
+            print("Exception when calling getLatestSystem: %s\n" % e)
+            return("Ooops.")
+
+    async def getLastShipType(self):
+        #async with aiohttp.get(self.request_url) as self.response:
+        #    if self.response.status == 200:
+        #        self.response = await self.response.json()
+        try:
+            if self.response[0]['victim']['character_id'] == self.id:
+                self.temp = await self.eve_api.getApiTypeName(self.response[0]['victim']['ship_type_id'])
+                print(self.temp)
+                return self.temp
             else:
-                for self.x in self.jtmp[0]['attackers']:
+                for self.x in self.response[0]['attackers']:
                     if self.x['character_id'] in self.x:
                         if self.x['character_id'] == self.id:
-                            return self.x['character_id']
-        except:
-            return("Failed to get ship type.")
+                            self.temp = await self.eve_api.getApiTypeName(self.x['ship_type_id'])
+                            print(self.temp)
+                            return self.temp
+        except Exception as e:
+            print("Exception when calling getLastShipType: %s\n" % e)
+            return("Ooops.")
         
     async def getLastSeenDate(self):
-        async with aiohttp.get(self.req_url) as self.req:
-            if self.req.status == 200:
-                self.jtmp = await self.req.json()
-        return self.jtmp[0]['killmail_time']
+        #async with aiohttp.get(self.request_url) as self.response:
+        #    if self.response.status == 200:
+        #        self.response = await self.response.json()
+        try:
+            self.timestamp = self.response[0]['killmail_time']
+            self.ts = time.strptime(self.timestamp[:19], "%Y-%m-%dT%H:%M:%S")
+            self.timestamp = time.strftime("%d.%m.%Y at %H:%M:%S", self.ts)
+            print(self.timestamp)
+            return self.timestamp
+        except Exception as e:
+            print("Exception when calling getLastSeenDate: %s\n" % e)
+            return("Ooops.")
         
     async def getLastKillmailID(self):
-        async with aiohttp.get(self.req_url) as self.req:
-            if self.req.status == 200:
-                self.jtmp = await self.req.json()
-        return self.jtmp[0]['killmail_id']
+        #async with aiohttp.get(self.request_url) as self.response:
+        #    if self.response.status == 200:
+        #        self.response = await self.response.json()
+        try:
+            print(self.response[0]['killmail_id'])
+            return self.response[0]['killmail_id']
+        except Exception as e:
+            print("Exception when calling getLastSeenDate: %s\n" % e)
+            return("Ooops.")

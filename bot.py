@@ -1,8 +1,8 @@
-VERSION = "0.3.3.b02"
-
 from discord.ext import commands
 from config import config
 import os
+
+VERSION = "0.3.3.b03"
 
 plugins = config.plugins
 
