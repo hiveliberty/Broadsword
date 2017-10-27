@@ -5,7 +5,30 @@ bot = {
     "token": "input your token here",
     "prefix": "!",
     "guild": "your guildID",
-    "auth_url": "url"
+    "adminRoles": ["", ""],
+    "restrictedChannels": [0, 0]
+}
+
+auth = {
+    "auth_url": "url",
+    "exempt": ["", ""],
+    "alertChannel": "",
+    "nameEnforce": True,
+    "corpTickers": True,
+    "authGroups": {
+        "group1": {
+            "corpID": "",
+            "allianceID": "",
+            "corpMemberRole": "",
+            "allyMemberRole": ""
+        }
+    }
+    
+}
+
+evemails = {
+    "fromIDs": [0, 0],
+    "channelID": ""
 }
 
 db = {
@@ -13,7 +36,8 @@ db = {
     "password": "password",
     "host": "localhost",
     "port": "3306",
-    "database": "dbname"
+    "database": "dbname",
+    "charset": "utf8mb4"
 }
 
 plugins = {

@@ -77,12 +77,11 @@ class AuthTemp:
         self.testCharID = "94074030"
         self.testCorpID = "98014265"
         self.testAllianceID = "1614483120"
-        self.testGroups = ""
         self.testAuthString = "58512d6c9c68a"
         self.testActive = "1"
         try:
-            self.cnx = self.dbclasses.DBAuth()
-            self.cnx.insertTestUser(self.testCharID, self.testCorpID, self.testAllianceID, self.testGroups, self.testAuthString, self.testActive)
+            self.cnx = self.dbclasses.DB()
+            await self.cnx.insertTestUser(self.testCharID, self.testCorpID, self.testAllianceID, self.testAuthString, self.testActive)
             await self.broadsword.say("```User added.```")
         except:
             self.broadsword.say("Oooops")
@@ -93,8 +92,9 @@ class AuthTemp:
     async def auth(self, ctx, code):
         self.code = code
         try:
-            self.cnx = self.dbclasses.DBAuth()
-            self.result = self.cnx.selectPending(self.code)
+            self.cnx = self.dbclasses.DB()
+            self.result = await self.cnx.selectPending(self.code)
+            print(self.result)
             await self.broadsword.say("```{}```".format(self.result))
         except:
             self.broadsword.say("Oooops")

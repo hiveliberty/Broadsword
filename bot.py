@@ -1,15 +1,16 @@
+import os
+import asyncio
 from discord.ext import commands
 from config import config
-import os
-
-VERSION = "0.3.3.b03"
-
-plugins = config.plugins
-
-print('Connecting...')
-broadsword = commands.Bot(command_prefix=config.bot["prefix"])
+from lib import utils
 
 def main():
+    print('Connecting...')
+    
+    plugins = config.plugins
+    
+    broadsword = commands.Bot(command_prefix=config.bot["prefix"])
+
     @broadsword.event
     async def on_ready():
         """A function that is called when the client is
@@ -19,7 +20,7 @@ def main():
         print('Broadsword is logged in')
         print('Username: {}'.format(broadsword.user.name))
         print('User ID: {}'.format(broadsword.user.id))
-        print('Version v.' + VERSION)
+        print('Version v.{}'.format(utils.getVersion()))
         print('-----------------------')
 
         for plugin, options in plugins.items():

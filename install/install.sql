@@ -56,7 +56,6 @@ CREATE TABLE IF NOT EXISTS `pendingUsers` (
   `characterID` varchar(128) NOT NULL,
   `corporationID` varchar(128) NOT NULL,
   `allianceID` varchar(128) NOT NULL,
-  `groups` varchar(128) NOT NULL,
   `authString` varchar(128) NOT NULL,
   `active` varchar(10) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

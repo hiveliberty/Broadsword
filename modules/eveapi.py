@@ -68,7 +68,7 @@ class EVE_API:
         try:
             self.author = ctx.message.author
             self.api = EVEApi()
-            self.response = await self.api.getApiMoonName(temp)
+            self.response = await self.api.getSystemID(temp)
             self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
             await self.broadsword.say(self.stmp)
             #del self.api

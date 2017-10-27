@@ -15,10 +15,12 @@ import json
 from lxml import etree
 
 import config
+from lib import utils
 from vendor import swagger_client
 from vendor.swagger_client.rest import ApiException
 
 #==============================================================================
+#version = await getVersion()
 
 class EVEBasic:
     async def getTQOnline():
@@ -47,7 +49,7 @@ class EVEApi:
     def __init__(self):
         self.api = swagger_client
         self.datasource = 'tranquility'
-        self.user_agent = 'BroadswordBot'
+        self.user_agent = 'BroadswordBot/{}'.format(utils.getVersion())
         self.x_user_agent = self.user_agent
         self.language = 'en-us'
         self.strict = False
@@ -134,7 +136,7 @@ class EVEApi:
         try:
             self.api_instance = self.api.SearchApi()
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
-            return self.api_response.character[0]
+            return self.api_response.solarsystem[0]
         except ApiException as e:
             print("Exception when calling SearchApi->get_status: %s\n" % e)
 
@@ -186,7 +188,7 @@ class zKillboardAPI:
     #==============================================================================
     def __init__(self, id):
         self.id = id
-        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(VERSION)}
+        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(utils.getVersion())}
         print(self.user_agent)
         self.base_url = "https://zkillboard.com/api/"
         self.eve_api = EVEApi()
@@ -200,7 +202,7 @@ class zKillboardAPI:
         except Exception as e:
             print("Exception when calling __init__: %s\n" % e)
 
-    # This method is not good
+    # This reserved method, but is not good
     async def init(self):
         try:
             async with aiohttp.get(self.request_url) as self.response:
@@ -224,9 +226,6 @@ class zKillboardAPI:
             return("Ooops.")
 
     async def getLastShipType(self):
-        #async with aiohttp.get(self.request_url) as self.response:
-        #    if self.response.status == 200:
-        #        self.response = await self.response.json()
         try:
             if self.response[0]['victim']['character_id'] == self.id:
                 self.temp = await self.eve_api.getApiTypeName(self.response[0]['victim']['ship_type_id'])
@@ -244,9 +243,6 @@ class zKillboardAPI:
             return("Ooops.")
         
     async def getLastSeenDate(self):
-        #async with aiohttp.get(self.request_url) as self.response:
-        #    if self.response.status == 200:
-        #        self.response = await self.response.json()
         try:
             self.timestamp = self.response[0]['killmail_time']
             self.ts = time.strptime(self.timestamp[:19], "%Y-%m-%dT%H:%M:%S")
@@ -258,9 +254,6 @@ class zKillboardAPI:
             return("Ooops.")
         
     async def getLastKillmailID(self):
-        #async with aiohttp.get(self.request_url) as self.response:
-        #    if self.response.status == 200:
-        #        self.response = await self.response.json()
         try:
             print(self.response[0]['killmail_id'])
             return self.response[0]['killmail_id']
