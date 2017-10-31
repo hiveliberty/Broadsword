@@ -13,7 +13,7 @@ class DB:
     def __init__(self):
         try:
             self.cnx = mysqldb.connect(**dbcfg)
-            self.cursor = self.cnx.cursor()
+            self.cursor = self.cnx.cursor(dictionary=True)
             print('Database connection opened')
         except Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
@@ -55,9 +55,10 @@ class DB:
         try:
             self.cursor.execute(self.sqlquery)
             self.sqlout = self.cursor.fetchall()
+            self.sqlout = self.sqlout[0]
         except Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
+        print("{}\n".format(self.sqlout))
         return self.sqlout
 
     async def setKey(self, key, value):

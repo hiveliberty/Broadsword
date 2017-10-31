@@ -39,6 +39,9 @@ class EVE_API:
             self.charID = await self.eve_api.getCharID(name)
             self.zkill_api = zKillboardAPI(self.charID)
             self.response = await self.eve_api.getCharDetails(self.charID)
+            #self.conpinfo = await self.eve_api.getCharDetails(self.response.corporation_id)
+            #print(self.conpinfo)
+            print(self.response.corporation_id)
             self.starsystemID = await self.zkill_api.getLatestSystem()
             self.shiptypeID = await self.zkill_api.getLastShipType()
             self.lastseen = await self.zkill_api.getLastSeenDate()
@@ -50,6 +53,7 @@ class EVE_API:
             self.msg += 'Birthday: {}\n'.format(self.birthday)
             self.msg += 'Alliance: {}\n'.format(await self.eve_api.getAllianceName(self.response.alliance_id))
             self.msg += 'Corporation: {}\n'.format(await self.eve_api.getCorpName(self.response.corporation_id))
+            #self.msg += 'Corporation: {}\n'.format(self.conpinfo.name])
             self.msg += 'Last Seen In System: {}\n'.format(self.starsystemID)
             self.msg += 'Last Seen Flying a: {}\n'.format(self.shiptypeID)
             self.msg += 'Last Seen On: {}```'.format(self.lastseen)
@@ -68,7 +72,7 @@ class EVE_API:
         try:
             self.author = ctx.message.author
             self.api = EVEApi()
-            self.response = await self.api.getSystemID(temp)
+            self.response = await self.api.getCorpDetails(temp)
             self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
             await self.broadsword.say(self.stmp)
             #del self.api

@@ -112,9 +112,14 @@ class EVEApi:
         try:
             self.api_instance = self.api.CorporationApi()
             self.api_response = self.api_instance.get_corporations_corporation_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            #print(self.api_response['ticker'])
+            #print("getCorpDetails success")
             return self.api_response
         except ApiException as e:
             print("Exception when calling CorporationApi->get_status: %s\n" % e)
+        finally:
+            del self.api_instance
+            del self.api_response
 
     async def getAllianceName(self, id):
         try:

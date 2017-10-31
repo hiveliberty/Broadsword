@@ -1,8 +1,11 @@
+import asyncio
+import random
 from discord.ext import commands as broadsword
 #from lib.libdb import DBAuth as DBAuth
-from lib import libdb as dbclasses
+#from lib import libdb as dbclasses
+from lib.libeve import EVEApi
+from lib.libdb import DB
 from config.config import db as db_conf
-import random
 
 class Auth:
     def __init__(self, bot, db, dbconf):
@@ -61,9 +64,11 @@ class Auth:
             del self.test
             
 class AuthTemp:
-    def __init__(self, bot, dbclasses):
+    #def __init__(self, bot, dbclasses):
+    def __init__(self, bot):
         self.broadsword = bot
-        self.dbclasses = dbclasses
+        self.eveapi = EVEApi()
+        #self.dbclasses = dbclasses
 
     @broadsword.command(pass_context=True, description='''Тестовая команда.''')
     async def test(self, ctx):
@@ -80,7 +85,8 @@ class AuthTemp:
         self.testAuthString = "58512d6c9c68a"
         self.testActive = "1"
         try:
-            self.cnx = self.dbclasses.DB()
+            #self.cnx = self.dbclasses.DB()
+            self.cnx = DB()
             await self.cnx.insertTestUser(self.testCharID, self.testCorpID, self.testAllianceID, self.testAuthString, self.testActive)
             await self.broadsword.say("```User added.```")
         except:
@@ -90,17 +96,41 @@ class AuthTemp:
 
     @broadsword.command(pass_context=True, description='''Тестовая команда.''')
     async def auth(self, ctx, code):
+        self.messages_todelete = [ctx.message]
+        self.msg_author = ctx.message.author
         self.code = code
+        self.messages_single = False
         try:
-            self.cnx = self.dbclasses.DB()
+            if len(self.code) < 12:
+                self.messages_single = True
+                await self.broadsword.say("{0.mention}, invalid code! Check your auth code and try again.".format(self.msg_author))
+                return None
+            #self.cnx = self.dbclasses.DB()
+            self.cnx = DB()
             self.result = await self.cnx.selectPending(self.code)
-            print(self.result)
-            await self.broadsword.say("```{}```".format(self.result))
+            del self.cnx
+            self.corpinfo = await self.eveapi.getCorpDetails(self.result['corporationID'])
+            #print(self.corpinfo['ticker'])
+            #print(self.corpinfo['corporation_name'])
+            #print("test endpoint 01")
+            #await self.broadsword.say("```{}```".format(self.corpinfo))
+            print("test endpoint 01")
+            self.bot_answer = await self.broadsword.say("```{0}\n{1}\n{2}\n{3}```".format(self.msg_author, self.code, self.messages_todelete, self.result))
+            print("test endpoint 02")
+            self.messages_todelete.append(self.bot_answer)
+            print("test endpoint 03")
         except:
             self.broadsword.say("Oooops")
-        else:
-            del self.cnx
+        finally:
+            print("test endpoint 04")
+            await asyncio.sleep(5)
+            print("test endpoint 05")
+            if not self.messages_single:
+                await self.broadsword.delete_messages(self.messages_todelete)
+            else:
+                await self.broadsword.delete_message(ctx.message)
 
 def setup(broadsword):
     #broadsword.add_cog(Auth(broadsword, DBAuth, db_conf))
-    broadsword.add_cog(AuthTemp(broadsword, dbclasses))
+    #broadsword.add_cog(AuthTemp(broadsword, dbclasses))
+    broadsword.add_cog(AuthTemp(broadsword))
