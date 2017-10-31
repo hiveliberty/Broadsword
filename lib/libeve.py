@@ -121,6 +121,15 @@ class EVEApi:
             del self.api_instance
             del self.api_response
 
+    async def getCorpDetailsTest(self, id):
+        self.req_url = "https://esi.tech.ccp.is/latest/corporations/{}/?datasource=tranquility".format(id)
+        try:
+            self.response = urllib.request.urlopen(self.req_url)
+            self.jtmp = json.loads(self.response.read().decode())
+            return self.jtmp
+        except ApiException as e:
+            print("Exception when calling getCorpDetailsTest->get_status: %s\n" % e)
+
     async def getAllianceName(self, id):
         try:
             self.api_instance = self.api.AllianceApi()

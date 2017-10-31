@@ -1,9 +1,11 @@
 #import urllib.parse as urllib
 import time
+import json
 from discord.ext import commands as broadsword
 from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
 from lib.libeve import zKillboardAPI
+from config import config
 
 class EVE_API:
     def __init__(self, bot):
@@ -72,13 +74,47 @@ class EVE_API:
         try:
             self.author = ctx.message.author
             self.api = EVEApi()
-            self.response = await self.api.getCorpDetails(temp)
+            self.response = await self.api.getCorpDetailsTest(temp)
             self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
-            await self.broadsword.say(self.stmp)
+            print(self.stmp)
+            #await self.broadsword.say(self.stmp)
             #del self.api
             #del self.stmp
         except:
             await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
+
+    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
+    async def testapi2(self, ctx, *, temp):
+        try:
+            self.author = ctx.message.author
+            self.api = EVEApi()
+            self.response = await self.api.getCorpDetails(temp)
+            self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
+            print(self.stmp)
+            #await self.broadsword.say(self.stmp)
+            #del self.api
+            #del self.stmp
+        except:
+            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
+
+    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
+    async def testcode(self, ctx):
+        self.roles = ''
+        self.role = ''
+        try:
+            self.roles = self.broadsword.get_server(config.bot['guild']).roles
+        except:
+            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
+        self.roles = json.loads(self.roles.json())
+        print(self.roles)
+        #for self.each in self.roles:
+        #    self.role = self.each.json()
+        #    print(self.role)
+        #    print(self.each.id)
+        #    print(self.each.color)
+        #del self.each
+        del self.roles
+        del self.role
 
 def setup(broadsword):
     broadsword.add_cog(EVE_API(broadsword))

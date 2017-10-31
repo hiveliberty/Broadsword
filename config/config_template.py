@@ -17,13 +17,12 @@ auth = {
     "corpTickers": True,
     "authGroups": {
         "group1": {
-            "corpID": "",
-            "allianceID": "",
+            "corpID": 0,
+            "allianceID": 0,
             "corpMemberRole": "",
             "allyMemberRole": ""
         }
     }
-    
 }
 
 evemails = {

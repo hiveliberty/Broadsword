@@ -12,39 +12,48 @@ class Admin:
     @broadsword.command(pass_context=True, hidden=True)
     async def load(self, ctx, *, module):
         """Loads a module."""
+        self.module = 'modules.' + module
         try:
-            self.broadsword.load_extension(module)
+            self.broadsword.load_extension(self.module)
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(module, exc))
+            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
         else:
             await self.broadsword.say('\N{OK HAND SIGN}')
-            print("{} loaded.".format(module))
+            print("Module {} loaded.".format(module))
+        finally:
+            del self.module
 
     @broadsword.command(pass_context=True, hidden=True)
     async def unload(self, ctx, *, module):
         """Unloads a module."""
+        self.module = 'modules.' + module
         try:
-            self.broadsword.unload_extension(module)
+            self.broadsword.unload_extension(self.module)
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(module, exc))
+            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
         else:
             await self.broadsword.say('\N{OK HAND SIGN}')
-            print("{} unloaded.".format(module))
+            print("Module {} unloaded.".format(module))
+        finally:
+            del self.module
 
     @broadsword.command(pass_context=True, name='reload', hidden=True)
     async def _reload(self, ctx, *, module):
         """Reloads a module."""
+        self.module = 'modules.' + module
         try:
-            self.broadsword.unload_extension(module)
-            self.broadsword.load_extension(module)
+            self.broadsword.unload_extension(self.module)
+            self.broadsword.load_extension(self.module)
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(module, exc))
+            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
         else:
             await self.broadsword.say('\N{OK HAND SIGN}')
-            print("{} reloaded.".format(module))
+            print("Module {} reloaded.".format(module))
+        finally:
+            del self.module
             
     @broadsword.command(pass_context=True, name='reloadall', hidden=True)
     async def _reloadall(self, ctx):
@@ -64,6 +73,7 @@ class Admin:
                 msg = msg + module + '\n'
         msg = msg + '```'
         await self.broadsword.say("{}".format(msg))
+        del self.mgs
         
     @broadsword.command(pass_context=True, hidden=False)
     async def clearchat(self, ctx):
@@ -77,6 +87,8 @@ class Admin:
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
             await self.broadsword.say('```py\n{}\n```'.format(exc))
+        finally:
+            del self.mgs
 
     @broadsword.command(pass_context=True, hidden=False)
     async def memory(self, ctx):

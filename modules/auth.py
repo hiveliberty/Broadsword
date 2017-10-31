@@ -5,10 +5,11 @@ from discord.ext import commands as broadsword
 #from lib import libdb as dbclasses
 from lib.libeve import EVEApi
 from lib.libdb import DB
-from config.config import db as db_conf
+#from config.config import db as db_conf
+from config import config
 
 class Auth:
-    def __init__(self, bot, db, dbconf):
+    def __init__(self, bot):
         self.broadsword = bot
         self.DB = db
         self.dbconf = dbconf
@@ -96,39 +97,55 @@ class AuthTemp:
 
     @broadsword.command(pass_context=True, description='''Тестовая команда.''')
     async def auth(self, ctx, code):
-        self.messages_todelete = [ctx.message]
-        self.msg_author = ctx.message.author
+        self.roles = ''
+        self.todelete = [ctx.message]
+        self.author = ctx.message.author
         self.code = code
         self.messages_single = False
         try:
             if len(self.code) < 12:
                 self.messages_single = True
-                await self.broadsword.say("{0.mention}, invalid code! Check your auth code and try again.".format(self.msg_author))
+                await self.broadsword.say("{0.mention}, invalid code! Check your auth code and try again.".format(self.author))
                 return None
-            #self.cnx = self.dbclasses.DB()
+
             self.cnx = DB()
-            self.result = await self.cnx.selectPending(self.code)
+            self.pending = await self.cnx.selectPending(self.code)
+            #   self.pending content:
+            #       'authString'
+            #       'allianceID'
+            #       'corporationID'
+            #       'characterID'
+            #       'dateCreated'
+            #       'id'
+            #       'active'
             del self.cnx
+
             self.corpinfo = await self.eveapi.getCorpDetails(self.result['corporationID'])
-            #print(self.corpinfo['ticker'])
-            #print(self.corpinfo['corporation_name'])
-            #print("test endpoint 01")
-            #await self.broadsword.say("```{}```".format(self.corpinfo))
-            print("test endpoint 01")
-            self.bot_answer = await self.broadsword.say("```{0}\n{1}\n{2}\n{3}```".format(self.msg_author, self.code, self.messages_todelete, self.result))
-            print("test endpoint 02")
-            self.messages_todelete.append(self.bot_answer)
-            print("test endpoint 03")
+            #   self.corpinfo content:
+            #       'alliance_id'
+            #       'ceo_id'
+            #       'corporation_description'
+            #       'corporation_name'
+            #       'creation_date'
+            #       'creator_id'
+            #       'faction'
+            #       'member_count'
+            #       'tax_rate'
+            #       'ticker'
+            #       'url'
+
+            #   Say to channel
+            self.bot_answer = await self.broadsword.say("```{0}\n{1}\n{2}\n{3}```".format(self.author, self.code, self.todelete, self.pending))
+            self.todelete.append(self.bot_answer)
         except:
             self.broadsword.say("Oooops")
         finally:
-            print("test endpoint 04")
-            await asyncio.sleep(5)
-            print("test endpoint 05")
+            await asyncio.sleep(10)
             if not self.messages_single:
-                await self.broadsword.delete_messages(self.messages_todelete)
+                await self.broadsword.delete_messages(self.todelete)
             else:
                 await self.broadsword.delete_message(ctx.message)
+            del self.auth
 
 def setup(broadsword):
     #broadsword.add_cog(Auth(broadsword, DBAuth, db_conf))
