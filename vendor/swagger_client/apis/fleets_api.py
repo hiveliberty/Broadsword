@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class FleetsApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def delete_fleets_fleet_id_members_member_id(self, fleet_id, member_id, **kwargs):
         """
         Kick fleet member
         Kick a fleet member  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_fleets_fleet_id_members_member_id(fleet_id, member_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_fleets_fleet_id_members_member_id(fleet_id, member_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int member_id: The character ID of a member in this fleet (required)
         :param str datasource: The server name you would like data from
@@ -65,7 +56,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.delete_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, **kwargs)
         else:
             (data) = self.delete_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, **kwargs)
@@ -76,15 +67,11 @@ class FleetsApi(object):
         Kick fleet member
         Kick a fleet member  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int member_id: The character ID of a member in this fleet (required)
         :param str datasource: The server name you would like data from
@@ -97,7 +84,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'member_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -121,20 +108,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/members/{member_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
         if 'member_id' in params:
             path_params['member_id'] = params['member_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -151,7 +137,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'DELETE',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/members/{member_id}/', 'DELETE',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -160,7 +146,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -171,15 +157,11 @@ class FleetsApi(object):
         Delete fleet squad
         Delete a fleet squad, only empty squads can be deleted  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_fleets_fleet_id_squads_squad_id(fleet_id, squad_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_fleets_fleet_id_squads_squad_id(fleet_id, squad_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int squad_id: The squad to delete (required)
         :param str datasource: The server name you would like data from
@@ -191,7 +173,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.delete_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, squad_id, **kwargs)
         else:
             (data) = self.delete_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, squad_id, **kwargs)
@@ -202,15 +184,11 @@ class FleetsApi(object):
         Delete fleet squad
         Delete a fleet squad, only empty squads can be deleted  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, squad_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, squad_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int squad_id: The squad to delete (required)
         :param str datasource: The server name you would like data from
@@ -223,7 +201,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'squad_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -247,20 +225,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/squads/{squad_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
         if 'squad_id' in params:
             path_params['squad_id'] = params['squad_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -277,7 +254,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'DELETE',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/squads/{squad_id}/', 'DELETE',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -286,7 +263,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -297,15 +274,11 @@ class FleetsApi(object):
         Delete fleet wing
         Delete a fleet wing, only empty wings can be deleted. The wing may contain squads, but the squads must be empty  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_fleets_fleet_id_wings_wing_id(fleet_id, wing_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_fleets_fleet_id_wings_wing_id(fleet_id, wing_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int wing_id: The wing to delete (required)
         :param str datasource: The server name you would like data from
@@ -317,7 +290,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.delete_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, wing_id, **kwargs)
         else:
             (data) = self.delete_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, wing_id, **kwargs)
@@ -328,15 +301,11 @@ class FleetsApi(object):
         Delete fleet wing
         Delete a fleet wing, only empty wings can be deleted. The wing may contain squads, but the squads must be empty  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, wing_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, wing_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int wing_id: The wing to delete (required)
         :param str datasource: The server name you would like data from
@@ -349,7 +318,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'wing_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -373,20 +342,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/wings/{wing_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
         if 'wing_id' in params:
             path_params['wing_id'] = params['wing_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -403,7 +371,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'DELETE',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/wings/{wing_id}/', 'DELETE',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -412,7 +380,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -423,15 +391,11 @@ class FleetsApi(object):
         Get character fleet info
         Return the fleet ID the character is in, if any.  ---  This route is cached for up to 60 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_fleet(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_fleet(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -442,7 +406,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_fleet_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_fleet_with_http_info(character_id, **kwargs)
@@ -453,15 +417,11 @@ class FleetsApi(object):
         Get character fleet info
         Return the fleet ID the character is in, if any.  ---  This route is cached for up to 60 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_fleet_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_fleet_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -473,7 +433,7 @@ class FleetsApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -494,18 +454,17 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/fleet/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -522,7 +481,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/fleet/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -531,7 +490,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type='GetCharactersCharacterIdFleetOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -542,15 +501,11 @@ class FleetsApi(object):
         Get fleet information
         Return details about a fleet  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_fleets_fleet_id(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_fleets_fleet_id(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -561,7 +516,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_fleets_fleet_id_with_http_info(fleet_id, **kwargs)
         else:
             (data) = self.get_fleets_fleet_id_with_http_info(fleet_id, **kwargs)
@@ -572,15 +527,11 @@ class FleetsApi(object):
         Get fleet information
         Return details about a fleet  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_fleets_fleet_id_with_http_info(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_fleets_fleet_id_with_http_info(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -592,7 +543,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -613,18 +564,17 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -641,7 +591,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -650,7 +600,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type='GetFleetsFleetIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -661,15 +611,11 @@ class FleetsApi(object):
         Get fleet members
         Return information about fleet members  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_fleets_fleet_id_members(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_fleets_fleet_id_members(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -681,7 +627,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_fleets_fleet_id_members_with_http_info(fleet_id, **kwargs)
         else:
             (data) = self.get_fleets_fleet_id_members_with_http_info(fleet_id, **kwargs)
@@ -692,15 +638,11 @@ class FleetsApi(object):
         Get fleet members
         Return information about fleet members  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_fleets_fleet_id_members_with_http_info(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_fleets_fleet_id_members_with_http_info(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -713,7 +655,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'datasource', 'language', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -734,20 +676,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/members/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -764,7 +705,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/members/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -773,7 +714,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetFleetsFleetIdMembers200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -784,15 +725,11 @@ class FleetsApi(object):
         Get fleet wings
         Return information about wings in a fleet  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_fleets_fleet_id_wings(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_fleets_fleet_id_wings(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -804,7 +741,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_fleets_fleet_id_wings_with_http_info(fleet_id, **kwargs)
         else:
             (data) = self.get_fleets_fleet_id_wings_with_http_info(fleet_id, **kwargs)
@@ -815,15 +752,11 @@ class FleetsApi(object):
         Get fleet wings
         Return information about wings in a fleet  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_fleets_fleet_id_wings_with_http_info(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_fleets_fleet_id_wings_with_http_info(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -836,7 +769,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'datasource', 'language', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -857,20 +790,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/wings/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -887,7 +819,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/wings/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -896,7 +828,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetFleetsFleetIdWings200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -907,15 +839,11 @@ class FleetsApi(object):
         Create fleet invitation
         Invite a character into the fleet. If a character has a CSPA charge set it is not possible to invite them to the fleet using ESI  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_fleets_fleet_id_members(fleet_id, invitation, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_fleets_fleet_id_members(fleet_id, invitation, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PostFleetsFleetIdMembersInvitation invitation: Details of the invitation (required)
         :param str datasource: The server name you would like data from
@@ -927,7 +855,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_fleets_fleet_id_members_with_http_info(fleet_id, invitation, **kwargs)
         else:
             (data) = self.post_fleets_fleet_id_members_with_http_info(fleet_id, invitation, **kwargs)
@@ -938,15 +866,11 @@ class FleetsApi(object):
         Create fleet invitation
         Invite a character into the fleet. If a character has a CSPA charge set it is not possible to invite them to the fleet using ESI  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_fleets_fleet_id_members_with_http_info(fleet_id, invitation, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_fleets_fleet_id_members_with_http_info(fleet_id, invitation, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PostFleetsFleetIdMembersInvitation invitation: Details of the invitation (required)
         :param str datasource: The server name you would like data from
@@ -959,7 +883,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'invitation', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -983,18 +907,17 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/members/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1013,7 +936,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/members/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1022,7 +945,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1033,15 +956,11 @@ class FleetsApi(object):
         Create fleet wing
         Create a new wing in a fleet  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_fleets_fleet_id_wings(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_fleets_fleet_id_wings(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -1052,7 +971,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_fleets_fleet_id_wings_with_http_info(fleet_id, **kwargs)
         else:
             (data) = self.post_fleets_fleet_id_wings_with_http_info(fleet_id, **kwargs)
@@ -1063,15 +982,11 @@ class FleetsApi(object):
         Create fleet wing
         Create a new wing in a fleet  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_fleets_fleet_id_wings_with_http_info(fleet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_fleets_fleet_id_wings_with_http_info(fleet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -1083,7 +998,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1104,18 +1019,17 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/wings/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1132,7 +1046,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/wings/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1141,7 +1055,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type='PostFleetsFleetIdWingsCreated',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1152,15 +1066,11 @@ class FleetsApi(object):
         Create fleet squad
         Create a new squad in a fleet  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_fleets_fleet_id_wings_wing_id_squads(fleet_id, wing_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_fleets_fleet_id_wings_wing_id_squads(fleet_id, wing_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int wing_id: The wing_id to create squad in (required)
         :param str datasource: The server name you would like data from
@@ -1172,7 +1082,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_fleets_fleet_id_wings_wing_id_squads_with_http_info(fleet_id, wing_id, **kwargs)
         else:
             (data) = self.post_fleets_fleet_id_wings_wing_id_squads_with_http_info(fleet_id, wing_id, **kwargs)
@@ -1183,15 +1093,11 @@ class FleetsApi(object):
         Create fleet squad
         Create a new squad in a fleet  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_fleets_fleet_id_wings_wing_id_squads_with_http_info(fleet_id, wing_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_fleets_fleet_id_wings_wing_id_squads_with_http_info(fleet_id, wing_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int wing_id: The wing_id to create squad in (required)
         :param str datasource: The server name you would like data from
@@ -1204,7 +1110,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'wing_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1228,20 +1134,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/wings/{wing_id}/squads/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
         if 'wing_id' in params:
             path_params['wing_id'] = params['wing_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1258,7 +1163,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/wings/{wing_id}/squads/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1267,7 +1172,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type='PostFleetsFleetIdWingsWingIdSquadsCreated',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1278,15 +1183,11 @@ class FleetsApi(object):
         Update fleet
         Update settings about a fleet  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id(fleet_id, new_settings, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id(fleet_id, new_settings, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PutFleetsFleetIdNewSettings new_settings: What to update for this fleet (required)
         :param str datasource: The server name you would like data from
@@ -1298,7 +1199,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.put_fleets_fleet_id_with_http_info(fleet_id, new_settings, **kwargs)
         else:
             (data) = self.put_fleets_fleet_id_with_http_info(fleet_id, new_settings, **kwargs)
@@ -1309,15 +1210,11 @@ class FleetsApi(object):
         Update fleet
         Update settings about a fleet  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id_with_http_info(fleet_id, new_settings, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id_with_http_info(fleet_id, new_settings, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PutFleetsFleetIdNewSettings new_settings: What to update for this fleet (required)
         :param str datasource: The server name you would like data from
@@ -1330,7 +1227,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'new_settings', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1354,18 +1251,17 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1384,7 +1280,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'PUT',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/', 'PUT',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1393,7 +1289,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1404,15 +1300,11 @@ class FleetsApi(object):
         Move fleet member
         Move a fleet member around  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id_members_member_id(fleet_id, member_id, movement, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id_members_member_id(fleet_id, member_id, movement, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int member_id: The character ID of a member in this fleet (required)
         :param PutFleetsFleetIdMembersMemberIdMovement movement: Details of the invitation (required)
@@ -1425,7 +1317,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.put_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, movement, **kwargs)
         else:
             (data) = self.put_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, movement, **kwargs)
@@ -1436,15 +1328,11 @@ class FleetsApi(object):
         Move fleet member
         Move a fleet member around  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, movement, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id_members_member_id_with_http_info(fleet_id, member_id, movement, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param int member_id: The character ID of a member in this fleet (required)
         :param PutFleetsFleetIdMembersMemberIdMovement movement: Details of the invitation (required)
@@ -1458,7 +1346,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'member_id', 'movement', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1485,20 +1373,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/members/{member_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
         if 'member_id' in params:
             path_params['member_id'] = params['member_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1517,7 +1404,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'PUT',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/members/{member_id}/', 'PUT',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1526,7 +1413,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1537,15 +1424,11 @@ class FleetsApi(object):
         Rename fleet squad
         Rename a fleet squad  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id_squads_squad_id(fleet_id, naming, squad_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id_squads_squad_id(fleet_id, naming, squad_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PutFleetsFleetIdSquadsSquadIdNaming naming: New name of the squad (required)
         :param int squad_id: The squad to rename (required)
@@ -1558,7 +1441,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.put_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, naming, squad_id, **kwargs)
         else:
             (data) = self.put_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, naming, squad_id, **kwargs)
@@ -1569,15 +1452,11 @@ class FleetsApi(object):
         Rename fleet squad
         Rename a fleet squad  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, naming, squad_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id_squads_squad_id_with_http_info(fleet_id, naming, squad_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PutFleetsFleetIdSquadsSquadIdNaming naming: New name of the squad (required)
         :param int squad_id: The squad to rename (required)
@@ -1591,7 +1470,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'naming', 'squad_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1618,20 +1497,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/squads/{squad_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
         if 'squad_id' in params:
             path_params['squad_id'] = params['squad_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1650,7 +1528,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'PUT',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/squads/{squad_id}/', 'PUT',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1659,7 +1537,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1670,15 +1548,11 @@ class FleetsApi(object):
         Rename fleet wing
         Rename a fleet wing  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id_wings_wing_id(fleet_id, naming, wing_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id_wings_wing_id(fleet_id, naming, wing_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PutFleetsFleetIdWingsWingIdNaming naming: New name of the wing (required)
         :param int wing_id: The wing to rename (required)
@@ -1691,7 +1565,7 @@ class FleetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.put_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, naming, wing_id, **kwargs)
         else:
             (data) = self.put_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, naming, wing_id, **kwargs)
@@ -1702,15 +1576,11 @@ class FleetsApi(object):
         Rename fleet wing
         Rename a fleet wing  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, naming, wing_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_fleets_fleet_id_wings_wing_id_with_http_info(fleet_id, naming, wing_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int fleet_id: ID for a fleet (required)
         :param PutFleetsFleetIdWingsWingIdNaming naming: New name of the wing (required)
         :param int wing_id: The wing to rename (required)
@@ -1724,7 +1594,7 @@ class FleetsApi(object):
         """
 
         all_params = ['fleet_id', 'naming', 'wing_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1751,20 +1621,19 @@ class FleetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/fleets/{fleet_id}/wings/{wing_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'fleet_id' in params:
             path_params['fleet_id'] = params['fleet_id']
         if 'wing_id' in params:
             path_params['wing_id'] = params['wing_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1783,7 +1652,7 @@ class FleetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'PUT',
+        return self.api_client.call_api('/v1/fleets/{fleet_id}/wings/{wing_id}/', 'PUT',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1792,7 +1661,7 @@ class FleetsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

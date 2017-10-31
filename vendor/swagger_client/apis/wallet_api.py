@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class WalletApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_wallet(self, character_id, **kwargs):
         """
         Get a character's wallet balance
         Returns a character's wallet balance  ---  This route is cached for up to 120 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_wallet(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_wallet(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -64,7 +55,7 @@ class WalletApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_wallet_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_wallet_with_http_info(character_id, **kwargs)
@@ -75,15 +66,11 @@ class WalletApi(object):
         Get a character's wallet balance
         Returns a character's wallet balance  ---  This route is cached for up to 120 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_wallet_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_wallet_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -95,7 +82,7 @@ class WalletApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -116,18 +103,17 @@ class WalletApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/wallet/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -144,7 +130,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/wallet/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -153,7 +139,7 @@ class WalletApi(object):
                                         files=local_var_files,
                                         response_type='float',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -164,15 +150,11 @@ class WalletApi(object):
         Get character wallet journal
         Retrieve character wallet journal  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_wallet_journal(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_wallet_journal(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int from_id: Only show journal entries happened before the transaction referenced by this id
@@ -184,7 +166,7 @@ class WalletApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_wallet_journal_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_wallet_journal_with_http_info(character_id, **kwargs)
@@ -195,15 +177,11 @@ class WalletApi(object):
         Get character wallet journal
         Retrieve character wallet journal  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_wallet_journal_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_wallet_journal_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int from_id: Only show journal entries happened before the transaction referenced by this id
@@ -216,7 +194,7 @@ class WalletApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'from_id', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -237,20 +215,19 @@ class WalletApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v2/characters/{character_id}/wallet/journal/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'from_id' in params:
-            query_params['from_id'] = params['from_id']
+            query_params.append(('from_id', params['from_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -267,7 +244,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v2/characters/{character_id}/wallet/journal/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -276,7 +253,7 @@ class WalletApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdWalletJournal200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -287,15 +264,11 @@ class WalletApi(object):
         Get wallet transactions
         Get wallet transactions of a character  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_wallet_transactions(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_wallet_transactions(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int from_id: Only show transactions happened before the one referenced by this id
@@ -307,7 +280,7 @@ class WalletApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_wallet_transactions_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_wallet_transactions_with_http_info(character_id, **kwargs)
@@ -318,15 +291,11 @@ class WalletApi(object):
         Get wallet transactions
         Get wallet transactions of a character  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_wallet_transactions_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_wallet_transactions_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int from_id: Only show transactions happened before the one referenced by this id
@@ -339,7 +308,7 @@ class WalletApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'from_id', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -360,20 +329,19 @@ class WalletApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/wallet/transactions/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'from_id' in params:
-            query_params['from_id'] = params['from_id']
+            query_params.append(('from_id', params['from_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -390,7 +358,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/wallet/transactions/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -399,7 +367,7 @@ class WalletApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdWalletTransactions200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -410,15 +378,11 @@ class WalletApi(object):
         Returns a corporation's wallet balance
         Get a corporation's wallets  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_wallets(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_wallets(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -429,7 +393,7 @@ class WalletApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_wallets_with_http_info(corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_wallets_with_http_info(corporation_id, **kwargs)
@@ -440,15 +404,11 @@ class WalletApi(object):
         Returns a corporation's wallet balance
         Get a corporation's wallets  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_wallets_with_http_info(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_wallets_with_http_info(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -460,7 +420,7 @@ class WalletApi(object):
         """
 
         all_params = ['corporation_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -481,18 +441,17 @@ class WalletApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/wallets/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -509,7 +468,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/wallets/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -518,7 +477,7 @@ class WalletApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdWallets200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -529,15 +488,11 @@ class WalletApi(object):
         Get corporation wallet journal
         Retrieve corporation wallet journal  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_wallets_division_journal(corporation_id, division, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_wallets_division_journal(corporation_id, division, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param int division: Wallet key of the division to fetch journals from (required)
         :param str datasource: The server name you would like data from
@@ -550,7 +505,7 @@ class WalletApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_wallets_division_journal_with_http_info(corporation_id, division, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_wallets_division_journal_with_http_info(corporation_id, division, **kwargs)
@@ -561,15 +516,11 @@ class WalletApi(object):
         Get corporation wallet journal
         Retrieve corporation wallet journal  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_wallets_division_journal_with_http_info(corporation_id, division, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_wallets_division_journal_with_http_info(corporation_id, division, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param int division: Wallet key of the division to fetch journals from (required)
         :param str datasource: The server name you would like data from
@@ -583,7 +534,7 @@ class WalletApi(object):
         """
 
         all_params = ['corporation_id', 'division', 'datasource', 'from_id', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -611,22 +562,21 @@ class WalletApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/wallets/{division}/journal/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
         if 'division' in params:
             path_params['division'] = params['division']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'from_id' in params:
-            query_params['from_id'] = params['from_id']
+            query_params.append(('from_id', params['from_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -643,7 +593,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/wallets/{division}/journal/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -652,7 +602,7 @@ class WalletApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdWalletsDivisionJournal200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -663,15 +613,11 @@ class WalletApi(object):
         Get corporation wallet transactions
         Get wallet transactions of a corporation  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_wallets_division_transactions(corporation_id, division, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_wallets_division_transactions(corporation_id, division, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param int division: Wallet key of the division to fetch journals from (required)
         :param str datasource: The server name you would like data from
@@ -684,7 +630,7 @@ class WalletApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_wallets_division_transactions_with_http_info(corporation_id, division, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_wallets_division_transactions_with_http_info(corporation_id, division, **kwargs)
@@ -695,15 +641,11 @@ class WalletApi(object):
         Get corporation wallet transactions
         Get wallet transactions of a corporation  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_wallets_division_transactions_with_http_info(corporation_id, division, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_wallets_division_transactions_with_http_info(corporation_id, division, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param int division: Wallet key of the division to fetch journals from (required)
         :param str datasource: The server name you would like data from
@@ -717,7 +659,7 @@ class WalletApi(object):
         """
 
         all_params = ['corporation_id', 'division', 'datasource', 'from_id', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -745,22 +687,21 @@ class WalletApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/wallets/{division}/transactions/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
         if 'division' in params:
             path_params['division'] = params['division']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'from_id' in params:
-            query_params['from_id'] = params['from_id']
+            query_params.append(('from_id', params['from_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -777,7 +718,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/wallets/{division}/transactions/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -786,7 +727,7 @@ class WalletApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdWalletsDivisionTransactions200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

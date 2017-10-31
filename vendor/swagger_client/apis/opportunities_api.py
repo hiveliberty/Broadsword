@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class OpportunitiesApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_opportunities(self, character_id, **kwargs):
         """
         Get a character's completed tasks
         Return a list of tasks finished by a character  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_opportunities(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_opportunities(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -64,7 +55,7 @@ class OpportunitiesApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_opportunities_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_opportunities_with_http_info(character_id, **kwargs)
@@ -75,15 +66,11 @@ class OpportunitiesApi(object):
         Get a character's completed tasks
         Return a list of tasks finished by a character  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_opportunities_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_opportunities_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -95,7 +82,7 @@ class OpportunitiesApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -116,18 +103,17 @@ class OpportunitiesApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/opportunities/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -144,7 +130,7 @@ class OpportunitiesApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/opportunities/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -153,7 +139,7 @@ class OpportunitiesApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdOpportunities200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -164,15 +150,11 @@ class OpportunitiesApi(object):
         Get opportunities groups
         Return a list of opportunities groups  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_groups(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_groups(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -181,7 +163,7 @@ class OpportunitiesApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_opportunities_groups_with_http_info(**kwargs)
         else:
             (data) = self.get_opportunities_groups_with_http_info(**kwargs)
@@ -192,15 +174,11 @@ class OpportunitiesApi(object):
         Get opportunities groups
         Return a list of opportunities groups  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_groups_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_groups_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -210,7 +188,7 @@ class OpportunitiesApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -228,14 +206,13 @@ class OpportunitiesApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/opportunities/groups/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -252,7 +229,7 @@ class OpportunitiesApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/opportunities/groups/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -261,7 +238,7 @@ class OpportunitiesApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -272,15 +249,11 @@ class OpportunitiesApi(object):
         Get opportunities group
         Return information of an opportunities group  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_groups_group_id(group_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_groups_group_id(group_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int group_id: ID of an opportunities group (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -291,7 +264,7 @@ class OpportunitiesApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_opportunities_groups_group_id_with_http_info(group_id, **kwargs)
         else:
             (data) = self.get_opportunities_groups_group_id_with_http_info(group_id, **kwargs)
@@ -302,15 +275,11 @@ class OpportunitiesApi(object):
         Get opportunities group
         Return information of an opportunities group  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_groups_group_id_with_http_info(group_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_groups_group_id_with_http_info(group_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int group_id: ID of an opportunities group (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -322,7 +291,7 @@ class OpportunitiesApi(object):
         """
 
         all_params = ['group_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -343,18 +312,17 @@ class OpportunitiesApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/opportunities/groups/{group_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'group_id' in params:
             path_params['group_id'] = params['group_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -371,7 +339,7 @@ class OpportunitiesApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/opportunities/groups/{group_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -380,7 +348,7 @@ class OpportunitiesApi(object):
                                         files=local_var_files,
                                         response_type='GetOpportunitiesGroupsGroupIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -391,15 +359,11 @@ class OpportunitiesApi(object):
         Get opportunities tasks
         Return a list of opportunities tasks  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_tasks(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_tasks(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -408,7 +372,7 @@ class OpportunitiesApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_opportunities_tasks_with_http_info(**kwargs)
         else:
             (data) = self.get_opportunities_tasks_with_http_info(**kwargs)
@@ -419,15 +383,11 @@ class OpportunitiesApi(object):
         Get opportunities tasks
         Return a list of opportunities tasks  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_tasks_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_tasks_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -437,7 +397,7 @@ class OpportunitiesApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -455,14 +415,13 @@ class OpportunitiesApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/opportunities/tasks/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -479,7 +438,7 @@ class OpportunitiesApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/opportunities/tasks/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -488,7 +447,7 @@ class OpportunitiesApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -499,15 +458,11 @@ class OpportunitiesApi(object):
         Get opportunities task
         Return information of an opportunities task  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_tasks_task_id(task_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_tasks_task_id(task_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int task_id: ID of an opportunities task (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -517,7 +472,7 @@ class OpportunitiesApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_opportunities_tasks_task_id_with_http_info(task_id, **kwargs)
         else:
             (data) = self.get_opportunities_tasks_task_id_with_http_info(task_id, **kwargs)
@@ -528,15 +483,11 @@ class OpportunitiesApi(object):
         Get opportunities task
         Return information of an opportunities task  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_opportunities_tasks_task_id_with_http_info(task_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_opportunities_tasks_task_id_with_http_info(task_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int task_id: ID of an opportunities task (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -547,7 +498,7 @@ class OpportunitiesApi(object):
         """
 
         all_params = ['task_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -568,16 +519,15 @@ class OpportunitiesApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/opportunities/tasks/{task_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'task_id' in params:
             path_params['task_id'] = params['task_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -594,7 +544,7 @@ class OpportunitiesApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/opportunities/tasks/{task_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -603,7 +553,7 @@ class OpportunitiesApi(object):
                                         files=local_var_files,
                                         response_type='GetOpportunitiesTasksTaskIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class AssetsApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_assets(self, character_id, **kwargs):
         """
         Get character assets
         Return a list of the characters assets  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_assets(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_assets(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -65,7 +56,7 @@ class AssetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_assets_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_assets_with_http_info(character_id, **kwargs)
@@ -76,15 +67,11 @@ class AssetsApi(object):
         Get character assets
         Return a list of the characters assets  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_assets_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_assets_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -97,7 +84,7 @@ class AssetsApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'page', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -118,20 +105,19 @@ class AssetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/assets/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -148,7 +134,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/assets/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -157,7 +143,7 @@ class AssetsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdAssets200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -168,15 +154,11 @@ class AssetsApi(object):
         Get corporation assets
         Return a list of the corporation assets  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_assets(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_assets(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -188,7 +170,7 @@ class AssetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_assets_with_http_info(corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_assets_with_http_info(corporation_id, **kwargs)
@@ -199,15 +181,11 @@ class AssetsApi(object):
         Get corporation assets
         Return a list of the corporation assets  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_assets_with_http_info(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_assets_with_http_info(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -220,7 +198,7 @@ class AssetsApi(object):
         """
 
         all_params = ['corporation_id', 'datasource', 'page', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -241,20 +219,19 @@ class AssetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/assets/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -271,7 +248,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/assets/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -280,7 +257,7 @@ class AssetsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdAssets200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -291,15 +268,11 @@ class AssetsApi(object):
         Get character asset locations
         Return locations for a set of item ids, which you can get from character assets endpoint. Coordinates for items in hangars or stations are set to (0,0,0)  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_characters_character_id_assets_locations(character_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_characters_character_id_assets_locations(character_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -311,7 +284,7 @@ class AssetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_characters_character_id_assets_locations_with_http_info(character_id, item_ids, **kwargs)
         else:
             (data) = self.post_characters_character_id_assets_locations_with_http_info(character_id, item_ids, **kwargs)
@@ -322,15 +295,11 @@ class AssetsApi(object):
         Get character asset locations
         Return locations for a set of item ids, which you can get from character assets endpoint. Coordinates for items in hangars or stations are set to (0,0,0)  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_characters_character_id_assets_locations_with_http_info(character_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_characters_character_id_assets_locations_with_http_info(character_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -343,7 +312,7 @@ class AssetsApi(object):
         """
 
         all_params = ['character_id', 'item_ids', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -367,18 +336,17 @@ class AssetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/assets/locations/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -397,7 +365,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/characters/{character_id}/assets/locations/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -406,7 +374,7 @@ class AssetsApi(object):
                                         files=local_var_files,
                                         response_type='list[PostCharactersCharacterIdAssetsLocations200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -417,15 +385,11 @@ class AssetsApi(object):
         Get character asset names
         Return names for a set of item ids, which you can get from character assets endpoint. Typically used for items that can customize names, like containers or ships.  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_characters_character_id_assets_names(character_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_characters_character_id_assets_names(character_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -437,7 +401,7 @@ class AssetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_characters_character_id_assets_names_with_http_info(character_id, item_ids, **kwargs)
         else:
             (data) = self.post_characters_character_id_assets_names_with_http_info(character_id, item_ids, **kwargs)
@@ -448,15 +412,11 @@ class AssetsApi(object):
         Get character asset names
         Return names for a set of item ids, which you can get from character assets endpoint. Typically used for items that can customize names, like containers or ships.  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_characters_character_id_assets_names_with_http_info(character_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_characters_character_id_assets_names_with_http_info(character_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -469,7 +429,7 @@ class AssetsApi(object):
         """
 
         all_params = ['character_id', 'item_ids', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -493,18 +453,17 @@ class AssetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/assets/names/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -523,7 +482,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/characters/{character_id}/assets/names/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -532,7 +491,7 @@ class AssetsApi(object):
                                         files=local_var_files,
                                         response_type='list[PostCharactersCharacterIdAssetsNames200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -543,15 +502,11 @@ class AssetsApi(object):
         Get corporation asset locations
         Return locations for a set of item ids, which you can get from corporation assets endpoint. Coordinates for items in hangars or stations are set to (0,0,0)  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_corporations_corporation_id_assets_locations(corporation_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_corporations_corporation_id_assets_locations(corporation_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -563,7 +518,7 @@ class AssetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_corporations_corporation_id_assets_locations_with_http_info(corporation_id, item_ids, **kwargs)
         else:
             (data) = self.post_corporations_corporation_id_assets_locations_with_http_info(corporation_id, item_ids, **kwargs)
@@ -574,15 +529,11 @@ class AssetsApi(object):
         Get corporation asset locations
         Return locations for a set of item ids, which you can get from corporation assets endpoint. Coordinates for items in hangars or stations are set to (0,0,0)  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_corporations_corporation_id_assets_locations_with_http_info(corporation_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_corporations_corporation_id_assets_locations_with_http_info(corporation_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -595,7 +546,7 @@ class AssetsApi(object):
         """
 
         all_params = ['corporation_id', 'item_ids', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -619,18 +570,17 @@ class AssetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/assets/locations/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -649,7 +599,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/assets/locations/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -658,7 +608,7 @@ class AssetsApi(object):
                                         files=local_var_files,
                                         response_type='list[PostCorporationsCorporationIdAssetsLocations200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -669,15 +619,11 @@ class AssetsApi(object):
         Get coporation asset names
         Return names for a set of item ids, which you can get from corporation assets endpoint. Only valid for items that can customize names, like containers or ships.  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_corporations_corporation_id_assets_names(corporation_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_corporations_corporation_id_assets_names(corporation_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -689,7 +635,7 @@ class AssetsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_corporations_corporation_id_assets_names_with_http_info(corporation_id, item_ids, **kwargs)
         else:
             (data) = self.post_corporations_corporation_id_assets_names_with_http_info(corporation_id, item_ids, **kwargs)
@@ -700,15 +646,11 @@ class AssetsApi(object):
         Get coporation asset names
         Return names for a set of item ids, which you can get from corporation assets endpoint. Only valid for items that can customize names, like containers or ships.  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_corporations_corporation_id_assets_names_with_http_info(corporation_id, item_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_corporations_corporation_id_assets_names_with_http_info(corporation_id, item_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param list[int] item_ids: A list of item ids (required)
         :param str datasource: The server name you would like data from
@@ -721,7 +663,7 @@ class AssetsApi(object):
         """
 
         all_params = ['corporation_id', 'item_ids', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -745,18 +687,17 @@ class AssetsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/assets/names/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -775,7 +716,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/assets/names/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -784,7 +725,7 @@ class AssetsApi(object):
                                         files=local_var_files,
                                         response_type='list[PostCorporationsCorporationIdAssetsNames200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

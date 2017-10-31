@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class MarketApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_orders(self, character_id, **kwargs):
         """
         List orders from a character
         List market orders placed by a character  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_orders(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_orders(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -64,7 +55,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_orders_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_orders_with_http_info(character_id, **kwargs)
@@ -75,15 +66,11 @@ class MarketApi(object):
         List orders from a character
         List market orders placed by a character  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_orders_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_orders_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -95,7 +82,7 @@ class MarketApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -116,18 +103,17 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/orders/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -144,7 +130,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/orders/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -153,7 +139,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdOrders200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -164,15 +150,11 @@ class MarketApi(object):
         List orders from a corporation
         List market orders placed on behalf of a corporation  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_orders(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_orders(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -184,7 +166,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_orders_with_http_info(corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_orders_with_http_info(corporation_id, **kwargs)
@@ -195,15 +177,11 @@ class MarketApi(object):
         List orders from a corporation
         List market orders placed on behalf of a corporation  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_orders_with_http_info(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_orders_with_http_info(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -216,7 +194,7 @@ class MarketApi(object):
         """
 
         all_params = ['corporation_id', 'datasource', 'page', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -237,20 +215,19 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/orders/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -267,7 +244,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/orders/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -276,7 +253,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdOrders200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -287,15 +264,11 @@ class MarketApi(object):
         Get item groups
         Get a list of item groups  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_groups(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_groups(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -304,7 +277,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_markets_groups_with_http_info(**kwargs)
         else:
             (data) = self.get_markets_groups_with_http_info(**kwargs)
@@ -315,15 +288,11 @@ class MarketApi(object):
         Get item groups
         Get a list of item groups  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_groups_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_groups_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -333,7 +302,7 @@ class MarketApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -351,14 +320,13 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/markets/groups/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -375,7 +343,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/markets/groups/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -384,7 +352,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -395,15 +363,11 @@ class MarketApi(object):
         Get item group information
         Get information on an item group  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_groups_market_group_id(market_group_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_groups_market_group_id(market_group_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int market_group_id: An Eve item group ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -414,7 +378,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_markets_groups_market_group_id_with_http_info(market_group_id, **kwargs)
         else:
             (data) = self.get_markets_groups_market_group_id_with_http_info(market_group_id, **kwargs)
@@ -425,15 +389,11 @@ class MarketApi(object):
         Get item group information
         Get information on an item group  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_groups_market_group_id_with_http_info(market_group_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_groups_market_group_id_with_http_info(market_group_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int market_group_id: An Eve item group ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -445,7 +405,7 @@ class MarketApi(object):
         """
 
         all_params = ['market_group_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -466,18 +426,17 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/markets/groups/{market_group_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'market_group_id' in params:
             path_params['market_group_id'] = params['market_group_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -494,7 +453,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/markets/groups/{market_group_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -503,7 +462,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='GetMarketsGroupsMarketGroupIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -514,15 +473,11 @@ class MarketApi(object):
         List market prices
         Return a list of prices  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_prices(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_prices(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -531,7 +486,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_markets_prices_with_http_info(**kwargs)
         else:
             (data) = self.get_markets_prices_with_http_info(**kwargs)
@@ -542,15 +497,11 @@ class MarketApi(object):
         List market prices
         Return a list of prices  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_prices_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_prices_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -560,7 +511,7 @@ class MarketApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -578,14 +529,13 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/markets/prices/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -602,7 +552,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/markets/prices/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -611,7 +561,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[GetMarketsPrices200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -622,15 +572,11 @@ class MarketApi(object):
         List historical market statistics in a region
         Return a list of historical market statistics for the specified type in a region  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_region_id_history(region_id, type_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_region_id_history(region_id, type_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int region_id: Return statistics in this region (required)
         :param int type_id: Return statistics for this type (required)
         :param str datasource: The server name you would like data from
@@ -641,7 +587,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_markets_region_id_history_with_http_info(region_id, type_id, **kwargs)
         else:
             (data) = self.get_markets_region_id_history_with_http_info(region_id, type_id, **kwargs)
@@ -652,15 +598,11 @@ class MarketApi(object):
         List historical market statistics in a region
         Return a list of historical market statistics for the specified type in a region  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_region_id_history_with_http_info(region_id, type_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_region_id_history_with_http_info(region_id, type_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int region_id: Return statistics in this region (required)
         :param int type_id: Return statistics for this type (required)
         :param str datasource: The server name you would like data from
@@ -672,7 +614,7 @@ class MarketApi(object):
         """
 
         all_params = ['region_id', 'type_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -696,18 +638,17 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/markets/{region_id}/history/'.replace('{format}', 'json')
         path_params = {}
         if 'region_id' in params:
             path_params['region_id'] = params['region_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'type_id' in params:
-            query_params['type_id'] = params['type_id']
+            query_params.append(('type_id', params['type_id']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -724,7 +665,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/markets/{region_id}/history/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -733,7 +674,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[GetMarketsRegionIdHistory200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -744,15 +685,11 @@ class MarketApi(object):
         List orders in a region
         Return a list of orders in a region  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_region_id_orders(order_type, region_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_region_id_orders(order_type, region_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str order_type: Filter buy/sell orders, return all orders by default. If you query without type_id, we always return both buy and sell orders. (required)
         :param int region_id: Return orders in this region (required)
         :param str datasource: The server name you would like data from
@@ -765,7 +702,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_markets_region_id_orders_with_http_info(order_type, region_id, **kwargs)
         else:
             (data) = self.get_markets_region_id_orders_with_http_info(order_type, region_id, **kwargs)
@@ -776,15 +713,11 @@ class MarketApi(object):
         List orders in a region
         Return a list of orders in a region  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_region_id_orders_with_http_info(order_type, region_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_region_id_orders_with_http_info(order_type, region_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str order_type: Filter buy/sell orders, return all orders by default. If you query without type_id, we always return both buy and sell orders. (required)
         :param int region_id: Return orders in this region (required)
         :param str datasource: The server name you would like data from
@@ -798,7 +731,7 @@ class MarketApi(object):
         """
 
         all_params = ['order_type', 'region_id', 'datasource', 'page', 'type_id', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -822,22 +755,21 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/markets/{region_id}/orders/'.replace('{format}', 'json')
         path_params = {}
         if 'region_id' in params:
             path_params['region_id'] = params['region_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'order_type' in params:
-            query_params['order_type'] = params['order_type']
+            query_params.append(('order_type', params['order_type']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'type_id' in params:
-            query_params['type_id'] = params['type_id']
+            query_params.append(('type_id', params['type_id']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -854,7 +786,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/markets/{region_id}/orders/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -863,7 +795,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[GetMarketsRegionIdOrders200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -874,15 +806,11 @@ class MarketApi(object):
         List type IDs relevant to a market
         Return a list of type IDs that have active orders in the region, for efficient market indexing.  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_region_id_types(region_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_region_id_types(region_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int region_id: Return statistics in this region (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -893,7 +821,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_markets_region_id_types_with_http_info(region_id, **kwargs)
         else:
             (data) = self.get_markets_region_id_types_with_http_info(region_id, **kwargs)
@@ -904,15 +832,11 @@ class MarketApi(object):
         List type IDs relevant to a market
         Return a list of type IDs that have active orders in the region, for efficient market indexing.  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_region_id_types_with_http_info(region_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_region_id_types_with_http_info(region_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int region_id: Return statistics in this region (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -924,7 +848,7 @@ class MarketApi(object):
         """
 
         all_params = ['region_id', 'datasource', 'page', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -945,18 +869,17 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/markets/{region_id}/types/'.replace('{format}', 'json')
         path_params = {}
         if 'region_id' in params:
             path_params['region_id'] = params['region_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -973,7 +896,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/markets/{region_id}/types/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -982,7 +905,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -993,15 +916,11 @@ class MarketApi(object):
         List orders in a structure
         Return all orders in a structure  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_structures_structure_id(structure_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_structures_structure_id(structure_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int structure_id: Return orders in this structure (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -1013,7 +932,7 @@ class MarketApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_markets_structures_structure_id_with_http_info(structure_id, **kwargs)
         else:
             (data) = self.get_markets_structures_structure_id_with_http_info(structure_id, **kwargs)
@@ -1024,15 +943,11 @@ class MarketApi(object):
         List orders in a structure
         Return all orders in a structure  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_markets_structures_structure_id_with_http_info(structure_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_markets_structures_structure_id_with_http_info(structure_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int structure_id: Return orders in this structure (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -1045,7 +960,7 @@ class MarketApi(object):
         """
 
         all_params = ['structure_id', 'datasource', 'page', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1066,20 +981,19 @@ class MarketApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/markets/structures/{structure_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'structure_id' in params:
             path_params['structure_id'] = params['structure_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1096,7 +1010,7 @@ class MarketApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/markets/structures/{structure_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1105,7 +1019,7 @@ class MarketApi(object):
                                         files=local_var_files,
                                         response_type='list[GetMarketsStructuresStructureId200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

@@ -344,5 +344,3 @@ from .apis.wars_api import WarsApi
 from .api_client import ApiClient
 
 from .configuration import Configuration
-
-configuration = Configuration()

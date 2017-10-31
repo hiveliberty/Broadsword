@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class ContractsApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_contracts(self, character_id, **kwargs):
         """
         Get contracts
         Returns contracts available to a character, only if the character is issuer, acceptor or assignee. Only returns contracts no older than 30 days, or if the status is \"in_progress\".  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contracts(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contracts(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -64,7 +55,7 @@ class ContractsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_contracts_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_contracts_with_http_info(character_id, **kwargs)
@@ -75,15 +66,11 @@ class ContractsApi(object):
         Get contracts
         Returns contracts available to a character, only if the character is issuer, acceptor or assignee. Only returns contracts no older than 30 days, or if the status is \"in_progress\".  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contracts_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contracts_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -95,7 +82,7 @@ class ContractsApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -116,18 +103,17 @@ class ContractsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contracts/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -144,7 +130,7 @@ class ContractsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/contracts/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -153,7 +139,7 @@ class ContractsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdContracts200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -164,15 +150,11 @@ class ContractsApi(object):
         Get contract bids
         Lists bids on a particular auction contract  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contracts_contract_id_bids(character_id, contract_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contracts_contract_id_bids(character_id, contract_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int contract_id: ID of a contract (required)
         :param str datasource: The server name you would like data from
@@ -184,7 +166,7 @@ class ContractsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_contracts_contract_id_bids_with_http_info(character_id, contract_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_contracts_contract_id_bids_with_http_info(character_id, contract_id, **kwargs)
@@ -195,15 +177,11 @@ class ContractsApi(object):
         Get contract bids
         Lists bids on a particular auction contract  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contracts_contract_id_bids_with_http_info(character_id, contract_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contracts_contract_id_bids_with_http_info(character_id, contract_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int contract_id: ID of a contract (required)
         :param str datasource: The server name you would like data from
@@ -216,7 +194,7 @@ class ContractsApi(object):
         """
 
         all_params = ['character_id', 'contract_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -240,20 +218,19 @@ class ContractsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contracts/{contract_id}/bids/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
         if 'contract_id' in params:
             path_params['contract_id'] = params['contract_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -270,7 +247,7 @@ class ContractsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/contracts/{contract_id}/bids/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -279,7 +256,7 @@ class ContractsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdContractsContractIdBids200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -290,15 +267,11 @@ class ContractsApi(object):
         Get contract items
         Lists items of a particular contract  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contracts_contract_id_items(character_id, contract_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contracts_contract_id_items(character_id, contract_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int contract_id: ID of a contract (required)
         :param str datasource: The server name you would like data from
@@ -310,7 +283,7 @@ class ContractsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_contracts_contract_id_items_with_http_info(character_id, contract_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_contracts_contract_id_items_with_http_info(character_id, contract_id, **kwargs)
@@ -321,15 +294,11 @@ class ContractsApi(object):
         Get contract items
         Lists items of a particular contract  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contracts_contract_id_items_with_http_info(character_id, contract_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contracts_contract_id_items_with_http_info(character_id, contract_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int contract_id: ID of a contract (required)
         :param str datasource: The server name you would like data from
@@ -342,7 +311,7 @@ class ContractsApi(object):
         """
 
         all_params = ['character_id', 'contract_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -366,20 +335,19 @@ class ContractsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contracts/{contract_id}/items/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
         if 'contract_id' in params:
             path_params['contract_id'] = params['contract_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -396,7 +364,7 @@ class ContractsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/contracts/{contract_id}/items/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -405,7 +373,7 @@ class ContractsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdContractsContractIdItems200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -416,15 +384,11 @@ class ContractsApi(object):
         Get coporation contracts
         Returns contracts available to a coporation, only if the corporation is issuer, acceptor or assignee. Only returns contracts no older than 30 days, or if the status is \"in_progress\".  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contracts(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contracts(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -435,7 +399,7 @@ class ContractsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_contracts_with_http_info(corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_contracts_with_http_info(corporation_id, **kwargs)
@@ -446,15 +410,11 @@ class ContractsApi(object):
         Get coporation contracts
         Returns contracts available to a coporation, only if the corporation is issuer, acceptor or assignee. Only returns contracts no older than 30 days, or if the status is \"in_progress\".  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contracts_with_http_info(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contracts_with_http_info(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -466,7 +426,7 @@ class ContractsApi(object):
         """
 
         all_params = ['corporation_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -487,18 +447,17 @@ class ContractsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/contracts/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -515,7 +474,7 @@ class ContractsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/contracts/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -524,7 +483,7 @@ class ContractsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdContracts200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -535,15 +494,11 @@ class ContractsApi(object):
         Get corporation contract bids
         Lists bids on a particular auction contract  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_bids(contract_id, corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_bids(contract_id, corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int contract_id: ID of a contract (required)
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
@@ -556,7 +511,7 @@ class ContractsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_contracts_contract_id_bids_with_http_info(contract_id, corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_contracts_contract_id_bids_with_http_info(contract_id, corporation_id, **kwargs)
@@ -567,15 +522,11 @@ class ContractsApi(object):
         Get corporation contract bids
         Lists bids on a particular auction contract  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_bids_with_http_info(contract_id, corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_bids_with_http_info(contract_id, corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int contract_id: ID of a contract (required)
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
@@ -589,7 +540,7 @@ class ContractsApi(object):
         """
 
         all_params = ['contract_id', 'corporation_id', 'datasource', 'page', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -613,22 +564,21 @@ class ContractsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/contracts/{contract_id}/bids/'.replace('{format}', 'json')
         path_params = {}
         if 'contract_id' in params:
             path_params['contract_id'] = params['contract_id']
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -645,7 +595,7 @@ class ContractsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/contracts/{contract_id}/bids/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -654,7 +604,7 @@ class ContractsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdContractsContractIdBids200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -665,15 +615,11 @@ class ContractsApi(object):
         Get corporation contract items
         Lists items of a particular contract  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_items(contract_id, corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_items(contract_id, corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int contract_id: ID of a contract (required)
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
@@ -685,7 +631,7 @@ class ContractsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_contracts_contract_id_items_with_http_info(contract_id, corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_contracts_contract_id_items_with_http_info(contract_id, corporation_id, **kwargs)
@@ -696,15 +642,11 @@ class ContractsApi(object):
         Get corporation contract items
         Lists items of a particular contract  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_items_with_http_info(contract_id, corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contracts_contract_id_items_with_http_info(contract_id, corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int contract_id: ID of a contract (required)
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
@@ -717,7 +659,7 @@ class ContractsApi(object):
         """
 
         all_params = ['contract_id', 'corporation_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -741,20 +683,19 @@ class ContractsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/contracts/{contract_id}/items/'.replace('{format}', 'json')
         path_params = {}
         if 'contract_id' in params:
             path_params['contract_id'] = params['contract_id']
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -771,7 +712,7 @@ class ContractsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/contracts/{contract_id}/items/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -780,7 +721,7 @@ class ContractsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdContractsContractIdItems200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

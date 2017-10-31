@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class UserInterfaceApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def post_ui_autopilot_waypoint(self, add_to_beginning, clear_other_waypoints, destination_id, **kwargs):
         """
         Set Autopilot Waypoint
         Set a solar system as autopilot waypoint  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_autopilot_waypoint(add_to_beginning, clear_other_waypoints, destination_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_autopilot_waypoint(add_to_beginning, clear_other_waypoints, destination_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param bool add_to_beginning: Whether this solar system should be added to the beginning of all waypoints (required)
         :param bool clear_other_waypoints: Whether clean other waypoints beforing adding this one (required)
         :param int destination_id: The destination to travel to, can be solar system, station or structure's id (required)
@@ -66,7 +57,7 @@ class UserInterfaceApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_ui_autopilot_waypoint_with_http_info(add_to_beginning, clear_other_waypoints, destination_id, **kwargs)
         else:
             (data) = self.post_ui_autopilot_waypoint_with_http_info(add_to_beginning, clear_other_waypoints, destination_id, **kwargs)
@@ -77,15 +68,11 @@ class UserInterfaceApi(object):
         Set Autopilot Waypoint
         Set a solar system as autopilot waypoint  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_autopilot_waypoint_with_http_info(add_to_beginning, clear_other_waypoints, destination_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_autopilot_waypoint_with_http_info(add_to_beginning, clear_other_waypoints, destination_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param bool add_to_beginning: Whether this solar system should be added to the beginning of all waypoints (required)
         :param bool clear_other_waypoints: Whether clean other waypoints beforing adding this one (required)
         :param int destination_id: The destination to travel to, can be solar system, station or structure's id (required)
@@ -99,7 +86,7 @@ class UserInterfaceApi(object):
         """
 
         all_params = ['add_to_beginning', 'clear_other_waypoints', 'destination_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -126,22 +113,21 @@ class UserInterfaceApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v2/ui/autopilot/waypoint/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'add_to_beginning' in params:
-            query_params['add_to_beginning'] = params['add_to_beginning']
+            query_params.append(('add_to_beginning', params['add_to_beginning']))
         if 'clear_other_waypoints' in params:
-            query_params['clear_other_waypoints'] = params['clear_other_waypoints']
+            query_params.append(('clear_other_waypoints', params['clear_other_waypoints']))
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'destination_id' in params:
-            query_params['destination_id'] = params['destination_id']
+            query_params.append(('destination_id', params['destination_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -158,7 +144,7 @@ class UserInterfaceApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v2/ui/autopilot/waypoint/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -167,7 +153,7 @@ class UserInterfaceApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -178,15 +164,11 @@ class UserInterfaceApi(object):
         Open Contract Window
         Open the contract window inside the client  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_contract(contract_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_contract(contract_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int contract_id: The contract to open (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -197,7 +179,7 @@ class UserInterfaceApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_ui_openwindow_contract_with_http_info(contract_id, **kwargs)
         else:
             (data) = self.post_ui_openwindow_contract_with_http_info(contract_id, **kwargs)
@@ -208,15 +190,11 @@ class UserInterfaceApi(object):
         Open Contract Window
         Open the contract window inside the client  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_contract_with_http_info(contract_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_contract_with_http_info(contract_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int contract_id: The contract to open (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -228,7 +206,7 @@ class UserInterfaceApi(object):
         """
 
         all_params = ['contract_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -249,18 +227,17 @@ class UserInterfaceApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/ui/openwindow/contract/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'contract_id' in params:
-            query_params['contract_id'] = params['contract_id']
+            query_params.append(('contract_id', params['contract_id']))
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -277,7 +254,7 @@ class UserInterfaceApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/ui/openwindow/contract/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -286,7 +263,7 @@ class UserInterfaceApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -297,15 +274,11 @@ class UserInterfaceApi(object):
         Open Information Window
         Open the information window for a character, corporation or alliance inside the client  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_information(target_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_information(target_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int target_id: The target to open (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -316,7 +289,7 @@ class UserInterfaceApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_ui_openwindow_information_with_http_info(target_id, **kwargs)
         else:
             (data) = self.post_ui_openwindow_information_with_http_info(target_id, **kwargs)
@@ -327,15 +300,11 @@ class UserInterfaceApi(object):
         Open Information Window
         Open the information window for a character, corporation or alliance inside the client  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_information_with_http_info(target_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_information_with_http_info(target_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int target_id: The target to open (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -347,7 +316,7 @@ class UserInterfaceApi(object):
         """
 
         all_params = ['target_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -368,18 +337,17 @@ class UserInterfaceApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/ui/openwindow/information/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'target_id' in params:
-            query_params['target_id'] = params['target_id']
+            query_params.append(('target_id', params['target_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -396,7 +364,7 @@ class UserInterfaceApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/ui/openwindow/information/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -405,7 +373,7 @@ class UserInterfaceApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -416,15 +384,11 @@ class UserInterfaceApi(object):
         Open Market Details
         Open the market details window for a specific typeID inside the client  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_marketdetails(type_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_marketdetails(type_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int type_id: The item type to open in market window (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -435,7 +399,7 @@ class UserInterfaceApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_ui_openwindow_marketdetails_with_http_info(type_id, **kwargs)
         else:
             (data) = self.post_ui_openwindow_marketdetails_with_http_info(type_id, **kwargs)
@@ -446,15 +410,11 @@ class UserInterfaceApi(object):
         Open Market Details
         Open the market details window for a specific typeID inside the client  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_marketdetails_with_http_info(type_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_marketdetails_with_http_info(type_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int type_id: The item type to open in market window (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -466,7 +426,7 @@ class UserInterfaceApi(object):
         """
 
         all_params = ['type_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -487,18 +447,17 @@ class UserInterfaceApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/ui/openwindow/marketdetails/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'type_id' in params:
-            query_params['type_id'] = params['type_id']
+            query_params.append(('type_id', params['type_id']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -515,7 +474,7 @@ class UserInterfaceApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/ui/openwindow/marketdetails/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -524,7 +483,7 @@ class UserInterfaceApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -535,15 +494,11 @@ class UserInterfaceApi(object):
         Open New Mail Window
         Open the New Mail window, according to settings from the request if applicable  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_newmail(new_mail, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_newmail(new_mail, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param PostUiOpenwindowNewmailNewMail new_mail: The details of mail to create (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -554,7 +509,7 @@ class UserInterfaceApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_ui_openwindow_newmail_with_http_info(new_mail, **kwargs)
         else:
             (data) = self.post_ui_openwindow_newmail_with_http_info(new_mail, **kwargs)
@@ -565,15 +520,11 @@ class UserInterfaceApi(object):
         Open New Mail Window
         Open the New Mail window, according to settings from the request if applicable  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_ui_openwindow_newmail_with_http_info(new_mail, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_ui_openwindow_newmail_with_http_info(new_mail, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param PostUiOpenwindowNewmailNewMail new_mail: The details of mail to create (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -585,7 +536,7 @@ class UserInterfaceApi(object):
         """
 
         all_params = ['new_mail', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -606,16 +557,15 @@ class UserInterfaceApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/ui/openwindow/newmail/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -634,7 +584,7 @@ class UserInterfaceApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/ui/openwindow/newmail/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -643,7 +593,7 @@ class UserInterfaceApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

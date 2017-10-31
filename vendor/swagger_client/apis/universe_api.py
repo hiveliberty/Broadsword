@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class UniverseApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_universe_bloodlines(self, **kwargs):
         """
         Get bloodlines
         Get a list of bloodlines  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_bloodlines(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_bloodlines(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
         :param str user_agent: Client identifier, takes precedence over headers
@@ -63,7 +54,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_bloodlines_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_bloodlines_with_http_info(**kwargs)
@@ -74,15 +65,11 @@ class UniverseApi(object):
         Get bloodlines
         Get a list of bloodlines  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_bloodlines_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_bloodlines_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
         :param str user_agent: Client identifier, takes precedence over headers
@@ -93,7 +80,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -111,16 +98,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/bloodlines/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -137,7 +123,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/bloodlines/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -146,7 +132,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[GetUniverseBloodlines200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -157,15 +143,11 @@ class UniverseApi(object):
         Get item categories
         Get a list of item categories  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_categories(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_categories(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -174,7 +156,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_categories_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_categories_with_http_info(**kwargs)
@@ -185,15 +167,11 @@ class UniverseApi(object):
         Get item categories
         Get a list of item categories  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_categories_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_categories_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -203,7 +181,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -221,14 +199,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/categories/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -245,7 +222,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/categories/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -254,7 +231,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -265,15 +242,11 @@ class UniverseApi(object):
         Get item category information
         Get information of an item category  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_categories_category_id(category_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_categories_category_id(category_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int category_id: An Eve item category ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -284,7 +257,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_categories_category_id_with_http_info(category_id, **kwargs)
         else:
             (data) = self.get_universe_categories_category_id_with_http_info(category_id, **kwargs)
@@ -295,15 +268,11 @@ class UniverseApi(object):
         Get item category information
         Get information of an item category  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_categories_category_id_with_http_info(category_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_categories_category_id_with_http_info(category_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int category_id: An Eve item category ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -315,7 +284,7 @@ class UniverseApi(object):
         """
 
         all_params = ['category_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -336,18 +305,17 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/categories/{category_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'category_id' in params:
             path_params['category_id'] = params['category_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -364,7 +332,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/categories/{category_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -373,7 +341,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseCategoriesCategoryIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -384,15 +352,11 @@ class UniverseApi(object):
         Get constellations
         Get a list of constellations  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_constellations(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_constellations(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -401,7 +365,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_constellations_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_constellations_with_http_info(**kwargs)
@@ -412,15 +376,11 @@ class UniverseApi(object):
         Get constellations
         Get a list of constellations  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_constellations_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_constellations_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -430,7 +390,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -448,14 +408,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/constellations/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -472,7 +431,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/constellations/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -481,7 +440,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -492,15 +451,11 @@ class UniverseApi(object):
         Get constellation information
         Get information on a constellation  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_constellations_constellation_id(constellation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_constellations_constellation_id(constellation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int constellation_id: constellation_id integer (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -511,7 +466,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_constellations_constellation_id_with_http_info(constellation_id, **kwargs)
         else:
             (data) = self.get_universe_constellations_constellation_id_with_http_info(constellation_id, **kwargs)
@@ -522,15 +477,11 @@ class UniverseApi(object):
         Get constellation information
         Get information on a constellation  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_constellations_constellation_id_with_http_info(constellation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_constellations_constellation_id_with_http_info(constellation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int constellation_id: constellation_id integer (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -542,7 +493,7 @@ class UniverseApi(object):
         """
 
         all_params = ['constellation_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -563,18 +514,17 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/constellations/{constellation_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'constellation_id' in params:
             path_params['constellation_id'] = params['constellation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -591,7 +541,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/constellations/{constellation_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -600,7 +550,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseConstellationsConstellationIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -611,15 +561,11 @@ class UniverseApi(object):
         Get factions
         Get a list of factions  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_factions(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_factions(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
         :param str user_agent: Client identifier, takes precedence over headers
@@ -629,7 +575,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_factions_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_factions_with_http_info(**kwargs)
@@ -640,15 +586,11 @@ class UniverseApi(object):
         Get factions
         Get a list of factions  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_factions_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_factions_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
         :param str user_agent: Client identifier, takes precedence over headers
@@ -659,7 +601,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -677,16 +619,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/factions/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -703,7 +644,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/factions/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -712,7 +653,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[GetUniverseFactions200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -723,15 +664,11 @@ class UniverseApi(object):
         Get graphics
         Get a list of graphics  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_graphics(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_graphics(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -740,7 +677,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_graphics_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_graphics_with_http_info(**kwargs)
@@ -751,15 +688,11 @@ class UniverseApi(object):
         Get graphics
         Get a list of graphics  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_graphics_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_graphics_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -769,7 +702,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -787,14 +720,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/graphics/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -811,7 +743,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/graphics/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -820,7 +752,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -831,15 +763,11 @@ class UniverseApi(object):
         Get graphic information
         Get information on a graphic  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_graphics_graphic_id(graphic_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_graphics_graphic_id(graphic_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int graphic_id: graphic_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -849,7 +777,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_graphics_graphic_id_with_http_info(graphic_id, **kwargs)
         else:
             (data) = self.get_universe_graphics_graphic_id_with_http_info(graphic_id, **kwargs)
@@ -860,15 +788,11 @@ class UniverseApi(object):
         Get graphic information
         Get information on a graphic  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_graphics_graphic_id_with_http_info(graphic_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_graphics_graphic_id_with_http_info(graphic_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int graphic_id: graphic_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -879,7 +803,7 @@ class UniverseApi(object):
         """
 
         all_params = ['graphic_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -900,16 +824,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/graphics/{graphic_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'graphic_id' in params:
             path_params['graphic_id'] = params['graphic_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -926,7 +849,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/graphics/{graphic_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -935,7 +858,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseGraphicsGraphicIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -946,15 +869,11 @@ class UniverseApi(object):
         Get item groups
         Get a list of item groups  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_groups(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_groups(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
         :param str user_agent: Client identifier, takes precedence over headers
@@ -964,7 +883,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_groups_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_groups_with_http_info(**kwargs)
@@ -975,15 +894,11 @@ class UniverseApi(object):
         Get item groups
         Get a list of item groups  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_groups_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_groups_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
         :param str user_agent: Client identifier, takes precedence over headers
@@ -994,7 +909,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'page', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1012,16 +927,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/groups/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1038,7 +952,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/groups/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1047,7 +961,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1058,15 +972,11 @@ class UniverseApi(object):
         Get item group information
         Get information on an item group  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_groups_group_id(group_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_groups_group_id(group_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int group_id: An Eve item group ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -1077,7 +987,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_groups_group_id_with_http_info(group_id, **kwargs)
         else:
             (data) = self.get_universe_groups_group_id_with_http_info(group_id, **kwargs)
@@ -1088,15 +998,11 @@ class UniverseApi(object):
         Get item group information
         Get information on an item group  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_groups_group_id_with_http_info(group_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_groups_group_id_with_http_info(group_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int group_id: An Eve item group ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -1108,7 +1014,7 @@ class UniverseApi(object):
         """
 
         all_params = ['group_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1129,18 +1035,17 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/groups/{group_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'group_id' in params:
             path_params['group_id'] = params['group_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1157,7 +1062,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/groups/{group_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1166,7 +1071,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseGroupsGroupIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1177,15 +1082,11 @@ class UniverseApi(object):
         Get moon information
         Get information on a moon  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_moons_moon_id(moon_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_moons_moon_id(moon_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int moon_id: moon_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1195,7 +1096,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_moons_moon_id_with_http_info(moon_id, **kwargs)
         else:
             (data) = self.get_universe_moons_moon_id_with_http_info(moon_id, **kwargs)
@@ -1206,15 +1107,11 @@ class UniverseApi(object):
         Get moon information
         Get information on a moon  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_moons_moon_id_with_http_info(moon_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_moons_moon_id_with_http_info(moon_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int moon_id: moon_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1225,7 +1122,7 @@ class UniverseApi(object):
         """
 
         all_params = ['moon_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1246,16 +1143,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/moons/{moon_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'moon_id' in params:
             path_params['moon_id'] = params['moon_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1272,7 +1168,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/moons/{moon_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1281,7 +1177,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseMoonsMoonIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1292,15 +1188,11 @@ class UniverseApi(object):
         Get planet information
         Get information on a planet  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_planets_planet_id(planet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_planets_planet_id(planet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int planet_id: planet_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1310,7 +1202,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_planets_planet_id_with_http_info(planet_id, **kwargs)
         else:
             (data) = self.get_universe_planets_planet_id_with_http_info(planet_id, **kwargs)
@@ -1321,15 +1213,11 @@ class UniverseApi(object):
         Get planet information
         Get information on a planet  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_planets_planet_id_with_http_info(planet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_planets_planet_id_with_http_info(planet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int planet_id: planet_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1340,7 +1228,7 @@ class UniverseApi(object):
         """
 
         all_params = ['planet_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1361,16 +1249,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/planets/{planet_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'planet_id' in params:
             path_params['planet_id'] = params['planet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1387,7 +1274,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/planets/{planet_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1396,7 +1283,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniversePlanetsPlanetIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1407,15 +1294,11 @@ class UniverseApi(object):
         Get character races
         Get a list of character races  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_races(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_races(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1425,7 +1308,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_races_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_races_with_http_info(**kwargs)
@@ -1436,15 +1319,11 @@ class UniverseApi(object):
         Get character races
         Get a list of character races  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_races_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_races_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1455,7 +1334,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1473,16 +1352,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/races/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1499,7 +1377,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/races/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1508,7 +1386,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[GetUniverseRaces200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1519,15 +1397,11 @@ class UniverseApi(object):
         Get regions
         Get a list of regions  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_regions(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_regions(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -1536,7 +1410,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_regions_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_regions_with_http_info(**kwargs)
@@ -1547,15 +1421,11 @@ class UniverseApi(object):
         Get regions
         Get a list of regions  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_regions_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_regions_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -1565,7 +1435,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1583,14 +1453,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/regions/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1607,7 +1476,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/regions/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1616,7 +1485,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1627,15 +1496,11 @@ class UniverseApi(object):
         Get region information
         Get information on a region  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_regions_region_id(region_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_regions_region_id(region_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int region_id: region_id integer (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -1646,7 +1511,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_regions_region_id_with_http_info(region_id, **kwargs)
         else:
             (data) = self.get_universe_regions_region_id_with_http_info(region_id, **kwargs)
@@ -1657,15 +1522,11 @@ class UniverseApi(object):
         Get region information
         Get information on a region  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_regions_region_id_with_http_info(region_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_regions_region_id_with_http_info(region_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int region_id: region_id integer (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -1677,7 +1538,7 @@ class UniverseApi(object):
         """
 
         all_params = ['region_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1698,18 +1559,17 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/regions/{region_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'region_id' in params:
             path_params['region_id'] = params['region_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1726,7 +1586,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/regions/{region_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1735,7 +1595,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseRegionsRegionIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1746,15 +1606,11 @@ class UniverseApi(object):
         Get stargate information
         Get information on a stargate  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_stargates_stargate_id(stargate_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_stargates_stargate_id(stargate_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int stargate_id: stargate_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1764,7 +1620,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_stargates_stargate_id_with_http_info(stargate_id, **kwargs)
         else:
             (data) = self.get_universe_stargates_stargate_id_with_http_info(stargate_id, **kwargs)
@@ -1775,15 +1631,11 @@ class UniverseApi(object):
         Get stargate information
         Get information on a stargate  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_stargates_stargate_id_with_http_info(stargate_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_stargates_stargate_id_with_http_info(stargate_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int stargate_id: stargate_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1794,7 +1646,7 @@ class UniverseApi(object):
         """
 
         all_params = ['stargate_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1815,16 +1667,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/stargates/{stargate_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'stargate_id' in params:
             path_params['stargate_id'] = params['stargate_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1841,7 +1692,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/stargates/{stargate_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1850,7 +1701,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseStargatesStargateIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1861,15 +1712,11 @@ class UniverseApi(object):
         Get star information
         Get information on a star  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_stars_star_id(star_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_stars_star_id(star_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int star_id: star_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1879,7 +1726,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_stars_star_id_with_http_info(star_id, **kwargs)
         else:
             (data) = self.get_universe_stars_star_id_with_http_info(star_id, **kwargs)
@@ -1890,15 +1737,11 @@ class UniverseApi(object):
         Get star information
         Get information on a star  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_stars_star_id_with_http_info(star_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_stars_star_id_with_http_info(star_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int star_id: star_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1909,7 +1752,7 @@ class UniverseApi(object):
         """
 
         all_params = ['star_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -1930,16 +1773,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/stars/{star_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'star_id' in params:
             path_params['star_id'] = params['star_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -1956,7 +1798,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/stars/{star_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1965,7 +1807,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseStarsStarIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -1976,15 +1818,11 @@ class UniverseApi(object):
         Get station information
         Get information on a station  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_stations_station_id(station_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_stations_station_id(station_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int station_id: station_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -1994,7 +1832,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_stations_station_id_with_http_info(station_id, **kwargs)
         else:
             (data) = self.get_universe_stations_station_id_with_http_info(station_id, **kwargs)
@@ -2005,15 +1843,11 @@ class UniverseApi(object):
         Get station information
         Get information on a station  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_stations_station_id_with_http_info(station_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_stations_station_id_with_http_info(station_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int station_id: station_id integer (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -2024,7 +1858,7 @@ class UniverseApi(object):
         """
 
         all_params = ['station_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2045,16 +1879,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v2/universe/stations/{station_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'station_id' in params:
             path_params['station_id'] = params['station_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2071,7 +1904,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v2/universe/stations/{station_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2080,7 +1913,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseStationsStationIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2091,15 +1924,11 @@ class UniverseApi(object):
         List all public structures
         List all public structures  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_structures(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_structures(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2108,7 +1937,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_structures_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_structures_with_http_info(**kwargs)
@@ -2119,15 +1948,11 @@ class UniverseApi(object):
         List all public structures
         List all public structures  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_structures_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_structures_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2137,7 +1962,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2155,14 +1980,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/structures/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2179,7 +2003,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/structures/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2188,7 +2012,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2199,15 +2023,11 @@ class UniverseApi(object):
         Get structure information
         Returns information on requested structure, if you are on the ACL. Otherwise, returns \"Forbidden\" for all inputs.  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_structures_structure_id(structure_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_structures_structure_id(structure_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int structure_id: An Eve structure ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -2218,7 +2038,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_structures_structure_id_with_http_info(structure_id, **kwargs)
         else:
             (data) = self.get_universe_structures_structure_id_with_http_info(structure_id, **kwargs)
@@ -2229,15 +2049,11 @@ class UniverseApi(object):
         Get structure information
         Returns information on requested structure, if you are on the ACL. Otherwise, returns \"Forbidden\" for all inputs.  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_structures_structure_id_with_http_info(structure_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_structures_structure_id_with_http_info(structure_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int structure_id: An Eve structure ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -2249,7 +2065,7 @@ class UniverseApi(object):
         """
 
         all_params = ['structure_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2270,18 +2086,17 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/structures/{structure_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'structure_id' in params:
             path_params['structure_id'] = params['structure_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2298,7 +2113,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/structures/{structure_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2307,7 +2122,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseStructuresStructureIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2318,15 +2133,11 @@ class UniverseApi(object):
         Get system jumps
         Get the number of jumps in solar systems within the last hour ending at the timestamp of the Last-Modified header, excluding wormhole space. Only systems with jumps will be listed  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_system_jumps(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_system_jumps(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2335,7 +2146,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_system_jumps_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_system_jumps_with_http_info(**kwargs)
@@ -2346,15 +2157,11 @@ class UniverseApi(object):
         Get system jumps
         Get the number of jumps in solar systems within the last hour ending at the timestamp of the Last-Modified header, excluding wormhole space. Only systems with jumps will be listed  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_system_jumps_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_system_jumps_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2364,7 +2171,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2382,14 +2189,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/system_jumps/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2406,7 +2212,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/system_jumps/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2415,7 +2221,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[GetUniverseSystemJumps200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2426,15 +2232,11 @@ class UniverseApi(object):
         Get system kills
         Get the number of ship, pod and NPC kills per solar system within the last hour ending at the timestamp of the Last-Modified header, excluding wormhole space. Only systems with kills will be listed  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_system_kills(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_system_kills(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2443,7 +2245,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_system_kills_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_system_kills_with_http_info(**kwargs)
@@ -2454,15 +2256,11 @@ class UniverseApi(object):
         Get system kills
         Get the number of ship, pod and NPC kills per solar system within the last hour ending at the timestamp of the Last-Modified header, excluding wormhole space. Only systems with kills will be listed  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_system_kills_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_system_kills_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2472,7 +2270,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2490,14 +2288,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v2/universe/system_kills/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2514,7 +2311,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v2/universe/system_kills/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2523,7 +2320,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[GetUniverseSystemKills200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2534,15 +2331,11 @@ class UniverseApi(object):
         Get solar systems
         Get a list of solar systems  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_systems(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_systems(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2551,7 +2344,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_systems_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_systems_with_http_info(**kwargs)
@@ -2562,15 +2355,11 @@ class UniverseApi(object):
         Get solar systems
         Get a list of solar systems  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_systems_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_systems_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -2580,7 +2369,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2598,14 +2387,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/systems/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2622,7 +2410,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/systems/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2631,7 +2419,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2642,15 +2430,11 @@ class UniverseApi(object):
         Get solar system information
         Get information on a solar system  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_systems_system_id(system_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_systems_system_id(system_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int system_id: system_id integer (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -2661,7 +2445,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_systems_system_id_with_http_info(system_id, **kwargs)
         else:
             (data) = self.get_universe_systems_system_id_with_http_info(system_id, **kwargs)
@@ -2672,15 +2456,11 @@ class UniverseApi(object):
         Get solar system information
         Get information on a solar system  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_systems_system_id_with_http_info(system_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_systems_system_id_with_http_info(system_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int system_id: system_id integer (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -2692,7 +2472,7 @@ class UniverseApi(object):
         """
 
         all_params = ['system_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2713,18 +2493,17 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v3/universe/systems/{system_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'system_id' in params:
             path_params['system_id'] = params['system_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2741,7 +2520,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v3/universe/systems/{system_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2750,7 +2529,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseSystemsSystemIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2761,15 +2540,11 @@ class UniverseApi(object):
         Get types
         Get a list of type ids  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_types(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_types(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
         :param str user_agent: Client identifier, takes precedence over headers
@@ -2779,7 +2554,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_types_with_http_info(**kwargs)
         else:
             (data) = self.get_universe_types_with_http_info(**kwargs)
@@ -2790,15 +2565,11 @@ class UniverseApi(object):
         Get types
         Get a list of type ids  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_types_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_types_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
         :param str user_agent: Client identifier, takes precedence over headers
@@ -2809,7 +2580,7 @@ class UniverseApi(object):
         """
 
         all_params = ['datasource', 'page', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2827,16 +2598,15 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/types/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2853,7 +2623,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/types/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2862,7 +2632,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2873,15 +2643,11 @@ class UniverseApi(object):
         Get type information
         Get information on a type  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_types_type_id(type_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_types_type_id(type_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int type_id: An Eve item type ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -2892,7 +2658,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_types_type_id_with_http_info(type_id, **kwargs)
         else:
             (data) = self.get_universe_types_type_id_with_http_info(type_id, **kwargs)
@@ -2903,15 +2669,11 @@ class UniverseApi(object):
         Get type information
         Get information on a type  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_types_type_id_with_http_info(type_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_types_type_id_with_http_info(type_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int type_id: An Eve item type ID (required)
         :param str datasource: The server name you would like data from
         :param str language: Language to use in the response
@@ -2923,7 +2685,7 @@ class UniverseApi(object):
         """
 
         all_params = ['type_id', 'datasource', 'language', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -2944,18 +2706,17 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v3/universe/types/{type_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'type_id' in params:
             path_params['type_id'] = params['type_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'language' in params:
-            query_params['language'] = params['language']
+            query_params.append(('language', params['language']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -2972,7 +2733,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v3/universe/types/{type_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -2981,7 +2742,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseTypesTypeIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -2992,15 +2753,11 @@ class UniverseApi(object):
         Get names and categories for a set of ID's
         Resolve a set of IDs to names and categories. Supported ID's for resolving are: Characters, Corporations, Alliances, Stations, Solar Systems, Constellations, Regions, Types.  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_universe_names(ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_universe_names(ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param list[int] ids: The ids to resolve (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -3010,7 +2767,7 @@ class UniverseApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_universe_names_with_http_info(ids, **kwargs)
         else:
             (data) = self.post_universe_names_with_http_info(ids, **kwargs)
@@ -3021,15 +2778,11 @@ class UniverseApi(object):
         Get names and categories for a set of ID's
         Resolve a set of IDs to names and categories. Supported ID's for resolving are: Characters, Corporations, Alliances, Stations, Solar Systems, Constellations, Regions, Types.  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_universe_names_with_http_info(ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_universe_names_with_http_info(ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param list[int] ids: The ids to resolve (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -3040,7 +2793,7 @@ class UniverseApi(object):
         """
 
         all_params = ['ids', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -3061,14 +2814,13 @@ class UniverseApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v2/universe/names/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -3087,7 +2839,7 @@ class UniverseApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v2/universe/names/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -3096,7 +2848,7 @@ class UniverseApi(object):
                                         files=local_var_files,
                                         response_type='list[PostUniverseNames200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

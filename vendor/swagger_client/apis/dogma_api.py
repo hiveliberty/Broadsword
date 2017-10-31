@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class DogmaApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_dogma_attributes(self, **kwargs):
         """
         Get attributes
         Get a list of dogma attribute ids  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_attributes(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_attributes(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -62,7 +53,7 @@ class DogmaApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_dogma_attributes_with_http_info(**kwargs)
         else:
             (data) = self.get_dogma_attributes_with_http_info(**kwargs)
@@ -73,15 +64,11 @@ class DogmaApi(object):
         Get attributes
         Get a list of dogma attribute ids  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_attributes_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_attributes_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -91,7 +78,7 @@ class DogmaApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -109,14 +96,13 @@ class DogmaApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/dogma/attributes/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -133,7 +119,7 @@ class DogmaApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/dogma/attributes/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -142,7 +128,7 @@ class DogmaApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -153,15 +139,11 @@ class DogmaApi(object):
         Get attribute information
         Get information on a dogma attribute  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_attributes_attribute_id(attribute_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_attributes_attribute_id(attribute_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int attribute_id: A dogma attribute ID (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -171,7 +153,7 @@ class DogmaApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_dogma_attributes_attribute_id_with_http_info(attribute_id, **kwargs)
         else:
             (data) = self.get_dogma_attributes_attribute_id_with_http_info(attribute_id, **kwargs)
@@ -182,15 +164,11 @@ class DogmaApi(object):
         Get attribute information
         Get information on a dogma attribute  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_attributes_attribute_id_with_http_info(attribute_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_attributes_attribute_id_with_http_info(attribute_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int attribute_id: A dogma attribute ID (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -201,7 +179,7 @@ class DogmaApi(object):
         """
 
         all_params = ['attribute_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -222,16 +200,15 @@ class DogmaApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/dogma/attributes/{attribute_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'attribute_id' in params:
             path_params['attribute_id'] = params['attribute_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -248,7 +225,7 @@ class DogmaApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/dogma/attributes/{attribute_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -257,7 +234,7 @@ class DogmaApi(object):
                                         files=local_var_files,
                                         response_type='GetDogmaAttributesAttributeIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -268,15 +245,11 @@ class DogmaApi(object):
         Get effects
         Get a list of dogma effect ids  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_effects(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_effects(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -285,7 +258,7 @@ class DogmaApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_dogma_effects_with_http_info(**kwargs)
         else:
             (data) = self.get_dogma_effects_with_http_info(**kwargs)
@@ -296,15 +269,11 @@ class DogmaApi(object):
         Get effects
         Get a list of dogma effect ids  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_effects_with_http_info(callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_effects_with_http_info(async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
@@ -314,7 +283,7 @@ class DogmaApi(object):
         """
 
         all_params = ['datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -332,14 +301,13 @@ class DogmaApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/dogma/effects/'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -356,7 +324,7 @@ class DogmaApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/dogma/effects/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -365,7 +333,7 @@ class DogmaApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -376,15 +344,11 @@ class DogmaApi(object):
         Get effect information
         Get information on a dogma effect  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_effects_effect_id(effect_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_effects_effect_id(effect_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int effect_id: A dogma effect ID (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -394,7 +358,7 @@ class DogmaApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_dogma_effects_effect_id_with_http_info(effect_id, **kwargs)
         else:
             (data) = self.get_dogma_effects_effect_id_with_http_info(effect_id, **kwargs)
@@ -405,15 +369,11 @@ class DogmaApi(object):
         Get effect information
         Get information on a dogma effect  ---  This route expires daily at 11:05
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_dogma_effects_effect_id_with_http_info(effect_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_dogma_effects_effect_id_with_http_info(effect_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int effect_id: A dogma effect ID (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -424,7 +384,7 @@ class DogmaApi(object):
         """
 
         all_params = ['effect_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -445,16 +405,15 @@ class DogmaApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v2/dogma/effects/{effect_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'effect_id' in params:
             path_params['effect_id'] = params['effect_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -471,7 +430,7 @@ class DogmaApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v2/dogma/effects/{effect_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -480,7 +439,7 @@ class DogmaApi(object):
                                         files=local_var_files,
                                         response_type='GetDogmaEffectsEffectIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

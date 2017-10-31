@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class KillmailsApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_killmails_recent(self, character_id, **kwargs):
         """
         Get character kills and losses
         Return a list of character's recent kills and losses  ---  This route is cached for up to 120 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_killmails_recent(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_killmails_recent(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int max_count: How many killmails to return at maximum
@@ -66,7 +57,7 @@ class KillmailsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_killmails_recent_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_killmails_recent_with_http_info(character_id, **kwargs)
@@ -77,15 +68,11 @@ class KillmailsApi(object):
         Get character kills and losses
         Return a list of character's recent kills and losses  ---  This route is cached for up to 120 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_killmails_recent_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_killmails_recent_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int max_count: How many killmails to return at maximum
@@ -99,7 +86,7 @@ class KillmailsApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'max_count', 'max_kill_id', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -122,22 +109,21 @@ class KillmailsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/killmails/recent/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'max_count' in params:
-            query_params['max_count'] = params['max_count']
+            query_params.append(('max_count', params['max_count']))
         if 'max_kill_id' in params:
-            query_params['max_kill_id'] = params['max_kill_id']
+            query_params.append(('max_kill_id', params['max_kill_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -154,7 +140,7 @@ class KillmailsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/killmails/recent/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -163,7 +149,7 @@ class KillmailsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdKillmailsRecent200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -174,15 +160,11 @@ class KillmailsApi(object):
         Get corporation kills and losses
         Get a list of corporation's recent kills and losses  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_killmails_recent(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_killmails_recent(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int max_kill_id: Only return killmails with ID smaller than this
@@ -194,7 +176,7 @@ class KillmailsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_killmails_recent_with_http_info(corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_killmails_recent_with_http_info(corporation_id, **kwargs)
@@ -205,15 +187,11 @@ class KillmailsApi(object):
         Get corporation kills and losses
         Get a list of corporation's recent kills and losses  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_killmails_recent_with_http_info(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_killmails_recent_with_http_info(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int max_kill_id: Only return killmails with ID smaller than this
@@ -226,7 +204,7 @@ class KillmailsApi(object):
         """
 
         all_params = ['corporation_id', 'datasource', 'max_kill_id', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -247,20 +225,19 @@ class KillmailsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/killmails/recent/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'max_kill_id' in params:
-            query_params['max_kill_id'] = params['max_kill_id']
+            query_params.append(('max_kill_id', params['max_kill_id']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -277,7 +254,7 @@ class KillmailsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/killmails/recent/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -286,7 +263,7 @@ class KillmailsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdKillmailsRecent200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -297,15 +274,11 @@ class KillmailsApi(object):
         Get a single killmail
         Return a single killmail from its ID and hash  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_killmails_killmail_id_killmail_hash(killmail_hash, killmail_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_killmails_killmail_id_killmail_hash(killmail_hash, killmail_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str killmail_hash: The killmail hash for verification (required)
         :param int killmail_id: The killmail ID to be queried (required)
         :param str datasource: The server name you would like data from
@@ -316,7 +289,7 @@ class KillmailsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_killmails_killmail_id_killmail_hash_with_http_info(killmail_hash, killmail_id, **kwargs)
         else:
             (data) = self.get_killmails_killmail_id_killmail_hash_with_http_info(killmail_hash, killmail_id, **kwargs)
@@ -327,15 +300,11 @@ class KillmailsApi(object):
         Get a single killmail
         Return a single killmail from its ID and hash  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_killmails_killmail_id_killmail_hash_with_http_info(killmail_hash, killmail_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_killmails_killmail_id_killmail_hash_with_http_info(killmail_hash, killmail_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param str killmail_hash: The killmail hash for verification (required)
         :param int killmail_id: The killmail ID to be queried (required)
         :param str datasource: The server name you would like data from
@@ -347,7 +316,7 @@ class KillmailsApi(object):
         """
 
         all_params = ['killmail_hash', 'killmail_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -371,18 +340,17 @@ class KillmailsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/killmails/{killmail_id}/{killmail_hash}/'.replace('{format}', 'json')
         path_params = {}
         if 'killmail_hash' in params:
             path_params['killmail_hash'] = params['killmail_hash']
         if 'killmail_id' in params:
             path_params['killmail_id'] = params['killmail_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -399,7 +367,7 @@ class KillmailsApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/killmails/{killmail_id}/{killmail_hash}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -408,7 +376,7 @@ class KillmailsApi(object):
                                         files=local_var_files,
                                         response_type='GetKillmailsKillmailIdKillmailHashOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

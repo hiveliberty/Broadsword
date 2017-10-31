@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class PlanetaryInteractionApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_planets(self, character_id, **kwargs):
         """
         Get colonies
         Returns a list of all planetary colonies owned by a character.  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_planets(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_planets(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -64,7 +55,7 @@ class PlanetaryInteractionApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_planets_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_planets_with_http_info(character_id, **kwargs)
@@ -75,15 +66,11 @@ class PlanetaryInteractionApi(object):
         Get colonies
         Returns a list of all planetary colonies owned by a character.  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_planets_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_planets_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -95,7 +82,7 @@ class PlanetaryInteractionApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -116,18 +103,17 @@ class PlanetaryInteractionApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/planets/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -144,7 +130,7 @@ class PlanetaryInteractionApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/planets/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -153,7 +139,7 @@ class PlanetaryInteractionApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdPlanets200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -164,15 +150,11 @@ class PlanetaryInteractionApi(object):
         Get colony layout
         Returns full details on the layout of a single planetary colony, including links, pins and routes. Note: Planetary information is only recalculated when the colony is viewed through the client. Information will not update until this criteria is met.  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_planets_planet_id(character_id, planet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_planets_planet_id(character_id, planet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int planet_id: Planet id of the target planet (required)
         :param str datasource: The server name you would like data from
@@ -184,7 +166,7 @@ class PlanetaryInteractionApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_planets_planet_id_with_http_info(character_id, planet_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_planets_planet_id_with_http_info(character_id, planet_id, **kwargs)
@@ -195,15 +177,11 @@ class PlanetaryInteractionApi(object):
         Get colony layout
         Returns full details on the layout of a single planetary colony, including links, pins and routes. Note: Planetary information is only recalculated when the colony is viewed through the client. Information will not update until this criteria is met.  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_planets_planet_id_with_http_info(character_id, planet_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_planets_planet_id_with_http_info(character_id, planet_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int planet_id: Planet id of the target planet (required)
         :param str datasource: The server name you would like data from
@@ -216,7 +194,7 @@ class PlanetaryInteractionApi(object):
         """
 
         all_params = ['character_id', 'planet_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -240,20 +218,19 @@ class PlanetaryInteractionApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v3/characters/{character_id}/planets/{planet_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
         if 'planet_id' in params:
             path_params['planet_id'] = params['planet_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -270,7 +247,7 @@ class PlanetaryInteractionApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v3/characters/{character_id}/planets/{planet_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -279,7 +256,7 @@ class PlanetaryInteractionApi(object):
                                         files=local_var_files,
                                         response_type='GetCharactersCharacterIdPlanetsPlanetIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -290,15 +267,11 @@ class PlanetaryInteractionApi(object):
         Get schematic information
         Get information on a planetary factory schematic  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_schematics_schematic_id(schematic_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_schematics_schematic_id(schematic_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int schematic_id: A PI schematic ID (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -308,7 +281,7 @@ class PlanetaryInteractionApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_universe_schematics_schematic_id_with_http_info(schematic_id, **kwargs)
         else:
             (data) = self.get_universe_schematics_schematic_id_with_http_info(schematic_id, **kwargs)
@@ -319,15 +292,11 @@ class PlanetaryInteractionApi(object):
         Get schematic information
         Get information on a planetary factory schematic  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_universe_schematics_schematic_id_with_http_info(schematic_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_universe_schematics_schematic_id_with_http_info(schematic_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int schematic_id: A PI schematic ID (required)
         :param str datasource: The server name you would like data from
         :param str user_agent: Client identifier, takes precedence over headers
@@ -338,7 +307,7 @@ class PlanetaryInteractionApi(object):
         """
 
         all_params = ['schematic_id', 'datasource', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -359,16 +328,15 @@ class PlanetaryInteractionApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/universe/schematics/{schematic_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'schematic_id' in params:
             path_params['schematic_id'] = params['schematic_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -385,7 +353,7 @@ class PlanetaryInteractionApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/universe/schematics/{schematic_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -394,7 +362,7 @@ class PlanetaryInteractionApi(object):
                                         files=local_var_files,
                                         response_type='GetUniverseSchematicsSchematicIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

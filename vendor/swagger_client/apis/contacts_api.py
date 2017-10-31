@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class ContactsApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def delete_characters_character_id_contacts(self, character_id, contact_ids, **kwargs):
         """
         Delete contacts
         Bulk delete contacts  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_characters_character_id_contacts(character_id, contact_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_characters_character_id_contacts(character_id, contact_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] contact_ids: A list of contacts to delete (required)
         :param str datasource: The server name you would like data from
@@ -65,7 +56,7 @@ class ContactsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.delete_characters_character_id_contacts_with_http_info(character_id, contact_ids, **kwargs)
         else:
             (data) = self.delete_characters_character_id_contacts_with_http_info(character_id, contact_ids, **kwargs)
@@ -76,15 +67,11 @@ class ContactsApi(object):
         Delete contacts
         Bulk delete contacts  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.delete_characters_character_id_contacts_with_http_info(character_id, contact_ids, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.delete_characters_character_id_contacts_with_http_info(character_id, contact_ids, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] contact_ids: A list of contacts to delete (required)
         :param str datasource: The server name you would like data from
@@ -97,7 +84,7 @@ class ContactsApi(object):
         """
 
         all_params = ['character_id', 'contact_ids', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -121,18 +108,17 @@ class ContactsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contacts/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -151,7 +137,7 @@ class ContactsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'DELETE',
+        return self.api_client.call_api('/v1/characters/{character_id}/contacts/', 'DELETE',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -160,7 +146,7 @@ class ContactsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -171,15 +157,11 @@ class ContactsApi(object):
         Get contacts
         Return contacts of a character  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contacts(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contacts(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -191,7 +173,7 @@ class ContactsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_contacts_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_contacts_with_http_info(character_id, **kwargs)
@@ -202,15 +184,11 @@ class ContactsApi(object):
         Get contacts
         Return contacts of a character  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contacts_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contacts_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -223,7 +201,7 @@ class ContactsApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'page', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -244,20 +222,19 @@ class ContactsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contacts/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -274,7 +251,7 @@ class ContactsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/contacts/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -283,7 +260,7 @@ class ContactsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdContacts200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -294,15 +271,11 @@ class ContactsApi(object):
         Get contact labels
         Return custom labels for contacts the character defined  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contacts_labels(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contacts_labels(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -313,7 +286,7 @@ class ContactsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_contacts_labels_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_contacts_labels_with_http_info(character_id, **kwargs)
@@ -324,15 +297,11 @@ class ContactsApi(object):
         Get contact labels
         Return custom labels for contacts the character defined  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_contacts_labels_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_contacts_labels_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param str token: Access token to use if unable to set a header
@@ -344,7 +313,7 @@ class ContactsApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -365,18 +334,17 @@ class ContactsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contacts/labels/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -393,7 +361,7 @@ class ContactsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/contacts/labels/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -402,7 +370,7 @@ class ContactsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdContactsLabels200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -413,15 +381,11 @@ class ContactsApi(object):
         Get corporation contacts
         Return contacts of a corporation  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contacts(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contacts(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -433,7 +397,7 @@ class ContactsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_corporations_corporation_id_contacts_with_http_info(corporation_id, **kwargs)
         else:
             (data) = self.get_corporations_corporation_id_contacts_with_http_info(corporation_id, **kwargs)
@@ -444,15 +408,11 @@ class ContactsApi(object):
         Get corporation contacts
         Return contacts of a corporation  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_corporations_corporation_id_contacts_with_http_info(corporation_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_corporations_corporation_id_contacts_with_http_info(corporation_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int corporation_id: An EVE corporation ID (required)
         :param str datasource: The server name you would like data from
         :param int page: Which page of results to return
@@ -465,7 +425,7 @@ class ContactsApi(object):
         """
 
         all_params = ['corporation_id', 'datasource', 'page', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -486,20 +446,19 @@ class ContactsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/corporations/{corporation_id}/contacts/'.replace('{format}', 'json')
         path_params = {}
         if 'corporation_id' in params:
             path_params['corporation_id'] = params['corporation_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'page' in params:
-            query_params['page'] = params['page']
+            query_params.append(('page', params['page']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -516,7 +475,7 @@ class ContactsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/corporations/{corporation_id}/contacts/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -525,7 +484,7 @@ class ContactsApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCorporationsCorporationIdContacts200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -536,15 +495,11 @@ class ContactsApi(object):
         Add contacts
         Bulk add contacts with same settings  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_characters_character_id_contacts(character_id, contact_ids, standing, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_characters_character_id_contacts(character_id, contact_ids, standing, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] contact_ids: A list of contacts to add (required)
         :param float standing: Standing for the new contact (required)
@@ -559,7 +514,7 @@ class ContactsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.post_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, **kwargs)
         else:
             (data) = self.post_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, **kwargs)
@@ -570,15 +525,11 @@ class ContactsApi(object):
         Add contacts
         Bulk add contacts with same settings  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.post_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] contact_ids: A list of contacts to add (required)
         :param float standing: Standing for the new contact (required)
@@ -594,7 +545,7 @@ class ContactsApi(object):
         """
 
         all_params = ['character_id', 'contact_ids', 'standing', 'datasource', 'label_id', 'token', 'user_agent', 'watched', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -625,24 +576,23 @@ class ContactsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contacts/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'label_id' in params:
-            query_params['label_id'] = params['label_id']
+            query_params.append(('label_id', params['label_id']))
         if 'standing' in params:
-            query_params['standing'] = params['standing']
+            query_params.append(('standing', params['standing']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
         if 'watched' in params:
-            query_params['watched'] = params['watched']
+            query_params.append(('watched', params['watched']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -661,7 +611,7 @@ class ContactsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'POST',
+        return self.api_client.call_api('/v1/characters/{character_id}/contacts/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -670,7 +620,7 @@ class ContactsApi(object):
                                         files=local_var_files,
                                         response_type='list[int]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -681,15 +631,11 @@ class ContactsApi(object):
         Edit contacts
         Bulk edit contacts with same settings  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_characters_character_id_contacts(character_id, contact_ids, standing, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_characters_character_id_contacts(character_id, contact_ids, standing, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] contact_ids: A list of contacts to edit (required)
         :param float standing: Standing for the contact (required)
@@ -704,7 +650,7 @@ class ContactsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.put_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, **kwargs)
         else:
             (data) = self.put_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, **kwargs)
@@ -715,15 +661,11 @@ class ContactsApi(object):
         Edit contacts
         Bulk edit contacts with same settings  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_characters_character_id_contacts_with_http_info(character_id, contact_ids, standing, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param list[int] contact_ids: A list of contacts to edit (required)
         :param float standing: Standing for the contact (required)
@@ -739,7 +681,7 @@ class ContactsApi(object):
         """
 
         all_params = ['character_id', 'contact_ids', 'standing', 'datasource', 'label_id', 'token', 'user_agent', 'watched', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -770,24 +712,23 @@ class ContactsApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/contacts/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'label_id' in params:
-            query_params['label_id'] = params['label_id']
+            query_params.append(('label_id', params['label_id']))
         if 'standing' in params:
-            query_params['standing'] = params['standing']
+            query_params.append(('standing', params['standing']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
         if 'watched' in params:
-            query_params['watched'] = params['watched']
+            query_params.append(('watched', params['watched']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -806,7 +747,7 @@ class ContactsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'PUT',
+        return self.api_client.call_api('/v1/characters/{character_id}/contacts/', 'PUT',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -815,7 +756,7 @@ class ContactsApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),

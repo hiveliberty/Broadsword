@@ -20,7 +20,6 @@ import re
 # python 2 and python 3 compatibility library
 from six import iteritems
 
-from ..configuration import Configuration
 from ..api_client import ApiClient
 
 
@@ -32,28 +31,20 @@ class CalendarApi(object):
     """
 
     def __init__(self, api_client=None):
-        config = Configuration()
-        if api_client:
-            self.api_client = api_client
-        else:
-            if not config.api_client:
-                config.api_client = ApiClient()
-            self.api_client = config.api_client
+        if api_client is None:
+            api_client = ApiClient()
+        self.api_client = api_client
 
     def get_characters_character_id_calendar(self, character_id, **kwargs):
         """
         List calendar event summaries
         Get 50 event summaries from the calendar. If no from_event ID is given, the resource will return the next 50 chronological event summaries from now. If a from_event ID is specified, it will return the next 50 chronological event summaries from after that event.  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_calendar(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_calendar(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int from_event: The event ID to retrieve events from
@@ -65,7 +56,7 @@ class CalendarApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_calendar_with_http_info(character_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_calendar_with_http_info(character_id, **kwargs)
@@ -76,15 +67,11 @@ class CalendarApi(object):
         List calendar event summaries
         Get 50 event summaries from the calendar. If no from_event ID is given, the resource will return the next 50 chronological event summaries from now. If a from_event ID is specified, it will return the next 50 chronological event summaries from after that event.  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_calendar_with_http_info(character_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_calendar_with_http_info(character_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param str datasource: The server name you would like data from
         :param int from_event: The event ID to retrieve events from
@@ -97,7 +84,7 @@ class CalendarApi(object):
         """
 
         all_params = ['character_id', 'datasource', 'from_event', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -118,20 +105,19 @@ class CalendarApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/calendar/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'from_event' in params:
-            query_params['from_event'] = params['from_event']
+            query_params.append(('from_event', params['from_event']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -148,7 +134,7 @@ class CalendarApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/calendar/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -157,7 +143,7 @@ class CalendarApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdCalendar200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -168,15 +154,11 @@ class CalendarApi(object):
         Get an event
         Get all the information for a specific event  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_calendar_event_id(character_id, event_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_calendar_event_id(character_id, event_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int event_id: The id of the event requested (required)
         :param str datasource: The server name you would like data from
@@ -188,7 +170,7 @@ class CalendarApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, **kwargs)
@@ -199,15 +181,11 @@ class CalendarApi(object):
         Get an event
         Get all the information for a specific event  ---  This route is cached for up to 5 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int event_id: The id of the event requested (required)
         :param str datasource: The server name you would like data from
@@ -220,7 +198,7 @@ class CalendarApi(object):
         """
 
         all_params = ['character_id', 'event_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -244,20 +222,19 @@ class CalendarApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v3/characters/{character_id}/calendar/{event_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
         if 'event_id' in params:
             path_params['event_id'] = params['event_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -274,7 +251,7 @@ class CalendarApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v3/characters/{character_id}/calendar/{event_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -283,7 +260,7 @@ class CalendarApi(object):
                                         files=local_var_files,
                                         response_type='GetCharactersCharacterIdCalendarEventIdOk',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -294,15 +271,11 @@ class CalendarApi(object):
         Get attendees
         Get all invited attendees for a given event  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_calendar_event_id_attendees(character_id, event_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_calendar_event_id_attendees(character_id, event_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int event_id: The id of the event requested (required)
         :param str datasource: The server name you would like data from
@@ -314,7 +287,7 @@ class CalendarApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.get_characters_character_id_calendar_event_id_attendees_with_http_info(character_id, event_id, **kwargs)
         else:
             (data) = self.get_characters_character_id_calendar_event_id_attendees_with_http_info(character_id, event_id, **kwargs)
@@ -325,15 +298,11 @@ class CalendarApi(object):
         Get attendees
         Get all invited attendees for a given event  ---  This route is cached for up to 600 seconds
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.get_characters_character_id_calendar_event_id_attendees_with_http_info(character_id, event_id, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.get_characters_character_id_calendar_event_id_attendees_with_http_info(character_id, event_id, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int event_id: The id of the event requested (required)
         :param str datasource: The server name you would like data from
@@ -346,7 +315,7 @@ class CalendarApi(object):
         """
 
         all_params = ['character_id', 'event_id', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -370,20 +339,19 @@ class CalendarApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v1/characters/{character_id}/calendar/{event_id}/attendees/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
         if 'event_id' in params:
             path_params['event_id'] = params['event_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -400,7 +368,7 @@ class CalendarApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'GET',
+        return self.api_client.call_api('/v1/characters/{character_id}/calendar/{event_id}/attendees/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -409,7 +377,7 @@ class CalendarApi(object):
                                         files=local_var_files,
                                         response_type='list[GetCharactersCharacterIdCalendarEventIdAttendees200Ok]',
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
@@ -420,15 +388,11 @@ class CalendarApi(object):
         Respond to an event
         Set your response status to an event  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_characters_character_id_calendar_event_id(character_id, event_id, response, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_characters_character_id_calendar_event_id(character_id, event_id, response, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int event_id: The ID of the event requested (required)
         :param PutCharactersCharacterIdCalendarEventIdResponse response: The response value to set, overriding current value. (required)
@@ -441,7 +405,7 @@ class CalendarApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        if kwargs.get('callback'):
+        if kwargs.get('async'):
             return self.put_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, response, **kwargs)
         else:
             (data) = self.put_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, response, **kwargs)
@@ -452,15 +416,11 @@ class CalendarApi(object):
         Respond to an event
         Set your response status to an event  --- 
         This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please define a `callback` function
-        to be invoked when receiving the response.
-        >>> def callback_function(response):
-        >>>     pprint(response)
-        >>>
-        >>> thread = api.put_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, response, callback=callback_function)
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.put_characters_character_id_calendar_event_id_with_http_info(character_id, event_id, response, async=True)
+        >>> result = thread.get()
 
-        :param callback function: The callback function
-            for asynchronous request. (optional)
+        :param async bool
         :param int character_id: An EVE character ID (required)
         :param int event_id: The ID of the event requested (required)
         :param PutCharactersCharacterIdCalendarEventIdResponse response: The response value to set, overriding current value. (required)
@@ -474,7 +434,7 @@ class CalendarApi(object):
         """
 
         all_params = ['character_id', 'event_id', 'response', 'datasource', 'token', 'user_agent', 'x_user_agent']
-        all_params.append('callback')
+        all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
         all_params.append('_request_timeout')
@@ -501,20 +461,19 @@ class CalendarApi(object):
 
         collection_formats = {}
 
-        resource_path = '/v3/characters/{character_id}/calendar/{event_id}/'.replace('{format}', 'json')
         path_params = {}
         if 'character_id' in params:
             path_params['character_id'] = params['character_id']
         if 'event_id' in params:
             path_params['event_id'] = params['event_id']
 
-        query_params = {}
+        query_params = []
         if 'datasource' in params:
-            query_params['datasource'] = params['datasource']
+            query_params.append(('datasource', params['datasource']))
         if 'token' in params:
-            query_params['token'] = params['token']
+            query_params.append(('token', params['token']))
         if 'user_agent' in params:
-            query_params['user_agent'] = params['user_agent']
+            query_params.append(('user_agent', params['user_agent']))
 
         header_params = {}
         if 'x_user_agent' in params:
@@ -533,7 +492,7 @@ class CalendarApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api(resource_path, 'PUT',
+        return self.api_client.call_api('/v3/characters/{character_id}/calendar/{event_id}/', 'PUT',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -542,7 +501,7 @@ class CalendarApi(object):
                                         files=local_var_files,
                                         response_type=None,
                                         auth_settings=auth_settings,
-                                        callback=params.get('callback'),
+                                        async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
                                         _preload_content=params.get('_preload_content', True),
                                         _request_timeout=params.get('_request_timeout'),
