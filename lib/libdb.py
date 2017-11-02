@@ -78,6 +78,11 @@ class DB:
         self.sqlout = await self.sqlQuery(self.sqlquery)
         return self.sqlout
 
+    async def delKey(self, key):
+        self.sqlquery = "DELETE FROM `storage` WHERE key='{}'".format(key)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
     async def addQueueMessage(self, msg, channel):
         self.sqlquery = "INSERT INTO `messageQueue` (message, channel) VALUES ('{0}', '{1}')".format(msg, channel)
         await self.sqlQueryExec(self.sqlquery)

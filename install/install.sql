@@ -16,14 +16,6 @@ CREATE TABLE IF NOT EXISTS `corpCache` (
   UNIQUE KEY `corpID` (`corpID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `corpRoles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `corpID` varchar(128) NOT NULL,
-  `corpRole` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `corpID` (`corpID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE IF NOT EXISTS `messageQueue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(2048) NOT NULL,
