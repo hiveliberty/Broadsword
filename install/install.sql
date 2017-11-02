@@ -6,16 +6,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
-CREATE TABLE IF NOT EXISTS `roleCache` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) NOT NULL,
-  `color` varchar(10) NOT NULL,
-  `hoist` varchar(255) NOT NULL,
-  `corpRole` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `corpID` (`corpID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE IF NOT EXISTS `corpCache` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `corpID` varchar(128) NOT NULL,
@@ -38,7 +28,6 @@ CREATE TABLE IF NOT EXISTS `messageQueue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(2048) NOT NULL,
   `channel` varchar(64) NOT NULL,
-  `guild` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -46,7 +35,6 @@ CREATE TABLE IF NOT EXISTS `renameQueue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `discordID` varchar(64) NOT NULL,
   `nick` varchar(128) NOT NULL,
-  `guild` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

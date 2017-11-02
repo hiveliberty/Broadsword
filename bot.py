@@ -3,12 +3,17 @@ import asyncio
 from discord.ext import commands
 from config import config
 from lib import utils
+from lib.libdb import DBStart
 
 def main():
+    cnx = DBStart()
+    cnx.checkMessageQueue()
+    del cnx
+
     print('Connecting...')
-    
+
     plugins = config.plugins
-    
+
     broadsword = commands.Bot(command_prefix=config.bot["prefix"])
 
     @broadsword.event

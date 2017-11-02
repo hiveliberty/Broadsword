@@ -1,7 +1,8 @@
 #============================================================================
 #	functions for working with DB
 #   
-#   Class DBAuth is actual for use
+#   Class DB is actual for use
+#   Class DBStart is actual for use
 #============================================================================
 
 import asyncio
@@ -22,58 +23,175 @@ class DB:
         self.cursor.close()
         self.cnx.close()
         print('Database connection closed')
-    
-    async def insertTestUser(self, characterID, corporationID, allianceID, groups, authString, active):
-        self.sqlquery = "INSERT INTO `pendingUsers` (characterID, corporationID, allianceID, groups, authString, active) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')".format(characterID, corporationID, allianceID, groups, authString, active)
+
+    async def sqlQuery(self, query):
         try:
-            self.cursor.execute(self.sqlquery)
-            self.cnx.commit()
+            self.cursor.execute(query)
+            self.sqlout = self.cursor.fetchall()
+            return self.sqlout
         except Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
+        finally:
+            print("{}\n".format(query))
+        #return self.sqlout
+
+    async def sqlQueryExec(self, query):
+        try:
+            self.cursor.execute(query)
+            self.cnx.commit()
+            return 0
+        except Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        finally:
+            print("{}\n".format(query))
+
+    async def insertTestUser(self, characterID, corporationID, allianceID, groups, authString, active):
+        self.sqlquery = "INSERT INTO `pendingUsers` (characterID, corporationID, allianceID, groups, authString, active) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')".format(characterID, corporationID, allianceID, groups, authString, active)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
         
     async def insertUser(self, userID, characterID, eveName, type):
         self.sqlquery = "REPLACE INTO `authUsers` (characterID, discordID, eveName, active, role) VALUES ('{0}','{1}','{2}','yes','{3}')".format(userID, characterID, eveName, type)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.cnx.commit()
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
+        await self.sqlQueryExec(self.sqlquery)
+        return None
     
     async def disableReg(self, authCode):
-        self.sqlquery = "UPDATE pendingUsers SET active='0' WHERE authString='{}'".format(authCode)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.cnx.commit()
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
+        self.sqlquery = "UPDATE `pendingUsers` SET active='0' WHERE authString='{}'".format(authCode)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
     
     async def selectPending(self, authCode):
-        self.sqlquery = "SELECT * FROM pendingUsers WHERE authString='{}' AND active='1'".format(authCode)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.sqlout = self.cursor.fetchall()
-            self.sqlout = self.sqlout[0]
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlout))
-        return self.sqlout
+        self.sqlquery = "SELECT * FROM `pendingUsers` WHERE authString='{}' AND active='1'".format(authCode)
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        if len(self.sqlout) >= 1:
+            return self.sqlout[0]
+        print(self.sqlout)
+        return None
 
     async def setKey(self, key, value):
-        self.sqlquery = "REPLACE INTO storage (key, value) VALUES ('{0}', '{1}')".format(key, value)
-        self.cursor.execute(self.sqlquery)
+        self.sqlquery = "REPLACE INTO `storage` (key, value) VALUES ('{0}', '{1}')".format(key, value)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
 
     async def getKey(self, key):
-        self.sqlquery = "SELECT value FROM storage WHERE key='{}'".format(key)
+        self.sqlquery = "SELECT value FROM `storage` WHERE key='{}'".format(key)
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        return self.sqlout
+
+    async def addQueueMessage(self, msg, channel):
+        self.sqlquery = "INSERT INTO `messageQueue` (message, channel) VALUES ('{0}', '{1}')".format(msg, channel)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def getQueuedMessage(self, id):
+        self.sqlquery = "SELECT * FROM `messageQueue` WHERE id='{}'".format(id)
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        return self.sqlout
+
+    async def gelOldestQueueMessage(self):
+        self.sqlquery = "SELECT MIN(id) FROM `messageQueue`"
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        if len(self.sqlout) >= 1:
+            return self.sqlout[0]
+        return None
+
+    async def delQueuedMessage(self, id):
+        self.sqlquery = "DELETE FROM `messageQueue` WHERE id='{}'".format(id)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def setMaxPrioQueueMessage(self, msg, channel):
+        self.oldest = await self.gelOldestQueueMessage()
+        if self.oldest is not None:
+            self.id = self.oldest['MIN(id)'] - 1
+        self.sqlquery = "INSERT INTO `messageQueue` (id, message, channel) VALUES ('{0}', '{1}', '{2}')".format(self.id, msg, channel)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def addQueueRename(self, discordID, nick):
+        self.sqlquery = "INSERT INTO `renameQueue` (discordID, nick) VALUES ('{0}', '{1}')".format(discordID, nick)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def getQueuedRename(self, id):
+        self.sqlquery = "SELECT * FROM `renameQueue` WHERE id='{}'".format(id)
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        return self.sqlout
+
+    async def gelOldestQueueMessage(self):
+        self.sqlquery = "SELECT MIN(id) FROM `renameQueue`"
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        if len(self.sqlout) >= 1:
+            return self.sqlout[0]
+        return None
+
+    async def delQueuedMessage(self, id):
+        self.sqlquery = "DELETE FROM `renameQueue` WHERE id='{}'".format(id)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def addCorpInfo(self, corpID, corpTicker, corpName, corpRole):
+        self.sqlquery = "INSERT INTO `corpCache` (corpID, corpTicker, corpName, corpRole) VALUES ('{0}', '{1}', '{2}', '{3}')".format(corpID, corpTicker, corpName, corpRole)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def getCorpInfo(self, corpID):
+        self.sqlquery = "SELECT * FROM `corpCache` WHERE corpID='{}'".format(corpID)
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        return self.sqlout
+
+    async def delCorpInfo(self, corpID):
+        self.sqlquery = "DELETE FROM `corpCache` WHERE corpID='{}'".format(corpID)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+        
+class DBStart:
+    def __init__(self):
         try:
-            self.cursor.execute(self.sqlquery)
+            self.cnx = mysqldb.connect(**dbcfg)
+            self.cursor = self.cnx.cursor(dictionary=True)
+            print('Database connection opened')
+        except Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+
+    def __del__(self):
+        self.cursor.close()
+        self.cnx.close()
+        print('Database connection closed')
+
+    def sqlQuery(self, query):
+        try:
+            self.cursor.execute(query)
             self.sqlout = self.cursor.fetchall()
         except Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
+        finally:
+            print("{}\n".format(query))
         return self.sqlout
+
+    def sqlQueryExec(self, query):
+        try:
+            self.cursor.execute(query)
+            self.cnx.commit()
+            return 0
+        except Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        finally:
+            print("{}\n".format(query))
+
+    def checkMessageQueue(self):
+        self.sqlquery = "SELECT * FROM messageQueue"
+        self.sqlout = self.sqlQuery(self.sqlquery)
+        if len(self.sqlout) > 35:
+            self.clearMessageQueue()
+        print("Cache was checked")
+        return None
+
+    def clearMessageQueue(self):
+        self.sqlquery = "DELETE from messageQueue"
+        self.sqlQueryExec(self.sqlquery)
+        print("Cache was cleaned")
+        return None
 
 class DBTemp:
     def __init__(self):
@@ -89,7 +207,7 @@ class DBTemp:
         self.cnx.close()
         print('Database connection closed')
 
-class DBAuth:
+class DBStuff:
     def __init__(self):
         try:
             self.cnx = mysqldb.connect(**dbcfg)
@@ -139,6 +257,33 @@ class DBAuth:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         print("{}\n".format(self.sqlquery))
         return self.sqlout
+
+    async def selectPendingOld(self, authCode):
+        self.sqlquery = "SELECT * FROM pendingUsers WHERE authString='{}' AND active='1'".format(authCode)
+        try:
+            self.cursor.execute(self.sqlquery)
+            self.sqlout = self.cursor.fetchall()
+            self.sqlout = self.sqlout[0]
+            return self.sqlout
+        except Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        finally:
+            print("{}\n".format(self.sqlout))
+
+    async def sqlQueryRow(self, query):
+        try:
+            self.cursor.execute(query)
+            self.sqlout = self.cursor.fetchone()
+            #self.sqlout = self.cursor.fetchall()
+            #print(self.cursor.rowcount)
+            #if self.cursor.rowcount >= 1:
+            #    return self.sqlout[0]
+            #return None
+            return self.sqlout
+        except Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        finally:
+            print("{}\n".format(self.sqlout))
 
 
 class DBBot:

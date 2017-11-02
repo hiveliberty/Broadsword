@@ -2,6 +2,7 @@
 import time
 import json
 from discord.ext import commands as broadsword
+from lib.libdb import DB
 from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
 from lib.libeve import zKillboardAPI
@@ -99,22 +100,23 @@ class EVE_API:
 
     @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def testcode(self, ctx):
-        self.roles = ''
-        self.role = ''
+        self.msg = "This is test prio message."
+        self.channel = "362284304497115146"
         try:
-            self.roles = self.broadsword.get_server(config.bot['guild']).roles
+            #self.roles = self.broadsword.get_server(config.bot['guild']).roles
+            self.cnx = DB()
+            #self.test = await self.cnx.gelOldestQueueMessage()
+            await self.cnx.setMaxPrioQueueMessage(self.msg, self.channel)
+            del self.cnx
+            #print(self.test)
         except:
             await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
-        self.roles = json.loads(self.roles.json())
-        print(self.roles)
         #for self.each in self.roles:
-        #    self.role = self.each.json()
+        #    self.role = json.loads(self.each)
         #    print(self.role)
-        #    print(self.each.id)
-        #    print(self.each.color)
         #del self.each
-        del self.roles
-        del self.role
+        #del self.roles
+        #del self.role
 
 def setup(broadsword):
     broadsword.add_cog(EVE_API(broadsword))
