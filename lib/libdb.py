@@ -123,14 +123,14 @@ class DB:
         self.sqlout = await self.sqlQuery(self.sqlquery)
         return self.sqlout
 
-    async def gelOldestQueueMessage(self):
+    async def gelOldestQueueRename(self):
         self.sqlquery = "SELECT MIN(id) FROM `renameQueue`"
         self.sqlout = await self.sqlQuery(self.sqlquery)
         if len(self.sqlout) >= 1:
             return self.sqlout[0]
         return None
 
-    async def delQueuedMessage(self, id):
+    async def delQueuedRename(self, id):
         self.sqlquery = "DELETE FROM `renameQueue` WHERE id='{}'".format(id)
         await self.sqlQueryExec(self.sqlquery)
         return None
