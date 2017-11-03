@@ -91,13 +91,15 @@ class DB:
     async def getQueuedMessage(self, id):
         self.sqlquery = "SELECT * FROM `messageQueue` WHERE id='{}'".format(id)
         self.sqlout = await self.sqlQuery(self.sqlquery)
-        return self.sqlout
+        if len(self.sqlout) >= 1:
+            return self.sqlout[0]
+        return None
 
     async def gelOldestQueueMessage(self):
         self.sqlquery = "SELECT MIN(id) FROM `messageQueue`"
         self.sqlout = await self.sqlQuery(self.sqlquery)
         if len(self.sqlout) >= 1:
-            return self.sqlout[0]
+            return self.sqlout[0]['MIN(id)']
         return None
 
     async def delQueuedMessage(self, id):
@@ -108,9 +110,8 @@ class DB:
     async def setMaxPrioQueueMessage(self, msg, channel):
         self.oldest = await self.gelOldestQueueMessage()
         if self.oldest is not None:
-            self.id = self.oldest['MIN(id)'] - 1
-        self.sqlquery = "INSERT INTO `messageQueue` (id, message, channel) VALUES ('{0}', '{1}', '{2}')".format(self.id, msg, channel)
-        await self.sqlQueryExec(self.sqlquery)
+            self.sqlquery = "INSERT INTO `messageQueue` (id, message, channel) VALUES ('{0}', '{1}', '{2}')".format(self.id, msg, channel)
+            await self.sqlQueryExec(self.sqlquery)
         return None
 
     async def addQueueRename(self, discordID, nick):
@@ -121,13 +122,15 @@ class DB:
     async def getQueuedRename(self, id):
         self.sqlquery = "SELECT * FROM `renameQueue` WHERE id='{}'".format(id)
         self.sqlout = await self.sqlQuery(self.sqlquery)
-        return self.sqlout
+        if len(self.sqlout) >= 1:
+            return self.sqlout[0]
+        return None
 
     async def gelOldestQueueRename(self):
         self.sqlquery = "SELECT MIN(id) FROM `renameQueue`"
         self.sqlout = await self.sqlQuery(self.sqlquery)
         if len(self.sqlout) >= 1:
-            return self.sqlout[0]
+            return self.sqlout[0]['MIN(id)']
         return None
 
     async def delQueuedRename(self, id):

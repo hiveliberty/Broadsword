@@ -36,7 +36,31 @@ class AuthTemp:
             await self.cnx.insertTestUser(self.testCharID, self.testCorpID, self.testAllianceID, self.testAuthString, self.testActive)
             await self.broadsword.say("```User added.```")
         except:
-            self.broadsword.say("Oooops")
+            await self.broadsword.say("Oooops")
+        else:
+            del self.cnx
+
+    @broadsword.command(pass_context=True, description='''Тестовая команда.''', hidden=True)
+    async def addmsg(self, ctx, *, msg):
+        self.channel = ctx.message.channel.id
+        self.msg = msg
+        try:
+            self.cnx = DB()
+            await self.cnx.addQueueMessage(self.msg, self.channel)
+        except:
+            await self.broadsword.say("Oooops")
+        else:
+            del self.cnx
+
+    @broadsword.command(pass_context=True, description='''Тестовая команда.''', hidden=True)
+    async def addrename(self, ctx, id, nick):
+        print(id)
+        print(nick)
+        try:
+            self.cnx = DB()
+            await self.cnx.addQueueRename(id, nick)
+        except:
+            await self.broadsword.say("Oooops")
         else:
             del self.cnx
 
