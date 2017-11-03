@@ -7,6 +7,6 @@ At the moment, there is a slow development. The bot is not ready for use. <br/>
 На данный момент идет медленная разработка. Бот не готов к использованию. <br/>
 
 Функционал:
-- Авторизация SSO (для авторизации через EVE SSO используется https://github.com/shibdib/EVE-Discord-Auth).
+- Авторизация SSO (для авторизации через EVE SSO используется https://github.com/hiveliberty/EVE-Discord-Auth).
 - Периодическая проверка альянсовой\корпоративной почты.
 - Различные уведомления о событиях.

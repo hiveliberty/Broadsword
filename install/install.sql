@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `corpCache` (
   `corpID` varchar(128) NOT NULL,
   `corpTicker` varchar(10) NOT NULL,
   `corpName` varchar(255) NOT NULL,
+  `corpRole` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `corpID` (`corpID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -19,7 +20,6 @@ CREATE TABLE IF NOT EXISTS `messageQueue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(2048) NOT NULL,
   `channel` varchar(64) NOT NULL,
-  `guild` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS `renameQueue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `discordID` varchar(64) NOT NULL,
   `nick` varchar(128) NOT NULL,
-  `guild` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -56,7 +55,6 @@ CREATE TABLE IF NOT EXISTS `pendingUsers` (
   `characterID` varchar(128) NOT NULL,
   `corporationID` varchar(128) NOT NULL,
   `allianceID` varchar(128) NOT NULL,
-  `groups` varchar(128) NOT NULL,
   `authString` varchar(128) NOT NULL,
   `active` varchar(10) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

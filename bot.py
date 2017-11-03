@@ -1,15 +1,27 @@
-VERSION = "0.3.2.b04"
-
+import os
+import asyncio
 from discord.ext import commands
 from config import config
-import os
-
-plugins = config.plugins
-
-print('Connecting...')
-broadsword = commands.Bot(command_prefix=config.bot["prefix"])
+from lib import utils
+from lib.libdb import DBStart
+from lib.libdb import DB
 
 def main():
+    cnx = DBStart()
+    try:
+        dbversion = cnx.version()
+    except:
+        print("MySQL DB is not available! BroadswordBot will not be started!")
+        return None
+    cnx.checkMessageQueue()
+    del cnx
+
+    print('Connecting...')
+
+    plugins = config.plugins
+
+    broadsword = commands.Bot(command_prefix=config.bot["prefix"])
+
     @broadsword.event
     async def on_ready():
         """A function that is called when the client is
@@ -19,7 +31,8 @@ def main():
         print('Broadsword is logged in')
         print('Username: {}'.format(broadsword.user.name))
         print('User ID: {}'.format(broadsword.user.id))
-        print('Version v.' + VERSION)
+        print('Version v.{}'.format(utils.getVersion()))
+        print('MySQL v.{}'.format(dbversion))
         print('-----------------------')
 
         for plugin, options in plugins.items():
