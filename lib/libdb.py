@@ -7,7 +7,7 @@
 
 import asyncio
 import mysql.connector as mysqldb
-from mysql.connector import errorcode
+#from mysql.connector import errorcode
 from config.config import db as dbcfg
 
 class DB:
@@ -16,20 +16,26 @@ class DB:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
             print('Database connection opened')
-        except Error as e:
+        except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
 
     def __del__(self):
-        self.cursor.close()
-        self.cnx.close()
-        print('Database connection closed')
+        try:
+            if 'self.cursor' in locals():
+                self.cursor.close()
+                print('Cursor closed')
+            if 'self.cnx' in locals():
+                self.cnx.close()
+                print('Database connection closed')
+        except mysqldb.Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
 
     async def sqlQuery(self, query):
         try:
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchall()
             return self.sqlout
-        except Error as e:
+        except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             print("{}\n".format(query))
@@ -40,7 +46,7 @@ class DB:
             self.cursor.execute(query)
             self.cnx.commit()
             return 0
-        except Error as e:
+        except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             print("{}\n".format(query))
@@ -159,19 +165,35 @@ class DBStart:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
             print('Database connection opened')
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        except mysqldb.Error as e:
+            #print('ERROR %s' % (e.args[1]))
+            print("Error code: {}".format(e.errno))
+            print("Error message: {}".format(e.msg))
+            return None
 
     def __del__(self):
-        self.cursor.close()
-        self.cnx.close()
-        print('Database connection closed')
+        try:
+            if 'self.cursor' in locals():
+                self.cursor.close()
+                print('Cursor closed')
+            if 'self.cnx' in locals():
+                self.cnx.close()
+                print('Database connection closed')
+        except mysqldb.Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+
+    def version(self):
+        self.sqlquery = "SELECT version()"
+        self.sqlout = self.sqlQuery(self.sqlquery)
+        if self.sqlout is not None:
+            return self.sqlout[0]['version()']
+        return None
 
     def sqlQuery(self, query):
         try:
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchall()
-        except Error as e:
+        except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             print("{}\n".format(query))
@@ -182,7 +204,7 @@ class DBStart:
             self.cursor.execute(query)
             self.cnx.commit()
             return 0
-        except Error as e:
+        except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             print("{}\n".format(query))

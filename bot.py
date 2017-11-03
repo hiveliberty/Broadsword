@@ -4,9 +4,15 @@ from discord.ext import commands
 from config import config
 from lib import utils
 from lib.libdb import DBStart
+from lib.libdb import DB
 
 def main():
     cnx = DBStart()
+    try:
+        dbversion = cnx.version()
+    except:
+        print("MySQL DB is not available! BroadswordBot will not be started!")
+        return None
     cnx.checkMessageQueue()
     del cnx
 
@@ -26,6 +32,7 @@ def main():
         print('Username: {}'.format(broadsword.user.name))
         print('User ID: {}'.format(broadsword.user.id))
         print('Version v.{}'.format(utils.getVersion()))
+        print('MySQL v.{}'.format(dbversion))
         print('-----------------------')
 
         for plugin, options in plugins.items():
