@@ -36,14 +36,21 @@ db = {
     "host": "localhost",
     "port": "3306",
     "database": "dbname",
-    "charset": "utf8mb4"
+    "charset": "utf8mb4",
+    "connect_timeout": 5, #Don't change it if you don't know what it is for!
 }
 
 plugins = {
-    "modules.eveapi": {
-        "enabled": False,
+    "modules.admin": {
+        "enabled": True,
     },
     "modules.auth": {
-        "enabled": False,
+        "enabled": True,
+    },
+    "modules.eveapi": {
+        "enabled": True,
+    },
+    "modules.queues": {
+        "enabled": True,
     },
 }
