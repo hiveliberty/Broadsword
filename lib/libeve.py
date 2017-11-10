@@ -88,8 +88,20 @@ class EVEApi:
     async def getCharDetails(self, id):
         try:
             self.api_instance = self.api.CharacterApi()
-            self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
             return self.api_response
+            #   self.api_response content:
+            #       'alliance_id'
+            #       'ancestry_id'
+            #       'birthday'
+            #       'bloodline_id'
+            #       'corporation_id'
+            #       'description'
+            #       'faction_id'
+            #       'gender'
+            #       'name'
+            #       'race_id'
+            #       'security_status'
         except ApiException as e:
             print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
@@ -112,10 +124,20 @@ class EVEApi:
     async def getCorpDetails(self, id):
         try:
             self.api_instance = self.api.CorporationApi()
-            self.api_response = self.api_instance.get_corporations_corporation_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
-            #print(self.api_response['ticker'])
-            #print("getCorpDetails success")
+            self.api_response = self.api_instance.get_corporations_corporation_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
             return self.api_response
+            #   self.api_response content:
+            #       'alliance_id'
+            #       'ceo_id'
+            #       'corporation_description'
+            #       'corporation_name'
+            #       'creation_date'
+            #       'creator_id'
+            #       'faction'
+            #       'member_count'
+            #       'tax_rate'
+            #       'ticker'
+            #       'url'
         except ApiException as e:
             print("Exception when calling CorporationApi->get_status: %s\n" % e)
         finally:
@@ -158,7 +180,7 @@ class EVEApi:
     async def getSystemDetails(self, id):
         try:
             self.api_instance = self.api.UniverseApi()
-            self.api_response = self.api_instance.get_universe_systems_system_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            self.api_response = self.api_instance.get_universe_systems_system_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
             return self.api_response
         except ApiException as e:
             print("Exception when calling UniverseApi->get_status: %s\n" % e)
@@ -166,7 +188,7 @@ class EVEApi:
     async def getRegionDetails(self, id):
         try:
             self.api_instance = self.api.UniverseApi()
-            self.api_response = self.api_instance.get_universe_regions_region_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
+            self.api_response = self.api_instance.get_universe_regions_region_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
             return self.api_response
         except ApiException as e:
             print("Exception when calling UniverseApi->get_status: %s\n" % e)

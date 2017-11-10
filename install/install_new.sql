@@ -42,23 +42,12 @@ CREATE TABLE IF NOT EXISTS `authUsers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `characterID` varchar(128) NOT NULL,
   `discordID` varchar(64) NOT NULL,
-  `role` varchar(128) NOT NULL,
+  `role` varchar(128),
   `active` varchar(10) NOT NULL DEFAULT 'yes',
   `doAuth` varchar(10) NOT NULL DEFAULT 'yes',
-  `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `characterID` (`characterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `pendingUsers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `characterID` varchar(128) NOT NULL,
-  `corporationID` varchar(128) NOT NULL,
-  `allianceID` varchar(128) NOT NULL,
-  `authString` varchar(128) NOT NULL,
-  `active` varchar(10) NOT NULL,
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

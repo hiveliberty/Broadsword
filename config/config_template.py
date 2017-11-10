@@ -5,22 +5,22 @@ bot = {
     "token": "input your token here",
     "prefix": "!",
     "guild": "your guildID",
-    "adminRoles": ["", ""],
+    "adminRoles": ["Admins", "BotAdmins"],
     "restrictedChannels": [0, 0]
 }
 
 auth = {
     "auth_url": "url",
-    "exempt": ["", ""],
+    "exempt": ["NoAuth", "Bots"],
     "alertChannel": "",
     "nameEnforce": True,
-    "corpTickers": True,
+    "corpTickers": True,    # Only works for alliances
+    "setCorpRole": True,    # Only works for alliances
     "authGroups": {
         "group1": {
-            "corpID": 0,
-            "allianceID": 0,
-            "corpMemberRole": "",
-            "allyMemberRole": ""
+            "type": "",         # Only one of the two values is possible - corporation or alliance.
+            "id": 0,            # Your alliance or corp id.
+            "memberRole": "",   # Role must exist in your discord guild!
         }
     }
 }

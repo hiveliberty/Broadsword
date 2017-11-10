@@ -21,12 +21,10 @@ class DB:
 
     def __del__(self):
         try:
-            if 'self.cursor' in locals():
-                self.cursor.close()
-                print('Cursor closed')
-            if 'self.cnx' in locals():
-                self.cnx.close()
-                print('Database connection closed')
+            self.cursor.close()
+            print('Cursor closed')
+            self.cnx.close()
+            print('Database connection closed')
         except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
 
@@ -51,18 +49,23 @@ class DB:
         finally:
             print("{}\n".format(query))
 
-    async def insertTestUser(self, characterID, corporationID, allianceID, groups, authString, active):
-        self.sqlquery = "INSERT INTO `pendingUsers` (characterID, corporationID, allianceID, groups, authString, active) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')".format(characterID, corporationID, allianceID, groups, authString, active)
+    async def insertTestUser(self, characterID, corporationID, allianceID, authString, active):
+        self.sqlquery = "REPLACE INTO `pendingUsers` (characterID, corporationID, allianceID, authString, active) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')".format(characterID, corporationID, allianceID, authString, active)
         await self.sqlQueryExec(self.sqlquery)
         return None
         
-    async def insertUser(self, userID, characterID, eveName, type):
-        self.sqlquery = "REPLACE INTO `authUsers` (characterID, discordID, eveName, active, role) VALUES ('{0}','{1}','{2}','yes','{3}')".format(userID, characterID, eveName, type)
+    async def insertUser(self, characterID, discordID, eveName):
+        self.sqlquery = "REPLACE INTO `authUsers` (characterID, discordID, eveName, active) VALUES ('{0}','{1}','{2}','yes')".format(characterID, discordID, eveName)
         await self.sqlQueryExec(self.sqlquery)
         return None
     
     async def disableReg(self, authCode):
         self.sqlquery = "UPDATE `pendingUsers` SET active='0' WHERE authString='{}'".format(authCode)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+        
+    async def disableUser(self, characterID):
+        self.sqlquery = "UPDATE `authUsers` SET active='no' WHERE characterID='{}'".format(characterID)
         await self.sqlQueryExec(self.sqlquery)
         return None
     
@@ -145,14 +148,16 @@ class DB:
         return None
 
     async def addCorpInfo(self, corpID, corpTicker, corpName, corpRole):
-        self.sqlquery = "INSERT INTO `corpCache` (corpID, corpTicker, corpName, corpRole) VALUES ('{0}', '{1}', '{2}', '{3}')".format(corpID, corpTicker, corpName, corpRole)
+        self.sqlquery = "REPLACE INTO `corpCache` (corpID, corpTicker, corpName, corpRole) VALUES ('{0}', '{1}', '{2}', '{3}')".format(corpID, corpTicker, corpName, corpRole)
         await self.sqlQueryExec(self.sqlquery)
         return None
 
     async def getCorpInfo(self, corpID):
         self.sqlquery = "SELECT * FROM `corpCache` WHERE corpID='{}'".format(corpID)
         self.sqlout = await self.sqlQuery(self.sqlquery)
-        return self.sqlout
+        if len(self.sqlout) == 0:
+            return
+        return self.sqlout[0]
 
     async def delCorpInfo(self, corpID):
         self.sqlquery = "DELETE FROM `corpCache` WHERE corpID='{}'".format(corpID)

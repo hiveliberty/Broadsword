@@ -10,4 +10,5 @@ config/config.json
 Thumbs.db
 libtemp*
 bot_old.py
+install_new.sql
 backup
