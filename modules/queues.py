@@ -81,8 +81,13 @@ class QueueRename:
                             self.member = self.server.get_member(self.queued_rename['discordID'])
                             await self.broadsword.change_nickname(self.member, self.queued_rename['nick'])
                             await self.cnx.delQueuedRename(self.id)
-                        except Exception as e:
-                            print(e)
+                        except discord.Forbidden as e:
+                            if self.queued_rename['discordID'] == self.server.owner.id:
+                                print("Sorry, but owner cann't be renamed!")
+                                await self.cnx.delQueuedRename(self.id)
+                                continue
+                            if e.text == "Privilege is too low...":
+                                print("BroadswordBot needs more privileges!")
                     else:
                         continue
                     self.x += 1

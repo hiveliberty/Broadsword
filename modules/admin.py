@@ -1,3 +1,4 @@
+import gc
 from memory_profiler import memory_usage
 from discord.ext import commands as broadsword
 from config.config import plugins as plugins
@@ -99,6 +100,31 @@ class Admin:
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
             await self.broadsword.say('```py\n{}\n```'.format(exc))
+
+class GCTask:
+    def __init__(self, bot):
+        self.broadsword = bot
+        self._task = self.broadsword.loop.create_task(self.taskGC())
+        print('QueueMessages.taskGC should have been run..')
+        
+    def __unload(self):
+        self._task.cancel()
+        print('QueueMessages.taskGC should have been unloaded..')
+
+    async def taskGC(self):
+        try:
+            while not self.broadsword.is_closed:
+                gc.collect()
+                self.gc_stat = gc.get_stats()
+                print("GC stat: {}".format(self.gc_stat))
+                del self.mem_usage
+                await asyncio.sleep(60)
+        except asyncio.CancelledError as e:
+            print(e)
+        except (OSError, discord.ConnectionClosed):
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.taskGC())
             
 def setup(broadsword):
     broadsword.add_cog(Admin(broadsword, plugins))
+#    broadsword.add_cog(GCTask(broadsword))

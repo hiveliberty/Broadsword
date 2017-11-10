@@ -1,5 +1,6 @@
 import os
 import asyncio
+import gc
 from discord.ext import commands
 from config import config
 from lib import utils
@@ -7,6 +8,7 @@ from lib.libdb import DBStart
 from lib.libdb import DB
 
 def main():
+    gc.enable()
     cnx = DBStart()
     try:
         dbversion = cnx.version()
