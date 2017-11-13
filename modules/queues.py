@@ -8,14 +8,14 @@ from lib.libdb import DB
 class QueueMessages:
     def __init__(self, bot):
         self.broadsword = bot
-        self._task = self.broadsword.loop.create_task(self.qmessageTask())
-        print('QueueMessages.qmessageTask should have been run..')
+        self._task = self.broadsword.loop.create_task(self.qMessageTask())
+        print('QueueMessages.qMessageTask should have been run..')
         
     def __unload(self):
         self._task.cancel()
-        print('QueueMessages.qmessageTask should have been unloaded..')
+        print('QueueMessages.qMessageTask should have been unloaded..')
 
-    async def qmessageTask(self):
+    async def qMessageTask(self):
         try:
             while not self.broadsword.is_closed:
                 self.cnx = DB()
@@ -43,23 +43,27 @@ class QueueMessages:
                     del self.id
                 del self.cnx
                 await asyncio.sleep(7)
+        except Exception as e:
+            print(e)
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.qAuthTask())
         except asyncio.CancelledError as e:
             print(e)
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.qmessageTask())
+            self._task = self.broadsword.loop.create_task(self.qAuthTask())
 
 class QueueRename:
     def __init__(self, bot):
         self.broadsword = bot
-        self._task = self.broadsword.loop.create_task(self.qrenameTask())
-        print('QueueMessages.qrenameTask should have been run..')
+        self._task = self.broadsword.loop.create_task(self.qRenameTask())
+        print('QueueMessages.qRenameTask should have been run..')
         
     def __unload(self):
         self._task.cancel()
-        print('QueueMessages.qrenameTask should have been unloaded..')
+        print('QueueMessages.qRenameTask should have been unloaded..')
 
-    async def qrenameTask(self):
+    async def qRenameTask(self):
         try:
             while not self.broadsword.is_closed:
                 self.server = self.broadsword.get_server(id=config.bot['guild'])
@@ -96,11 +100,15 @@ class QueueRename:
                     del self.id
                 del self.cnx
                 await asyncio.sleep(10)
+        except Exception as e:
+            print(e)
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.qRenameTask())
         except asyncio.CancelledError as e:
             print(e)
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.qrenameTask())
+            self._task = self.broadsword.loop.create_task(self.qRenameTask())
 
 def setup(broadsword):
     broadsword.add_cog(QueueMessages(broadsword))

@@ -4,27 +4,32 @@ import random
 import sys
 import discord
 from discord.ext import commands as broadsword
-#from lib.libdb import DBAuth as DBAuth
-#from lib import libdb as dbclasses
+from importlib import reload
 from lib.libeve import EVEApi
 from lib.libdb import DB
-#from config.config import db as db_conf
+from lib.utils import AuthUtils
 from config import config
 
 class AuthUser:
     def __init__(self, bot):
         self.broadsword = bot
         self.eveapi = EVEApi()
-        self.server = self.broadsword.get_server(id=config.bot['guild'])
+        self.server = self.broadsword.get_server(id=config.bot["guild"])
 
-    @broadsword.command(pass_context=True, description='''Тестовая команда.''')
-    async def test(self, ctx):
-        """A command that will respond with a random greeting."""
+    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
+    async def authadmin(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))
 
-        choices = ('Hey!', 'Hello!', 'Hi!', 'Hallo!', 'Bonjour!', 'Hola!')
-        await self.broadsword.say(random.choice(choices))
+    @authadmin.command(pass_context=True)
+    async def reloadconf(self, ctx):
+        try:
+            reload(config)
+        except Exception as e:
+            print(e)
+            await self.broadsword.say("Oooops")
 
-    @broadsword.command(pass_context=True, description='''Тестовая команда добавления пользователя для авторизации.''')
+    @authadmin.command(pass_context=True, description='''Тестовая команда добавления пользователя для авторизации.''')
     async def addtestuser(self, ctx):
         self.testCharID = "94074030"
         self.testCorpID = "98014265"
@@ -40,7 +45,7 @@ class AuthUser:
         else:
             del self.cnx
 
-    @broadsword.command(pass_context=True, description='''Тестовая команда добавления в очередь сообщений.''', hidden=True)
+    @authadmin.command(pass_context=True, description='''Тестовая команда добавления в очередь сообщений.''')
     async def addmsg(self, ctx, *, msg):
         self.channel = ctx.message.channel.id
         self.msg = msg
@@ -52,7 +57,7 @@ class AuthUser:
         else:
             del self.cnx
 
-    @broadsword.command(pass_context=True, description='''Тестовая команда добавления в очередь переименования.''', hidden=True)
+    @authadmin.command(pass_context=True, description='''Тестовая команда добавления в очередь переименования.''')
     async def addrename(self, ctx, id, nick):
         print(id)
         print(nick)
@@ -64,7 +69,17 @@ class AuthUser:
         else:
             del self.cnx
 
-    @broadsword.command(pass_context=True, description='''Команда авторизации.''')
+    @authadmin.command(pass_context=True, description='''Команда для тестирования.''')
+    async def test(self, ctx):
+        try:
+            pass
+        except Exception as e:
+            print(e)
+            await self.broadsword.say("Oooops")
+        else:
+            del self.cnx
+
+    @broadsword.command(pass_context=True, description='''Это команда авторизации.''')
     async def auth(self, ctx, code):
         self.author = ctx.message.author
         self.code = code
@@ -96,11 +111,11 @@ class AuthUser:
                 self.doAuthorize = False
 
                 self.not_member = True
-                for self.group_key, self.group_values in config.auth["authGroups"].items():
-                    if self.group_values["id"] == self.pending["allianceID"]:
+                for self.group_key, self.group_value in config.auth["authGroups"].items():
+                    if self.group_value["id"] == self.pending["allianceID"]:
                         self.not_member = False
-                        self.auth_group = self.group_values
-                        del self.group_values
+                        self.auth_group = self.group_value
+                        del self.group_value
                         break
                 if self.not_member:
                     await self.broadsword.say("{0.mention}, you are not alliance member!".format(self.author))
@@ -133,7 +148,7 @@ class AuthUser:
                     self.corpinfo["corpName"] = self.corpinfo_temp["corporation_name"]
                     if config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
                         self.corpinfo["corpRole"] = self.corpinfo["corpTicker"] + " Members"
-                        print("Corp role is '{}'".format(self.corpinfo['corpRole']))
+                        print("Corp role is '{}'".format(self.corpinfo["corpRole"]))
                     else:
                         self.corpinfo["corpRole"] = ""
                         print("Corp role is ''")
@@ -249,5 +264,55 @@ class AuthUser:
             except:
                 pass
 
+class AuthTask:
+    def __init__(self, bot):
+        self.broadsword = bot
+        self.server = self.broadsword.get_server(id=config.bot["guild"])
+        self.eveapi = EVEApi()
+        self.utils = AuthUtils()
+        self.interval = config.auth["periodicCheckInterval"]
+        self._task = self.broadsword.loop.create_task(self.qAuthTask())
+        print('qAuthTask should have been run in background..')
+        
+    def __unload(self):
+        self._task.cancel()
+        print('qAuthTask should have been unloaded..')
+        
+    async def qAuthTask(self):
+        try:
+            while not self.broadsword.is_closed:
+                print("Start periodic check authorization..")
+                self.auth_group_ids = await self.utils.getAuthGroupIDs()
+                self.cnx = DB()
+                self.auth_users = await self.cnx.selectUsers()
+                for self.auth_user in self.auth_users:
+                    self.member = self.server.get_member(self.auth_user["discordID"])
+                    self.is_exempt = await self.utils.isAuthExempt(self.member.roles)
+                    if not self.is_exempt:
+                        self.charinfo = await self.eveapi.getCharDetails(self.auth_user["characterID"])
+                        if self.charinfo is not None:
+                            if str(self.charinfo["alliance_id"]) not in self.auth_group_ids:
+                                await self.cnx.disableUser(self.auth_user["characterID"])
+                                await self.broadsword.remove_roles(self.member, *self.member.roles)
+                                if config.auth["kickWhenLeaving"]:
+                                    await self.broadsword.kick(self.member)
+                                self.channel = self.broadsword.get_channel(config.auth["alertChannel"])
+                                await self.broadsword.send_message(self.channel, "{} left corp\\alliance.".format(self.auth_user["eveName"]))
+                        else:
+                            print("EVE services temprorary unavailable")
+                del self.cnx
+                await asyncio.sleep(self.interval)
+        except Exception as e:
+            print(e)
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.qAuthTask())
+        except asyncio.CancelledError as e:
+            print(e)
+        except (OSError, discord.ConnectionClosed):
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.qAuthTask())
+
 def setup(broadsword):
     broadsword.add_cog(AuthUser(broadsword))
+    if config.auth["periodicCheck"]:
+        broadsword.add_cog(AuthTask(broadsword))

@@ -77,6 +77,12 @@ class DB:
         print(self.sqlout)
         return None
 
+    async def selectUsers(self):
+        self.sqlquery = "SELECT discordID, characterID, eveName FROM `authUsers` where active='yes'"
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        print(self.sqlout)
+        return self.sqlout
+
     async def setKey(self, key, value):
         self.sqlquery = "REPLACE INTO `storage` (key, value) VALUES ('{0}', '{1}')".format(key, value)
         await self.sqlQueryExec(self.sqlquery)

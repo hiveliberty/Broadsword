@@ -13,6 +13,8 @@ auth = {
     "auth_url": "url",
     "exempt": ["NoAuth", "Bots"],
     "alertChannel": "",
+    "periodicCheck": True,
+    "periodicCheckInterval": 30,
     "nameEnforce": True,
     "corpTickers": True,    # Only works for alliances
     "setCorpRole": True,    # Only works for alliances

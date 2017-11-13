@@ -2,6 +2,7 @@
 import time
 import json
 from discord.ext import commands as broadsword
+from importlib import reload
 from lib.libdb import DB
 from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
@@ -11,6 +12,19 @@ from config import config
 class EVE_API:
     def __init__(self, bot):
         self.broadsword = bot
+
+    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
+    async def eveapiadmin(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))
+
+    @eveapiadmin.command(pass_context=True)
+    async def reloadconf(self, ctx):
+        try:
+            reload(config)
+        except Exception as e:
+            print(e)
+            await self.broadsword.say("Oooops")
 
     @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def evestatus(self, ctx):
