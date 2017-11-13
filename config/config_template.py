@@ -14,7 +14,8 @@ auth = {
     "exempt": ["NoAuth", "Bots"],
     "alertChannel": "",
     "periodicCheck": True,
-    "periodicCheckInterval": 30,
+    "periodicCheckInterval": 1800,
+    "kickWhenLeaving": True,    # Kick member when his left corp\alliance
     "nameEnforce": True,
     "corpTickers": True,    # Only works for alliances
     "setCorpRole": True,    # Only works for alliances
@@ -43,16 +44,13 @@ db = {
 }
 
 plugins = {
-    "modules.admin": {
-        "enabled": True,
-    },
     "modules.auth": {
         "enabled": True,
     },
     "modules.eveapi": {
         "enabled": True,
     },
-    "modules.queues": {
+    "modules.userdb": {
         "enabled": True,
     },
 }

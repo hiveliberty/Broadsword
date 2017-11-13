@@ -25,6 +25,15 @@ class Admin:
             print(e)
             await self.broadsword.say("Oooops")
 
+    @admin.command(pass_context=True)
+    async def test(self, ctx):
+        try:
+            self.server = self.broadsword.get_server(id=config.bot["guild"])
+            self.broadsword.say("```{}```".format(self.server.owner))
+        except Exception as e:
+            print(e)
+            await self.broadsword.say("Oooops")
+
     @broadsword.group(pass_context=True, hidden=False, description='''Группа команд управления модулями.''')
     async def module(self, ctx):
         if ctx.invoked_subcommand is None:
