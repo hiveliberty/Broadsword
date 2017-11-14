@@ -1,82 +1,49 @@
 import gc
 from memory_profiler import memory_usage
 from discord.ext import commands as broadsword
-from config.config import plugins as plugins
+from importlib import reload
+from config import config
+
 
 class Admin:
     """Admin-only commands that make the bot dynamic."""
 
-    def __init__(self, bot, plugins):
+    def __init__(self, bot):
         self.broadsword = bot
-        self.plugins = plugins
+        self.server = self.broadsword.get_server(id=config.bot["guild"])
 
-    @broadsword.command(pass_context=True, hidden=True)
-    async def load(self, ctx, *, module):
-        """Loads a module."""
-        self.module = 'modules.' + module
-        try:
-            self.broadsword.load_extension(self.module)
-        except Exception as e:
-            exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
-        else:
-            await self.broadsword.say('\N{OK HAND SIGN}')
-            print("Module {} loaded.".format(module))
-        finally:
-            del self.module
+    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
+    async def admin(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))
 
-    @broadsword.command(pass_context=True, hidden=True)
-    async def unload(self, ctx, *, module):
-        """Unloads a module."""
-        self.module = 'modules.' + module
+    @admin.command(pass_context=True, name='reload')
+    async def _reloadadmin(self, ctx):
         try:
-            self.broadsword.unload_extension(self.module)
+            reload(config)
+            self.broadsword.unload_extension(modules.admin)
+            self.broadsword.load_extension(modules.admin)
         except Exception as e:
-            exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
-        else:
-            await self.broadsword.say('\N{OK HAND SIGN}')
-            print("Module {} unloaded.".format(module))
-        finally:
-            del self.module
+            print(e)
+            await self.broadsword.say("Oooops")
 
-    @broadsword.command(pass_context=True, name='reload', hidden=True)
-    async def _reload(self, ctx, *, module):
-        """Reloads a module."""
-        self.module = 'modules.' + module
+    @admin.command(pass_context=True)
+    async def test(self, ctx):
         try:
-            self.broadsword.unload_extension(self.module)
-            self.broadsword.load_extension(self.module)
+            if config.auth["alertChannel"] is None or config.auth["alertChannel"] == "":
+            #if config.auth["alertChannel"] == "":
+            #if config.auth["alertChannel"] is None:
+                await self.broadsword.send_message(self.server.owner, "Warning! alertChannel is not set!")
         except Exception as e:
-            exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
-        else:
-            await self.broadsword.say('\N{OK HAND SIGN}')
-            print("Module {} reloaded.".format(module))
-        finally:
-            del self.module
-            
-    @broadsword.command(pass_context=True, name='reloadall', hidden=True)
-    async def _reloadall(self, ctx):
-        """Reloads all modules."""
-        msg = '```Reloaded modules:\n'
-        for module, options in self.plugins.items():
-            try:
-                self.broadsword.unload_extension(module)
-                if not options.get('enabled', True):
-                    continue
-                self.broadsword.load_extension(module)
-            except Exception as e:
-                exc = '{}: {}'.format(type(e).__name__, e)
-                await self.broadsword.say('```py\n{}\n```'.format(module, exc))
-            else:
-                print("{} reloaded.".format(module))
-                msg = msg + module + '\n'
-        msg = msg + '```'
-        await self.broadsword.say("{}".format(msg))
-        del self.mgs
-        
-    @broadsword.command(pass_context=True, hidden=False)
+            print(e)
+            await self.broadsword.say("Oooops")
+
+    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд управления модулями.''')
+    async def module(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))
+
+    @admin.command(pass_context=True, hidden=False)
     async def clearchat(self, ctx):
         """Clear chat."""
         self.mgs = []
@@ -91,7 +58,7 @@ class Admin:
         finally:
             del self.mgs
 
-    @broadsword.command(pass_context=True, hidden=False)
+    @admin.command(pass_context=True, hidden=False)
     async def memory(self, ctx):
         """Memory usage."""
         try:
@@ -100,6 +67,83 @@ class Admin:
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
             await self.broadsword.say('```py\n{}\n```'.format(exc))
+
+    @module.command(pass_context=True, hidden=True)
+    async def load(self, ctx, *, module):
+        """Loads a module."""
+        self.module = 'modules.' + module
+        try:
+            self.broadsword.load_extension(self.module)
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
+        else:
+            await self.broadsword.say('\N{OK HAND SIGN}')
+            print("Module {} loaded.".format(module))
+        finally:
+            del self.module
+
+    @module.command(pass_context=True, hidden=True)
+    async def unload(self, ctx, *, module):
+        """Unloads a module."""
+        try:
+            self.module = 'modules.' + module
+            self.broadsword.unload_extension(self.module)
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
+        else:
+            await self.broadsword.say('\N{OK HAND SIGN}')
+            print("Module {} unloaded.".format(module))
+        finally:
+            try:
+                del self.module
+            except:
+                pass
+
+    @module.command(pass_context=True, name='reload', hidden=True)
+    async def _reload(self, ctx, *, module):
+        """Reloads a module."""
+        try:
+            self.module = 'modules.' + module
+            self.broadsword.unload_extension(self.module)
+            self.broadsword.load_extension(self.module)
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            await self.broadsword.say('```py\n{}\n```'.format(self.module, exc))
+        else:
+            await self.broadsword.say('\N{OK HAND SIGN}')
+            print("Module {} reloaded.".format(module))
+        finally:
+            try:
+                del self.module
+            except:
+                pass
+            
+    @module.command(pass_context=True, name='reloadall', hidden=True)
+    async def _reloadall(self, ctx):
+        """Reloads all modules."""
+        try:
+            self.msg = '```Reloaded modules:\n'
+            for module, options in config.plugins.items():
+                self.broadsword.unload_extension(module)
+                if not options.get('enabled', True):
+                    continue
+                self.broadsword.load_extension(module)
+                print("{} reloaded.".format(module))
+                self.msg = self.msg + module + '\n'
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            await self.broadsword.say('```py\n{}\n```'.format(module, exc))
+        else:
+            self.msg = msg + '```'
+            await self.broadsword.say("{}".format(self.msg))
+        finally:
+            try:
+                del self.mgs
+            except:
+                pass
+
 
 class GCTask:
     def __init__(self, bot):
@@ -126,5 +170,5 @@ class GCTask:
             self._task = self.broadsword.loop.create_task(self.taskGC())
             
 def setup(broadsword):
-    broadsword.add_cog(Admin(broadsword, plugins))
+    broadsword.add_cog(Admin(broadsword))
 #    broadsword.add_cog(GCTask(broadsword))

@@ -7,8 +7,15 @@ from lib import utils
 from lib.libdb import DBStart
 from lib.libdb import DB
 
+gc.enable()
+
+main_modules = {
+    "modules.admin",
+    "modules.queues",
+    "modules.userdb",
+}
+
 def main():
-    gc.enable()
     cnx = DBStart()
     try:
         dbversion = cnx.version()
@@ -19,8 +26,6 @@ def main():
     del cnx
 
     print('Connecting...')
-
-    plugins = config.plugins
 
     broadsword = commands.Bot(command_prefix=config.bot["prefix"])
 
@@ -37,7 +42,18 @@ def main():
         print('MySQL v.{}'.format(dbversion))
         print('-----------------------')
 
-        for plugin, options in plugins.items():
+        #   Load main modules
+        for main_module in main_modules:
+            try:
+                broadsword.load_extension(main_module)
+                print("{} loaded.".format(main_module))
+            except Exception as e:
+                exc = '{}: {}'.format(type(e).__name__, e)
+                print('Failed to load extension {}\n{}'.format(main_module, exc))
+                return
+
+        #   Load user modules
+        for plugin, options in config.plugins.items():
             if not options.get('enabled', True):
                 continue
             try:
@@ -46,9 +62,11 @@ def main():
             except Exception as e:
                 exc = '{}: {}'.format(type(e).__name__, e)
                 print('Failed to load extension {}\n{}'.format(plugin, exc))
+                return
 
     broadsword.run(config.bot["token"])
     broadsword.loop.close()
+    broadsword.logout()
     print('-----------------------')
     print('Connection closed.')
 
