@@ -50,7 +50,4 @@ plugins = {
     "modules.eveapi": {
         "enabled": True,
     },
-    "modules.userdb": {
-        "enabled": True,
-    },
 }
