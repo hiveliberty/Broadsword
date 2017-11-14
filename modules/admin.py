@@ -4,19 +4,21 @@ from discord.ext import commands as broadsword
 from importlib import reload
 from config import config
 
+
 class Admin:
     """Admin-only commands that make the bot dynamic."""
 
     def __init__(self, bot):
         self.broadsword = bot
+        self.server = self.broadsword.get_server(id=config.bot["guild"])
 
     @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
     async def admin(self, ctx):
         if ctx.invoked_subcommand is None:
             await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))
 
-    @admin.command(pass_context=True)
-    async def reload(self, ctx):
+    @admin.command(pass_context=True, name='reload')
+    async def _reloadadmin(self, ctx):
         try:
             reload(config)
             self.broadsword.unload_extension(modules.admin)
@@ -28,8 +30,10 @@ class Admin:
     @admin.command(pass_context=True)
     async def test(self, ctx):
         try:
-            self.server = self.broadsword.get_server(id=config.bot["guild"])
-            self.broadsword.say("```{}```".format(self.server.owner))
+            if config.auth["alertChannel"] is None or config.auth["alertChannel"] == "":
+            #if config.auth["alertChannel"] == "":
+            #if config.auth["alertChannel"] is None:
+                await self.broadsword.send_message(self.server.owner, "Warning! alertChannel is not set!")
         except Exception as e:
             print(e)
             await self.broadsword.say("Oooops")
@@ -82,8 +86,8 @@ class Admin:
     @module.command(pass_context=True, hidden=True)
     async def unload(self, ctx, *, module):
         """Unloads a module."""
-        self.module = 'modules.' + module
         try:
+            self.module = 'modules.' + module
             self.broadsword.unload_extension(self.module)
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
@@ -92,13 +96,16 @@ class Admin:
             await self.broadsword.say('\N{OK HAND SIGN}')
             print("Module {} unloaded.".format(module))
         finally:
-            del self.module
+            try:
+                del self.module
+            except:
+                pass
 
     @module.command(pass_context=True, name='reload', hidden=True)
     async def _reload(self, ctx, *, module):
         """Reloads a module."""
-        self.module = 'modules.' + module
         try:
+            self.module = 'modules.' + module
             self.broadsword.unload_extension(self.module)
             self.broadsword.load_extension(self.module)
         except Exception as e:
@@ -108,27 +115,35 @@ class Admin:
             await self.broadsword.say('\N{OK HAND SIGN}')
             print("Module {} reloaded.".format(module))
         finally:
-            del self.module
+            try:
+                del self.module
+            except:
+                pass
             
     @module.command(pass_context=True, name='reloadall', hidden=True)
     async def _reloadall(self, ctx):
         """Reloads all modules."""
-        msg = '```Reloaded modules:\n'
-        for module, options in config.plugins.items():
-            try:
+        try:
+            self.msg = '```Reloaded modules:\n'
+            for module, options in config.plugins.items():
                 self.broadsword.unload_extension(module)
                 if not options.get('enabled', True):
                     continue
                 self.broadsword.load_extension(module)
-            except Exception as e:
-                exc = '{}: {}'.format(type(e).__name__, e)
-                await self.broadsword.say('```py\n{}\n```'.format(module, exc))
-            else:
                 print("{} reloaded.".format(module))
-                msg = msg + module + '\n'
-        msg = msg + '```'
-        await self.broadsword.say("{}".format(msg))
-        del self.mgs
+                self.msg = self.msg + module + '\n'
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            await self.broadsword.say('```py\n{}\n```'.format(module, exc))
+        else:
+            self.msg = msg + '```'
+            await self.broadsword.say("{}".format(self.msg))
+        finally:
+            try:
+                del self.mgs
+            except:
+                pass
+
 
 class GCTask:
     def __init__(self, bot):

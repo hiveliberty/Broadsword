@@ -1,13 +1,41 @@
-import gc
+import discord
+import asyncio
 from discord.ext import commands as broadsword
 from importlib import reload
 from config import config
+from lib.libdb import DB
 
 class UserDB:
     """Store joined discord users in DB"""
 
     def __init__(self, bot):
         self.broadsword = bot
+
+    async def on_member_join(self, member):
+        try:
+            print("User {} joined".format(member))
+            self.cnx = DB()
+            await self.cnx.addDiscordUser(member.id)
+        except Exception as e:
+            print(e)
+        finally:
+            try:
+                del self.cnx
+            except:
+                pass
+
+    async def on_member_remove(self, member):
+        try:
+            print("User {} left".format(member))
+            self.cnx = DB()
+            await self.cnx.delDiscordUser(member.id)
+        except Exception as e:
+            print(e)
+        finally:
+            try:
+                del self.cnx
+            except:
+                pass
 
 class TaskUserDB:
     def __init__(self, bot):

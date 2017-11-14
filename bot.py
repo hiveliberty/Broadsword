@@ -11,7 +11,8 @@ gc.enable()
 
 main_modules = {
     "modules.admin",
-#    "modules.queues",
+    "modules.queues",
+    "modules.userdb",
 }
 
 def main():
@@ -65,6 +66,7 @@ def main():
 
     broadsword.run(config.bot["token"])
     broadsword.loop.close()
+    broadsword.logout()
     print('-----------------------')
     print('Connection closed.')
 

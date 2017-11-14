@@ -1,16 +1,16 @@
-import asyncio
-import json
-import random
 import sys
+import asyncio
+import weakref
+import json
 import discord
-from discord.ext import commands as broadsword
 from importlib import reload
+from discord.ext import commands as broadsword
 from lib.libeve import EVEApi
 from lib.libdb import DB
 from lib.utils import AuthUtils
 from config import config
 
-class AuthUser:
+class AuthUser:    
     def __init__(self, bot):
         self.broadsword = bot
         self.eveapi = EVEApi()
@@ -31,10 +31,10 @@ class AuthUser:
 
     @authadmin.command(pass_context=True, description='''Тестовая команда добавления пользователя для авторизации.''')
     async def addtestuser(self, ctx):
-        self.testCharID = "94074030"
-        self.testCorpID = "98014265"
-        self.testAllianceID = "1614483120"
-        self.testAuthString = "58512d6c9c68a"
+        self.testCharID = ""
+        self.testCorpID = ""
+        self.testAllianceID = ""
+        self.testAuthString = ""
         self.testActive = "1"
         try:
             self.cnx = DB()
@@ -72,12 +72,12 @@ class AuthUser:
     @authadmin.command(pass_context=True, description='''Команда для тестирования.''')
     async def test(self, ctx):
         try:
-            pass
+            #if config.auth["alertChannel"] is not None or config.auth["alertChannel"] != "":
+            #if config.auth["alertChannel"] != "":
+                await self.broadsword.send_message(self.server.owner, "Warning! alertChannel is not set!")
         except Exception as e:
             print(e)
             await self.broadsword.say("Oooops")
-        else:
-            del self.cnx
 
     @broadsword.command(pass_context=True, description='''Это команда авторизации.''')
     async def auth(self, ctx, code):
@@ -122,6 +122,7 @@ class AuthUser:
                     return
 
                 self.corpinfo = await self.cnx.getCorpInfo(self.pending["corporationID"])
+                self.corpinfo._parent = weakref.ref(self)
                 #   self.corpinfo content:
                 #       'id'
                 #       'corpID'
@@ -154,7 +155,8 @@ class AuthUser:
                         print("Corp role is ''")
                     await self.cnx.addCorpInfo(self.pending["corporationID"], self.corpinfo["corpTicker"], self.corpinfo["corpName"], self.corpinfo["corpRole"])
 
-                if (self.corpinfo["corpRole"] is None or self.corpinfo["corpRole"] == "") and config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
+                #if (self.corpinfo["corpRole"] is None or self.corpinfo["corpRole"] == "") and config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
+                if self.corpinfo["corpRole"] == "" and config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
                     print("setCorpRole has been enabled")
                     self.corpinfo["corpRole"] = self.corpinfo["corpTicker"] + " Members"
                     await self.cnx.addCorpInfo(self.corpinfo["corpID"], self.corpinfo["corpTicker"], self.corpinfo["corpName"], self.corpinfo["corpRole"])
@@ -197,6 +199,7 @@ class AuthUser:
                         await self.cnx.addQueueRename(self.author.id, self.charname)
                     await self.cnx.disableReg(self.code)
                     await self.cnx.insertUser(self.pending["characterID"], self.author.id, self.charinfo["name"])
+                    await self.cnx.setAuthorized(self.author.id)
                     await self.broadsword.say("{0.mention}, you have been authorized!".format(self.author))
                 else:
                     await self.broadsword.say("{0.mention}, you cann't be authorized, because no role is set for auth!".format(self.author))
@@ -287,6 +290,9 @@ class AuthTask:
                 self.auth_users = await self.cnx.selectUsers()
                 for self.auth_user in self.auth_users:
                     self.member = self.server.get_member(self.auth_user["discordID"])
+                    if self.member == self.server.owner:
+                        print("is owner!")
+                        continue
                     self.is_exempt = await self.utils.isAuthExempt(self.member.roles)
                     if not self.is_exempt:
                         self.charinfo = await self.eveapi.getCharDetails(self.auth_user["characterID"])
@@ -296,8 +302,14 @@ class AuthTask:
                                 await self.broadsword.remove_roles(self.member, *self.member.roles)
                                 if config.auth["kickWhenLeaving"]:
                                     await self.broadsword.kick(self.member)
-                                self.channel = self.broadsword.get_channel(config.auth["alertChannel"])
-                                await self.broadsword.send_message(self.channel, "{} left corp\\alliance.".format(self.auth_user["eveName"]))
+                                else:
+                                    await self.cnx.setUnauthorized(self.auth_user["discordID"])
+                                #if config.auth["alertChannel"] is not None or config.auth["alertChannel"] != "":
+                                if config.auth["alertChannel"] != "":
+                                    self.channel = self.broadsword.get_channel(config.auth["alertChannel"])
+                                    await self.broadsword.send_message(self.channel, "{} left corp\\alliance.".format(self.auth_user["eveName"]))
+                                else:
+                                    await self.broadsword.send_message(self.server.owner, "Warning! alertChannel is not set!")
                         else:
                             print("EVE services temprorary unavailable")
                 del self.cnx

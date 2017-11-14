@@ -10,6 +10,7 @@ import mysql.connector as mysqldb
 #from mysql.connector import errorcode
 from config.config import db as dbcfg
 
+
 class DB:
     def __init__(self):
         try:
@@ -48,6 +49,27 @@ class DB:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             print("{}\n".format(query))
+
+    async def addDiscordUser(self, discordID):
+        self.sqlquery = "INSERT INTO `discordUsers` SET discordID='{0}'".format(discordID)
+        #self.sqlquery = "REPLACE INTO `discordUsers` (discordID, isAuthorized) VALUES ('{0}', 'no')".format(discordID)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def setAuthorized(self, discordID):
+        self.sqlquery = "UPDATE `discordUsers` SET isAuthorized='yes' WHERE discordID='{}'".format(discordID)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def setUnauthorized(self, discordID):
+        self.sqlquery = "UPDATE `discordUsers` SET isAuthorized='no' WHERE discordID='{}'".format(discordID)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+        
+    async def delDiscordUser(self, discordID):
+        self.sqlquery = "DELETE FROM `discordUsers` WHERE discordID='{}'".format(discordID)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
 
     async def insertTestUser(self, characterID, corporationID, allianceID, authString, active):
         self.sqlquery = "REPLACE INTO `pendingUsers` (characterID, corporationID, allianceID, authString, active) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')".format(characterID, corporationID, allianceID, authString, active)
@@ -169,6 +191,7 @@ class DB:
         self.sqlquery = "DELETE FROM `corpCache` WHERE corpID='{}'".format(corpID)
         await self.sqlQueryExec(self.sqlquery)
         return None
+
         
 class DBStart:
     def __init__(self):
@@ -233,98 +256,6 @@ class DBStart:
         self.sqlQueryExec(self.sqlquery)
         print("Cache was cleaned")
         return None
-
-class DBTemp:
-    def __init__(self):
-        try:
-            self.cnx = mysqldb.connect(**dbcfg)
-            self.cursor = self.cnx.cursor()
-            print('Database connection opened')
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-
-    def __del__(self):
-        self.cursor.close()
-        self.cnx.close()
-        print('Database connection closed')
-
-class DBStuff:
-    def __init__(self):
-        try:
-            self.cnx = mysqldb.connect(**dbcfg)
-            self.cursor = self.cnx.cursor()
-            print('Database connection opened')
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-
-    def __del__(self):
-        self.cursor.close()
-        self.cnx.close()
-        print('Database connection closed')
-    
-    def insertTestUser(self, characterID, corporationID, allianceID, groups, authString, active):
-        self.sqlquery = "INSERT INTO `pendingUsers` (characterID, corporationID, allianceID, groups, authString, active) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')".format(characterID, corporationID, allianceID, groups, authString, active)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.cnx.commit()
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
-        
-    def insertUser(self, userID, characterID, eveName, type):
-        self.sqlquery = "REPLACE INTO `authUsers` (characterID, discordID, eveName, active, role) VALUES ('{0}','{1}','{2}','yes','{3}')".format(userID, characterID, eveName, type)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.cnx.commit()
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
-    
-    def disableReg(self, authCode):
-        self.sqlquery = "UPDATE pendingUsers SET active='0' WHERE authString='{}'".format(authCode)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.cnx.commit()
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
-    
-    def selectPending(self, authCode):
-        self.sqlquery = "SELECT * FROM pendingUsers WHERE authString='{}' AND active='1'".format(authCode)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.sqlout = self.cursor.fetchall()
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        print("{}\n".format(self.sqlquery))
-        return self.sqlout
-
-    async def selectPendingOld(self, authCode):
-        self.sqlquery = "SELECT * FROM pendingUsers WHERE authString='{}' AND active='1'".format(authCode)
-        try:
-            self.cursor.execute(self.sqlquery)
-            self.sqlout = self.cursor.fetchall()
-            self.sqlout = self.sqlout[0]
-            return self.sqlout
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            print("{}\n".format(self.sqlout))
-
-    async def sqlQueryRow(self, query):
-        try:
-            self.cursor.execute(query)
-            self.sqlout = self.cursor.fetchone()
-            #self.sqlout = self.cursor.fetchall()
-            #print(self.cursor.rowcount)
-            #if self.cursor.rowcount >= 1:
-            #    return self.sqlout[0]
-            #return None
-            return self.sqlout
-        except Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            print("{}\n".format(self.sqlout))
 
 
 class DBBot:
