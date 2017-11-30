@@ -7,8 +7,8 @@ Working functions:<br/>
 - Periodic authorization check
 
 Not fully implemented functions:<br/>
-- Periodic corp\alliance mails check (not fully implemented)<br/>
-
+- Periodic corp\alliance mails check (not fully implemented)
+<br/>
 Russian:
 Это адаптация бота https://github.com/shibdib/Dramiel под библиотеку https://github.com/Rapptz/discord.py <br/>
 
