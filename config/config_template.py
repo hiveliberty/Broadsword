@@ -17,20 +17,24 @@ auth = {
     "periodicCheckInterval": 1800,
     "kickWhenLeaving": True,    # Kick member when his left corp\alliance
     "nameEnforce": True,
-    "corpTickers": True,    # Only works for alliances
-    "setCorpRole": True,    # Only works for alliances
     "authGroups": {
         "group1": {
             "type": "",         # Only one of the two values is possible - corporation or alliance.
             "id": 0,            # Your alliance or corp id.
             "memberRole": "",   # Role must exist in your discord guild!
+            "setCorpRole": True,    # Only works for alliances
+            "corpTickers": True,    # Only works for alliances
+            "corpColour": "",
         }
     }
 }
 
 evemails = {
-    "fromIDs": [0, 0],
-    "channelID": ""
+    "fromIDs": ["0",],
+    "channelID": "",
+    "keyID" => "",
+    "vCode" => "",
+    "characterID" => 0
 }
 
 db = {
@@ -41,6 +45,9 @@ db = {
     "database": "dbname",
     "charset": "utf8mb4",
     "connect_timeout": 5, #Don't change it if you don't know what it is for!
+#    "use_unicode": True,
+#    "get_warnings": True,
+#    "raise_on_warnings": "True",
 }
 
 plugins = {
@@ -48,6 +55,12 @@ plugins = {
         "enabled": True,
     },
     "modules.eveapi": {
+        "enabled": True,
+    },
+    "modules.mail": {
+        "enabled": False,
+    },
+    "modules.test": {
         "enabled": True,
     },
 }

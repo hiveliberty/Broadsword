@@ -105,21 +105,6 @@ class DB:
         print(self.sqlout)
         return self.sqlout
 
-    async def setKey(self, key, value):
-        self.sqlquery = "REPLACE INTO `storage` (key, value) VALUES ('{0}', '{1}')".format(key, value)
-        await self.sqlQueryExec(self.sqlquery)
-        return None
-
-    async def getKey(self, key):
-        self.sqlquery = "SELECT value FROM `storage` WHERE key='{}'".format(key)
-        self.sqlout = await self.sqlQuery(self.sqlquery)
-        return self.sqlout
-
-    async def delKey(self, key):
-        self.sqlquery = "DELETE FROM `storage` WHERE key='{}'".format(key)
-        await self.sqlQueryExec(self.sqlquery)
-        return None
-
     async def addQueueMessage(self, msg, channel):
         self.sqlquery = "INSERT INTO `messageQueue` (message, channel) VALUES ('{0}', '{1}')".format(msg, channel)
         await self.sqlQueryExec(self.sqlquery)
@@ -192,6 +177,22 @@ class DB:
         await self.sqlQueryExec(self.sqlquery)
         return None
 
+    async def setKey(self, key, value):
+        self.sqlquery = "REPLACE INTO `storage` (`key`, `value`) VALUES ('{0}', '{1}')".format(key, value)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
+
+    async def getKey(self, key):
+        self.sqlquery = "SELECT value FROM `storage` WHERE `key`='{}'".format(key)
+        self.sqlout = await self.sqlQuery(self.sqlquery)
+        if len(self.sqlout) >= 1:
+            return self.sqlout[0]['value']
+        return None
+
+    async def delKey(self, key):
+        self.sqlquery = "DELETE FROM `storage` WHERE `key`='{}'".format(key)
+        await self.sqlQueryExec(self.sqlquery)
+        return None
         
 class DBStart:
     def __init__(self):
@@ -273,7 +274,7 @@ class DBBot:
         print('Database connection closed')
 
     def setKey(self, key, value):
-        self.sqlquery = "REPLACE INTO storage (key, value) VALUES ('{0}', '{1}')".format(key, value)
+        self.sqlquery = "REPLACE INTO storage (`key`, `value`) VALUES ('{0}', '{1}')".format(key, value)
         self.cursor.execute(self.sqlquery)
 
     def getKey(self, key):

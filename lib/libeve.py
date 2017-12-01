@@ -10,10 +10,11 @@ import requests
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
+#import xmltodict
 import time
-#import lxml
 import json
-from lxml import etree
+#import lxml
+#from lxml import etree
 
 import config
 from lib import utils
@@ -45,6 +46,13 @@ class EVEBasic:
                 js = "https://zkillboard.com/character/%s/" % cid
                 return js
 
+    async def make_api_request(url):
+        #url = url.replace(" ","%20") #Подготовить пробелы для URL (если надо)
+        xml_response = await aiohttp.get(url)
+        if xml_response.status == 200:
+            xml_response = await xml_response.text()
+            return(xml_response)
+        return None
 
 class EVEApi:
     def __init__(self):
