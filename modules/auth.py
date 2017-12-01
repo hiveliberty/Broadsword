@@ -111,18 +111,24 @@ class AuthUser:
                 self.doAuthorize = False
 
                 self.not_member = True
-                for self.group_key, self.group_value in config.auth["authGroups"].items():
-                    if self.group_value["id"] == self.pending["allianceID"]:
-                        self.not_member = False
-                        self.auth_group = self.group_value
-                        del self.group_value
-                        break
+                self.auth_group_ids = await AuthUtils().get_auth_group_ids()
+                if self.pending["allianceID"] in self.auth_group_ids:
+                    self.not_member = False
+                #if str(self.charinfo["alliance_id"]) not in self.auth_group_ids:
+                #for self.group_key, self.group_value in config.auth["authGroups"].items():
+                #    if self.group_value["id"] == self.pending["allianceID"]:
+                #        self.not_member = False
+                #        self.auth_group = self.group_value
+                #        del self.group_value
+                #        break
                 if self.not_member:
                     await self.broadsword.say("{0.mention}, you are not alliance member!".format(self.author))
                     return
 
+                self.auth_group = await AuthUtils().get_auth_group_values()
+
                 self.corpinfo = await self.cnx.getCorpInfo(self.pending["corporationID"])
-                self.corpinfo._parent = weakref.ref(self)
+                #self.corpinfo._parent = weakref.ref(self)
                 #   self.corpinfo content:
                 #       'id'
                 #       'corpID'
@@ -147,7 +153,7 @@ class AuthUser:
                     #       'url'
                     self.corpinfo["corpTicker"] = self.corpinfo_temp["ticker"]
                     self.corpinfo["corpName"] = self.corpinfo_temp["corporation_name"]
-                    if config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
+                    if self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
                         self.corpinfo["corpRole"] = self.corpinfo["corpTicker"] + " Members"
                         print("Corp role is '{}'".format(self.corpinfo["corpRole"]))
                     else:
@@ -156,12 +162,12 @@ class AuthUser:
                     await self.cnx.addCorpInfo(self.pending["corporationID"], self.corpinfo["corpTicker"], self.corpinfo["corpName"], self.corpinfo["corpRole"])
 
                 #if (self.corpinfo["corpRole"] is None or self.corpinfo["corpRole"] == "") and config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
-                if self.corpinfo["corpRole"] == "" and config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
+                if self.corpinfo["corpRole"] == "" and self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
                     print("setCorpRole has been enabled")
                     self.corpinfo["corpRole"] = self.corpinfo["corpTicker"] + " Members"
                     await self.cnx.addCorpInfo(self.corpinfo["corpID"], self.corpinfo["corpTicker"], self.corpinfo["corpName"], self.corpinfo["corpRole"])
 
-                if config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
+                if self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
                     self.corp_role_exist = False
                     self.role = None
                     for self.role in self.server.roles:
@@ -175,7 +181,7 @@ class AuthUser:
                             self.server,
                             name=self.corpinfo["corpRole"],
                             permissions=discord.Permissions(104324160),
-                            colour=discord.Colour(0x1f8b4c),
+                            colour=discord.Colour(self.auth_group["corpColour"]),
                             hoist=True,
                             mentionable=True
                         )
@@ -272,7 +278,6 @@ class AuthTask:
         self.broadsword = bot
         self.server = self.broadsword.get_server(id=config.bot["guild"])
         self.eveapi = EVEApi()
-        self.utils = AuthUtils()
         self.interval = config.auth["periodicCheckInterval"]
         self._task = self.broadsword.loop.create_task(self.qAuthTask())
         print('qAuthTask should have been run in background..')
@@ -285,7 +290,7 @@ class AuthTask:
         try:
             while not self.broadsword.is_closed:
                 print("Start periodic check authorization..")
-                self.auth_group_ids = await self.utils.getAuthGroupIDs()
+                self.auth_group_ids = await AuthUtils().get_auth_group_ids()
                 self.cnx = DB()
                 self.auth_users = await self.cnx.selectUsers()
                 for self.auth_user in self.auth_users:
@@ -293,7 +298,7 @@ class AuthTask:
                     if self.member == self.server.owner:
                         print("is owner!")
                         continue
-                    self.is_exempt = await self.utils.isAuthExempt(self.member.roles)
+                    self.is_exempt = await AuthUtils().is_auth_exempt(self.member.roles)
                     if not self.is_exempt:
                         self.charinfo = await self.eveapi.getCharDetails(self.auth_user["characterID"])
                         if self.charinfo is not None:

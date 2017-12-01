@@ -1,8 +1,10 @@
 #import urllib.parse as urllib
 import time
 import json
+import xmltodict
 from discord.ext import commands as broadsword
 from importlib import reload
+from lib import utils
 from lib.libdb import DB
 from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
@@ -83,54 +85,6 @@ class EVE_API:
             del self.msg
             del self.eve_api
             del self.zkill_api
-
-    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def testapi(self, ctx, *, temp):
-        try:
-            self.author = ctx.message.author
-            self.api = EVEApi()
-            self.response = await self.api.getCorpDetailsTest(temp)
-            self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
-            print(self.stmp)
-            #await self.broadsword.say(self.stmp)
-            #del self.api
-            #del self.stmp
-        except:
-            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
-
-    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def testapi2(self, ctx, *, temp):
-        try:
-            self.author = ctx.message.author
-            self.api = EVEApi()
-            self.response = await self.api.getCorpDetails(temp)
-            self.stmp = '{0.mention}\n```Content:\n {1}```'.format(self.author, self.response)
-            print(self.stmp)
-            #await self.broadsword.say(self.stmp)
-            #del self.api
-            #del self.stmp
-        except:
-            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
-
-    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def testcode(self, ctx):
-        self.msg = "This is test prio message."
-        self.channel = "362284304497115146"
-        try:
-            #self.roles = self.broadsword.get_server(config.bot['guild']).roles
-            self.cnx = DB()
-            #self.test = await self.cnx.gelOldestQueueMessage()
-            await self.cnx.setMaxPrioQueueMessage(self.msg, self.channel)
-            del self.cnx
-            #print(self.test)
-        except:
-            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
-        #for self.each in self.roles:
-        #    self.role = json.loads(self.each)
-        #    print(self.role)
-        #del self.each
-        #del self.roles
-        #del self.role
 
 def setup(broadsword):
     broadsword.add_cog(EVE_API(broadsword))
