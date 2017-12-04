@@ -51,7 +51,7 @@ class AuthUtils():
                 break
         return self.is_exempt
 
-    async def get_auth_group_values(self, allianceID)
+    async def get_auth_group_values(self, allianceID):
         for self.group_key, self.group_value in config.auth["authGroups"].items():
             if self.group_value["id"] == allianceID:
                 self.values = self.group_value

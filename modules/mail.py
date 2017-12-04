@@ -66,6 +66,7 @@ class EVEMail:
                     print("Latest mailID is {}".format(self.maxID))
                     if self.maxID > self.latestMailID:
                         await self.cnx.setKey("latestMailID", self.maxID)
+                del self.cnx
                 else:
                     print("EVE ESI is unavailable")
                 await asyncio.sleep(self.interval)
