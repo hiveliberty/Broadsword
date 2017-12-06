@@ -6,6 +6,11 @@ import os
 import asyncio
 import json
 #import bleach
+
+#import requests
+import urllib.request
+#import urllib.parse
+
 import re
 import html
 import xmltodict
@@ -15,21 +20,47 @@ from bs4 import BeautifulSoup
 #from bs4 import NavigableString
 from config import config
 
-async def cmdGetParams(cmd):
-    self.parsed = cmd.split()
-    self.stmp = ""
-    for self.elem in self.parsed:
-        if self.elem.startswith('!'):
-            continue
-        if self.stmp != "":
-            self.stmp += " "
-        self.stmp += self.elem
-    return self.stmp
 
-def getVersion():
-    with open('version', encoding='utf-8') as version_file:
-        version_data = json.loads(version_file.read())
-    return version_data['version']
+class BasicUtils():
+    def bot_version():
+        with open("version", encoding='utf-8') as version_file:
+            version_data = json.loads(version_file.read())
+        version_file.close()
+        return version_data["bot_version"]
+
+    def db_version():
+        with open("version", encoding='utf-8') as version_file:
+            version_data = json.loads(version_file.read())
+        version_file.close()
+        return version_data["db_version"]
+
+    def load_version():
+        url = "https://raw.githubusercontent.com/hiveliberty/Broadsword/master/version"
+        try:
+            with urllib.request.urlopen("https://raw.githubusercontent.com/hiveliberty/Broadsword/master/version") as response:
+                if response.getcode() == 200:
+                    data = response.read()
+                    data = json.loads(data.decode())
+                    return data["version"]
+                else:
+                    return
+        except Exception as e:
+            print("Exception when calling 'load_version': %s\n" % e)
+        finally:
+            del url
+            del data
+            del response
+
+    async def cmdGetParams(cmd):
+        self.parsed = cmd.split()
+        self.stmp = ""
+        for self.elem in self.parsed:
+            if self.elem.startswith('!'):
+                continue
+            if self.stmp != "":
+                self.stmp += " "
+            self.stmp += self.elem
+        return self.stmp
 
 
 class AuthUtils():

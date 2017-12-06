@@ -178,19 +178,19 @@ class DB:
         return None
 
     async def setKey(self, key, value):
-        self.sqlquery = "REPLACE INTO `storage` (`key`, `value`) VALUES ('{0}', '{1}')".format(key, value)
+        self.sqlquery = "REPLACE INTO `storage` (`storedKey`, `storedValue`) VALUES ('{0}', '{1}')".format(key, value)
         await self.sqlQueryExec(self.sqlquery)
         return None
 
     async def getKey(self, key):
-        self.sqlquery = "SELECT value FROM `storage` WHERE `key`='{}'".format(key)
+        self.sqlquery = "SELECT value FROM `storage` WHERE `storedKey`='{}'".format(key)
         self.sqlout = await self.sqlQuery(self.sqlquery)
         if len(self.sqlout) >= 1:
             return self.sqlout[0]['value']
         return None
 
     async def delKey(self, key):
-        self.sqlquery = "DELETE FROM `storage` WHERE `key`='{}'".format(key)
+        self.sqlquery = "DELETE FROM `storage` WHERE `storedKey`='{}'".format(key)
         await self.sqlQueryExec(self.sqlquery)
         return None
         
@@ -208,23 +208,14 @@ class DBStart:
 
     def __del__(self):
         try:
-            if 'self.cursor' in locals():
-                self.cursor.close()
-                print('Cursor closed')
-            if 'self.cnx' in locals():
-                self.cnx.close()
-                print('Database connection closed')
+            self.cursor.close()
+            print('Cursor closed')
+            self.cnx.close()
+            print('Database connection closed')
         except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
 
-    def version(self):
-        self.sqlquery = "SELECT version()"
-        self.sqlout = self.sqlQuery(self.sqlquery)
-        if self.sqlout is not None:
-            return self.sqlout[0]['version()']
-        return None
-
-    def sqlQuery(self, query):
+    def sql_query(self, query):
         try:
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchall()
@@ -234,7 +225,17 @@ class DBStart:
             print("{}\n".format(query))
         return self.sqlout
 
-    def sqlQueryExec(self, query):
+    def sql_query_one(self, query):
+        try:
+            self.cursor.execute(query)
+            self.sqlout = self.cursor.fetchone()
+        except mysqldb.Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        finally:
+            print("{}\n".format(query))
+        return self.sqlout
+
+    def sql_query_exec(self, query):
         try:
             self.cursor.execute(query)
             self.cnx.commit()
@@ -244,17 +245,43 @@ class DBStart:
         finally:
             print("{}\n".format(query))
 
-    def checkMessageQueue(self):
+    def mysql_version(self):
+        self.sqlquery = "SELECT version()"
+        self.sqlout = self.sql_query(self.sqlquery)
+        if self.sqlout is not None:
+            return self.sqlout[0]['version()']
+        return None
+
+    def db_version(self):
+        self.sqlquery = "SELECT version()"
+        self.sqlout = self.sql_query(self.sqlquery)
+        if self.sqlout is not None:
+            return self.sqlout[0]['version()']
+        return None
+
+    def set_key(self, key, value):
+        self.sqlquery = "REPLACE INTO `storage` (`storedKey`, `storedValue`) VALUES ('{0}', '{1}')".format(key, value)
+        self.sql_query_exec(self.sqlquery)
+        return None
+
+    def get_key(self, key):
+        self.sqlquery = "SELECT storedValue FROM `storage` WHERE `storedKey`='{}'".format(key)
+        self.sqlout = self.sql_query_one(self.sqlquery)
+        if self.sqlout is not None:
+            return self.sqlout
+        return None
+
+    def check_message_queue(self):
         self.sqlquery = "SELECT * FROM messageQueue"
-        self.sqlout = self.sqlQuery(self.sqlquery)
+        self.sqlout = self.sql_query(self.sqlquery)
         if len(self.sqlout) > 35:
             self.clearMessageQueue()
         print("Cache was checked")
         return None
 
-    def clearMessageQueue(self):
+    def clear_message_queue(self):
         self.sqlquery = "DELETE from messageQueue"
-        self.sqlQueryExec(self.sqlquery)
+        self.sql_query_exec(self.sqlquery)
         print("Cache was cleaned")
         return None
 

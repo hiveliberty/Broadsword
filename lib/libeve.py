@@ -16,8 +16,8 @@ import json
 #import lxml
 #from lxml import etree
 
-import config
-from lib import utils
+from config import config
+from lib.utils import BasicUtils
 from vendor import swagger_client
 from vendor.swagger_client.rest import ApiException
 
@@ -58,7 +58,7 @@ class EVEApi:
     def __init__(self):
         self.api = swagger_client
         self.datasource = 'tranquility'
-        self.user_agent = 'BroadswordBot/{}'.format(utils.getVersion())
+        self.user_agent = 'BroadswordBot/{}'.format(BasicUtils.getVersion())
         self.x_user_agent = self.user_agent
         self.language = 'en-us'
         self.strict = False
@@ -71,6 +71,27 @@ class EVEApi:
             return self.api_response
         except ApiException as e:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
+
+    async def get_mails(self, token):
+        try:
+            self.api_instance = self.api.MailApi()
+            #self.char_id = config.credentials["api_key"]["character_id"]
+            self.api_response = self.api_instance.get_characters_character_id_mail(config.credentials["api_key"]["character_id"], datasource=self.datasource, token=token, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
+            return self.api_response
+            #   self.api_response content:
+            #       'alliance_id'
+            #       'ancestry_id'
+            #       'birthday'
+            #       'bloodline_id'
+            #       'corporation_id'
+            #       'description'
+            #       'faction_id'
+            #       'gender'
+            #       'name'
+            #       'race_id'
+            #       'security_status'
+        except ApiException as e:
+            print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
     async def getCharName(self, id):
         try:
@@ -233,7 +254,7 @@ class zKillboardAPI:
     #==============================================================================
     def __init__(self, id):
         self.id = id
-        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(utils.getVersion())}
+        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(BasicUtils.getVersion())}
         print(self.user_agent)
         self.base_url = "https://zkillboard.com/api/"
         self.eve_api = EVEApi()
@@ -305,3 +326,7 @@ class zKillboardAPI:
         except Exception as e:
             print("Exception when calling getLastSeenDate: %s\n" % e)
             return("Ooops.")
+
+class EVEToken:
+    async def __init__(self):
+        pass
