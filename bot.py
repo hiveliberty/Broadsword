@@ -5,14 +5,13 @@ from discord.ext import commands
 from config import config
 from lib.utils import BasicUtils
 from lib.libdb import DBStart
-#from lib.libdb import DB
 
-gc.enable()
+gc.enable() # Not sure that this working..
 
 main_modules = {
     "modules.admin",
-#    "modules.queues",
-#    "modules.userdb",
+    "modules.queues",
+    "modules.userdb",
 }
 
 def main():
@@ -43,12 +42,13 @@ def main():
     finally:
         del cnx
 
-    local_ver = BasicUtils.bot_version()
-    remote _ver = BasicUtils.load_version()
-    if ver < "0.2.0":
-        print(mver)
-        print("Bot update required!")
-        return
+    if config.bot["checkUpdates"]:
+        if BasicUtils.check_update() is None:
+            print("Cann't check new version!")
+        else:
+            if BasicUtils.check_update():
+                print("Bot update required!")
+                return
 
     print('Connecting...')
 

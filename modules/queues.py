@@ -3,7 +3,7 @@ import discord
 import asyncio
 from discord.ext import commands as broadsword
 from config import config
-from lib.libdb import DB
+from lib.libdb import DBMain
 
 class QueueMessages:
     def __init__(self, bot):
@@ -18,7 +18,7 @@ class QueueMessages:
     async def qMessageTask(self):
         try:
             while not self.broadsword.is_closed:
-                self.cnx = DB()
+                self.cnx = DBMain()
                 self.x = 0
                 while self.x < 3:
                     self.id = await self.cnx.gelOldestQueueMessage()
@@ -67,7 +67,7 @@ class QueueRename:
         try:
             while not self.broadsword.is_closed:
                 self.server = self.broadsword.get_server(id=config.bot['guild'])
-                self.cnx = DB()
+                self.cnx = DBMain()
                 self.x = 0
                 while self.x < 4:
                     self.id = await self.cnx.gelOldestQueueRename()

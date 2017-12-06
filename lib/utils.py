@@ -6,11 +6,9 @@ import os
 import asyncio
 import json
 #import bleach
-
 #import requests
 import urllib.request
 #import urllib.parse
-
 import re
 import html
 import xmltodict
@@ -41,7 +39,7 @@ class BasicUtils():
                 if response.getcode() == 200:
                     data = response.read()
                     data = json.loads(data.decode())
-                    return data["version"]
+                    return data["bot_version"]
                 else:
                     return
         except Exception as e:
@@ -50,6 +48,18 @@ class BasicUtils():
             del url
             del data
             del response
+
+    def check_update():
+        try:
+            remote_version = BasicUtils.load_version()
+            if remote_version is None:
+                return
+            local_version = BasicUtils.bot_version()
+            if local_version < remote_version:
+                return True
+            return False
+        except Exception as e:
+            print("Exception when calling 'load_version': %s\n" % e)
 
     async def cmdGetParams(cmd):
         self.parsed = cmd.split()

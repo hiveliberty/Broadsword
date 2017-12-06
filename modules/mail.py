@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands as broadsword
 import xmltodict
 from lib.utils import MailUtils
-from lib.libdb import DB
+from lib.libdb import DBMain
 from lib.libeve import EVEBasic
 from config import config
 
@@ -26,7 +26,7 @@ class EVEMail:
         try:
             while not self.broadsword.is_closed:
                 print("Start periodic check corp\\alliance mails..")
-                self.cnx = DB()
+                self.cnx = DBMain()
                 self.latestMailID = await self.cnx.getKey("latestMailID");
                 print("Latest checked mailID {}".format(self.latestMailID))
                 if self.latestMailID is None:

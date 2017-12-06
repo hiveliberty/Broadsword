@@ -3,7 +3,7 @@ import time
 import json
 from discord.ext import commands as broadsword
 from lib.utils import MailUtils
-from lib.libdb import DB
+from lib.libdb import DBMain
 from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
 #from lib.libeve import zKillboardAPI

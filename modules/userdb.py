@@ -3,7 +3,7 @@ import asyncio
 from discord.ext import commands as broadsword
 from importlib import reload
 from config import config
-from lib.libdb import DB
+from lib.libdb import DBMain
 
 class UserDB:
     """Store joined discord users in DB"""
@@ -14,7 +14,7 @@ class UserDB:
     async def on_member_join(self, member):
         try:
             print("User {} joined".format(member))
-            self.cnx = DB()
+            self.cnx = DBMain()
             await self.cnx.addDiscordUser(member.id)
         except Exception as e:
             print(e)
@@ -27,7 +27,7 @@ class UserDB:
     async def on_member_remove(self, member):
         try:
             print("User {} left".format(member))
-            self.cnx = DB()
+            self.cnx = DBMain()
             await self.cnx.delDiscordUser(member.id)
         except Exception as e:
             print(e)

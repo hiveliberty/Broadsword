@@ -2,6 +2,7 @@
 #	Config for Bot
 #============================================================================
 bot = {
+    "checkUpdates" : True,
     "token": "input your token here",
     "prefix": "!",
     "guild": "your guildID",

@@ -6,7 +6,7 @@ import discord
 from importlib import reload
 from discord.ext import commands as broadsword
 from lib.libeve import EVEApi
-from lib.libdb import DB
+from lib.libdb import DBMain
 from lib.utils import AuthUtils
 from config import config
 
@@ -37,7 +37,7 @@ class AuthUser:
         self.testAuthString = ""
         self.testActive = "1"
         try:
-            self.cnx = DB()
+            self.cnx = DBMain()
             await self.cnx.insertTestUser(self.testCharID, self.testCorpID, self.testAllianceID, self.testAuthString, self.testActive)
             await self.broadsword.say("```User added.```")
         except:
@@ -50,7 +50,7 @@ class AuthUser:
         self.channel = ctx.message.channel.id
         self.msg = msg
         try:
-            self.cnx = DB()
+            self.cnx = DBMain()
             await self.cnx.addQueueMessage(self.msg, self.channel)
         except:
             await self.broadsword.say("Oooops")
@@ -62,7 +62,7 @@ class AuthUser:
         print(id)
         print(nick)
         try:
-            self.cnx = DB()
+            self.cnx = DBMain()
             await self.cnx.addQueueRename(id, nick)
         except:
             await self.broadsword.say("Oooops")
@@ -91,7 +91,7 @@ class AuthUser:
                 await self.broadsword.say("{0.mention}, invalid code! Check your auth code and try again.".format(self.author))
 
             if not self.failed:
-                self.cnx = DB()
+                self.cnx = DBMain()
                 self.pending = await self.cnx.selectPending(self.code)
                 #   self.pending content:
                 #       'authString'
@@ -291,7 +291,7 @@ class AuthTask:
             while not self.broadsword.is_closed:
                 print("Start periodic check authorization..")
                 self.auth_group_ids = await AuthUtils().get_auth_group_ids()
-                self.cnx = DB()
+                self.cnx = DBMain()
                 self.auth_users = await self.cnx.selectUsers()
                 for self.auth_user in self.auth_users:
                     self.member = self.server.get_member(self.auth_user["discordID"])
