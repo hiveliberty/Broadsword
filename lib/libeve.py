@@ -17,7 +17,7 @@ import json
 #from lxml import etree
 
 from config import config
-from lib import utils
+from lib.utils import BasicUtils
 from vendor import swagger_client
 from vendor.swagger_client.rest import ApiException
 
@@ -58,7 +58,7 @@ class EVEApi:
     def __init__(self):
         self.api = swagger_client
         self.datasource = 'tranquility'
-        self.user_agent = 'BroadswordBot/{}'.format(utils.getVersion())
+        self.user_agent = 'BroadswordBot/{}'.format(BasicUtils.getVersion())
         self.x_user_agent = self.user_agent
         self.language = 'en-us'
         self.strict = False
@@ -254,7 +254,7 @@ class zKillboardAPI:
     #==============================================================================
     def __init__(self, id):
         self.id = id
-        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(utils.getVersion())}
+        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(BasicUtils.getVersion())}
         print(self.user_agent)
         self.base_url = "https://zkillboard.com/api/"
         self.eve_api = EVEApi()
