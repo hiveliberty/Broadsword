@@ -178,19 +178,19 @@ class DB:
         return None
 
     async def setKey(self, key, value):
-        self.sqlquery = "REPLACE INTO `storage` (`key`, `value`) VALUES ('{0}', '{1}')".format(key, value)
+        self.sqlquery = "REPLACE INTO `storage` (`storedKey`, `storedValue`) VALUES ('{0}', '{1}')".format(key, value)
         await self.sqlQueryExec(self.sqlquery)
         return None
 
     async def getKey(self, key):
-        self.sqlquery = "SELECT value FROM `storage` WHERE `key`='{}'".format(key)
+        self.sqlquery = "SELECT value FROM `storage` WHERE `storedKey`='{}'".format(key)
         self.sqlout = await self.sqlQuery(self.sqlquery)
         if len(self.sqlout) >= 1:
             return self.sqlout[0]['value']
         return None
 
     async def delKey(self, key):
-        self.sqlquery = "DELETE FROM `storage` WHERE `key`='{}'".format(key)
+        self.sqlquery = "DELETE FROM `storage` WHERE `storedKey`='{}'".format(key)
         await self.sqlQueryExec(self.sqlquery)
         return None
         

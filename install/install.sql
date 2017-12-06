@@ -9,6 +9,7 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `corpCache` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `corpID` varchar(128) NOT NULL,
+  `allianceID` varchar(128),
   `corpTicker` varchar(10) NOT NULL,
   `corpName` varchar(255) NOT NULL,
   `corpRole` varchar(255) NOT NULL,
@@ -32,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `renameQueue` (
 
 CREATE TABLE IF NOT EXISTS `storage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `key` varchar(191) NOT NULL,
-  `value` varchar(255) NOT NULL,
+  `storedKey` varchar(191) NOT NULL,
+  `storedValue` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
