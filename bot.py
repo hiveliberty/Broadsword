@@ -1,6 +1,7 @@
 import os
 import asyncio
 import gc
+from datetime import datetime
 from discord.ext import commands
 from config import config
 from lib.utils import BasicUtils
@@ -10,8 +11,8 @@ gc.enable() # Not sure that this working..
 
 main_modules = {
     "modules.admin",
-    "modules.queues",
-    "modules.userdb",
+#    "modules.queues",
+#    "modules.userdb",
 }
 
 def main():
@@ -25,12 +26,14 @@ def main():
             cnx.set_key("db_version", db_version)
             stored_db_version = db_version
         else:
+            # There should be an update of the database
             if stored_db_version["storedValue"] < db_version:
                 print("Database update required")
+                return
     except Exception as e:
         print(e)
         print("MySQL DB is not available! BroadswordBot will not be started!")
-        return None
+        return
     finally:
         del cnx
     
@@ -41,7 +44,8 @@ def main():
         print(e)
     finally:
         del cnx
-
+    
+    # If enabled in config, prevent the bot from running until it is updated
     if config.bot["checkUpdates"]:
         if BasicUtils.check_update() is None:
             print("Cann't check new version!")

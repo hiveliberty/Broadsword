@@ -215,63 +215,13 @@ class AuthUser:
         finally:
             await asyncio.sleep(1)
             await self.broadsword.delete_message(ctx.message)
-            del self.author
-            del self.code
-            try:
-                del self.cnx
-                print("del self.cnx")
-            except:
-                pass
-            try:
-                del self.auth_roles
-                print("del self.auth_roles")
-            except:
-                pass
-            try:
-                del self.auth_group
-                print("del self.auth_group")
-            except:
-                pass
-            try:
-                del self.charname
-                print("del self.charname")
-            except:
-                pass
-            try:
-                del self.role
-                print("del self.role")
-            except:
-                pass
-            try:
-                del self.corp_role
-                print("del self.corp_role")
-            except:
-                pass
-            try:
-                del self.pending
-                print("del self.pending")
-            except:
-                pass
-            try:
-                del self.corpinfo
-                print("del self.corpinfo")
-            except:
-                pass
-            try:
-                del self.corpinfo_temp
-                print("del self.corpinfo_temp")
-            except:
-                pass
-            try:
-                del self.charinfo
-                print("del self.charinfo")
-            except:
-                pass
-            try:
-                del self.bot_answer
-                print("del self.bot_answer")
-            except:
-                pass
+            for attr in ("cnx", "author", "code", "auth_roles",\
+                         "auth_group", "charname", "role",\
+                         "corp_role", "pending", "corpinfo",\
+                         "corpinfo_temp", "charinfo", "bot_answer"\
+                         ):
+                self.__dict__.pop(attr,None)
+
 
 class AuthTask:
     def __init__(self, bot):

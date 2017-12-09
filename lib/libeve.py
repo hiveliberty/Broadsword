@@ -20,6 +20,7 @@ from config import config
 from lib.utils import BasicUtils
 from vendor import swagger_client
 from vendor.swagger_client.rest import ApiException
+from vendor.swagger_client import Configuration
 
 #==============================================================================
 #version = await getVersion()
@@ -55,13 +56,19 @@ class EVEBasic:
         return None
 
 class EVEApi:
-    def __init__(self):
+    def __init__(self, token = None):
         self.api = swagger_client
+        if token is not None:
+            self.configuration = self.api.Configuration()
+            self.configuration.access_token = token
         self.datasource = 'tranquility'
-        self.user_agent = 'BroadswordBot/{}'.format(BasicUtils.getVersion())
+        self.user_agent = 'BroadswordBot/{}'.format(BasicUtils.bot_version())
         self.x_user_agent = self.user_agent
         self.language = 'en-us'
         self.strict = False
+
+    def __del__(self):
+        del self
 
     async def statusTQ(self):
         try:
@@ -72,24 +79,21 @@ class EVEApi:
         except ApiException as e:
             print("Exception when calling StatusApi->get_status: %s\n" % e)
 
-    async def get_mails(self, token):
+    async def get_mails(self):
         try:
-            self.api_instance = self.api.MailApi()
-            #self.char_id = config.credentials["api_key"]["character_id"]
-            self.api_response = self.api_instance.get_characters_character_id_mail(config.credentials["api_key"]["character_id"], datasource=self.datasource, token=token, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
+            self.api_instance = self.api.MailApi(self.api.ApiClient(self.configuration))
+            self.api_response = self.api_instance.get_characters_character_id_mail(\
+                config.sso["character_id"], datasource=self.datasource,\
+                user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response
             #   self.api_response content:
-            #       'alliance_id'
-            #       'ancestry_id'
-            #       'birthday'
-            #       'bloodline_id'
-            #       'corporation_id'
-            #       'description'
-            #       'faction_id'
-            #       'gender'
-            #       'name'
-            #       'race_id'
-            #       'security_status'
+            #        '_from'
+            #        'is_read'
+            #        'labels'
+            #        'mail_id'
+            #        'recipients'
+            #        'subject'
+            #        'timestamp'
         except ApiException as e:
             print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
@@ -254,7 +258,7 @@ class zKillboardAPI:
     #==============================================================================
     def __init__(self, id):
         self.id = id
-        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(BasicUtils.getVersion())}
+        self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(BasicUtils.bot_version())}
         print(self.user_agent)
         self.base_url = "https://zkillboard.com/api/"
         self.eve_api = EVEApi()
@@ -326,7 +330,3 @@ class zKillboardAPI:
         except Exception as e:
             print("Exception when calling getLastSeenDate: %s\n" % e)
             return("Ooops.")
-
-class EVEToken:
-    async def __init__(self):
-        pass

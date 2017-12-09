@@ -30,12 +30,27 @@ auth = {
     }
 }
 
+credentials = {
+    "api_key": {
+        "key_id": "",
+        "v_code": "",
+        "character_id": 0,
+    },
+}
+
+sso = {
+    "character_id": 0,
+    "clientID": "",
+    "secretKey": "",
+    "token_expiry": 1199,
+}
+
 evemails = {
     "fromIDs": ["0",],
     "channelID": "",
-    "keyID" => "",
-    "vCode" => "",
-    "characterID" => 0
+    "keyID": "",
+    "vCode": "",
+    "characterID": 0
 }
 
 db = {

@@ -19,10 +19,8 @@ class UserDB:
         except Exception as e:
             print(e)
         finally:
-            try:
-                del self.cnx
-            except:
-                pass
+            for attr in ("cnx"):
+                self.__dict__.pop(attr,None)
 
     async def on_member_remove(self, member):
         try:
@@ -32,10 +30,8 @@ class UserDB:
         except Exception as e:
             print(e)
         finally:
-            try:
-                del self.cnx
-            except:
-                pass
+            for attr in ("cnx"):
+                self.__dict__.pop(attr,None)
 
 class TaskUserDB:
     def __init__(self, bot):

@@ -1,8 +1,9 @@
 #============================================================================
 #	functions for working with DB
 #   
-#   Class DB is actual for use
+#   Class DBMain is actual for use
 #   Class DBStart is actual for use
+#
 #============================================================================
 
 import asyncio
@@ -28,26 +29,13 @@ class DB():
             print('Database connection closed')
         except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        finally:
+            for attr in ("cnx", "cursor"):
+                self.__dict__.pop(attr,None)
+            del self
 
 
 class DBMain(DB):
-#    def __init__(self):
-#        try:
-#            self.cnx = mysqldb.connect(**dbcfg)
-#            self.cursor = self.cnx.cursor(dictionary=True)
-#            print('Database connection opened')
-#        except mysqldb.Error as e:
-#            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-
-#    def __del__(self):
-#        try:
-#            self.cursor.close()
-#            print('Cursor closed')
-#            self.cnx.close()
-#            print('Database connection closed')
-#        except mysqldb.Error as e:
-#            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-
     async def sql_query(self, query):
         try:
             self.cursor.execute(query)
@@ -57,7 +45,16 @@ class DBMain(DB):
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             print("{}\n".format(query))
-        #return self.sqlout
+
+    async def sql_query_one(self, query):
+        try:
+            self.cursor.execute(query)
+            self.sqlout = self.cursor.fetchone()
+            return self.sqlout
+        except mysqldb.Error as e:
+            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+        finally:
+            print("{}\n".format(query))
 
     async def sql_query_exec(self, query):
         try:
@@ -91,12 +88,20 @@ class DBMain(DB):
         return None
 
     async def insertTestUser(self, characterID, corporationID, allianceID, authString, active):
-        self.sqlquery = "REPLACE INTO `pendingUsers` (characterID, corporationID, allianceID, authString, active) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')".format(characterID, corporationID, allianceID, authString, active)
+        self.sqlquery = """
+                        REPLACE INTO `pendingUsers`
+                        (characterID, corporationID, allianceID, authString, active)
+                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')
+                        """.format(characterID, corporationID, allianceID, authString, active)
         await self.sql_query_exec(self.sqlquery)
         return None
         
     async def insertUser(self, characterID, discordID, eveName):
-        self.sqlquery = "REPLACE INTO `authUsers` (characterID, discordID, eveName, active) VALUES ('{0}','{1}','{2}','yes')".format(characterID, discordID, eveName)
+        self.sqlquery = """
+                        REPLACE INTO `authUsers`
+                        (characterID, discordID, eveName, active)
+                        VALUES ('{0}','{1}','{2}','yes')
+                        """.format(characterID, discordID, eveName)
         await self.sql_query_exec(self.sqlquery)
         return None
     
@@ -151,7 +156,11 @@ class DBMain(DB):
     async def setMaxPrioQueueMessage(self, msg, channel):
         self.oldest = await self.gelOldestQueueMessage()
         if self.oldest is not None:
-            self.sqlquery = "INSERT INTO `messageQueue` (id, message, channel) VALUES ('{0}', '{1}', '{2}')".format(self.id, msg, channel)
+            self.sqlquery = """
+                            INSERT INTO `messageQueue`
+                            (id, message, channel)
+                            VALUES ('{0}', '{1}', '{2}')
+                            """.format(self.id, msg, channel)
             await self.sql_query_exec(self.sqlquery)
         return None
 
@@ -180,7 +189,11 @@ class DBMain(DB):
         return None
 
     async def addCorpInfo(self, corpID, corpTicker, corpName, corpRole):
-        self.sqlquery = "REPLACE INTO `corpCache` (corpID, corpTicker, corpName, corpRole) VALUES ('{0}', '{1}', '{2}', '{3}')".format(corpID, corpTicker, corpName, corpRole)
+        self.sqlquery = """
+                        REPLACE INTO `corpCache`
+                        (corpID, corpTicker, corpName, corpRole)
+                        VALUES ('{0}', '{1}', '{2}', '{3}')
+                        """.format(corpID, corpTicker, corpName, corpRole)
         await self.sql_query_exec(self.sqlquery)
         return None
 
@@ -212,28 +225,25 @@ class DBMain(DB):
         self.sqlquery = "DELETE FROM `storage` WHERE `storedKey`='{}'".format(key)
         await self.sql_query_exec(self.sqlquery)
         return None
+
+    async def get_token_data(self, characterID):
+        self.sqlquery = "SELECT * FROM `tokenStorage` WHERE `characterID`='{}'".format(characterID)
+        self.sqlout = await self.sql_query(self.sqlquery)
+        if len(self.sqlout) >= 1:
+            return self.sqlout[0]
+        return None
+
+    async def update_token_data(self, characterID, accessToken, refreshToken, updatedOn):
+        self.sqlquery = """
+                        REPLACE INTO `tokenStorage`
+                        (`characterID`, `accessToken`, `refreshToken`, `updatedOn`)
+                        VALUES ('{0}', '{1}', '{2}', '{3}')
+                        """.format(characterID, accessToken, refreshToken, updatedOn)
+        await self.sql_query_exec(self.sqlquery)
+        return None
+
         
 class DBStart(DB):
-#    def __init__(self):
-#        try:
-#            self.cnx = mysqldb.connect(**dbcfg)
-#            self.cursor = self.cnx.cursor(dictionary=True)
-#            print('Database connection opened')
-#        except mysqldb.Error as e:
-            #print('ERROR %s' % (e.args[1]))
-#            print("Error code: {}".format(e.errno))
-#            print("Error message: {}".format(e.msg))
-#            return None
-
-#    def __del__(self):
-#        try:
-#            self.cursor.close()
-#            print('Cursor closed')
-#            self.cnx.close()
-#            print('Database connection closed')
-#        except mysqldb.Error as e:
-#            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-
     def sql_query(self, query):
         try:
             self.cursor.execute(query)
@@ -248,11 +258,11 @@ class DBStart(DB):
         try:
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchone()
+            return self.sqlout
         except mysqldb.Error as e:
             print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             print("{}\n".format(query))
-        return self.sqlout
 
     def sql_query_exec(self, query):
         try:
