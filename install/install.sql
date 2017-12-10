@@ -9,7 +9,7 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `corpCache` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `corpID` varchar(128) NOT NULL,
-  `allianceID` varchar(128),
+  `allianceID` varchar(128) DEFAULT NULL,
   `corpTicker` varchar(10) NOT NULL,
   `corpName` varchar(255) NOT NULL,
   `corpRole` varchar(255) NOT NULL,
@@ -33,32 +33,22 @@ CREATE TABLE IF NOT EXISTS `renameQueue` (
 
 CREATE TABLE IF NOT EXISTS `storage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `storedKey` varchar(191) NOT NULL,
-  `storedValue` varchar(255) NOT NULL,
+  `storeKey` varchar(191) NOT NULL,
+  `storeValue` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `authUsers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `eveName` varchar(365) NOT NULL,
-  `characterID` varchar(128) NOT NULL,
-  `discordID` varchar(64) NOT NULL,
-  `role` varchar(128),
-  `active` varchar(10) NOT NULL DEFAULT 'yes',
-  `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `characterID` (`characterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `pendingUsers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `eveName` varchar(365) DEFAULT NULL,
   `characterID` varchar(128) NOT NULL,
   `corporationID` varchar(128) NOT NULL,
   `allianceID` varchar(128) NOT NULL,
-  `authString` varchar(128) NOT NULL,
-  `active` varchar(10) NOT NULL,
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `discordID` varchar(64) NOT NULL,
+  `active` varchar(10) NOT NULL DEFAULT 'no',
+  `pending` varchar(10) NOT NULL,
+  `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `characterID` (`characterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -70,6 +60,17 @@ CREATE TABLE IF NOT EXISTS `discordUsers` (
   `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `discordID` (`discordID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `tokenStorage` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `characterID` varchar(128) NOT NULL,
+  `accessToken` varchar(255) DEFAULT NULL,
+  `refreshToken` varchar(255) DEFAULT NULL,
+  `updatedOn` timestamp NULL DEFAULT NULL,
+  `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `characterID` (`characterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
