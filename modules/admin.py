@@ -81,7 +81,8 @@ class Admin:
             await self.broadsword.say('\N{OK HAND SIGN}')
             print("Module {} loaded.".format(module))
         finally:
-            del self.module
+            for attr in ('module'):
+                self.__dict__.pop(attr,None)
 
     @module.command(pass_context=True, hidden=True)
     async def unload(self, ctx, *, module):
@@ -96,10 +97,8 @@ class Admin:
             await self.broadsword.say('\N{OK HAND SIGN}')
             print("Module {} unloaded.".format(module))
         finally:
-            try:
-                del self.module
-            except:
-                pass
+            for attr in ('module'):
+                self.__dict__.pop(attr,None)
 
     @module.command(pass_context=True, name='reload', hidden=True)
     async def _reload(self, ctx, *, module):
@@ -115,10 +114,8 @@ class Admin:
             await self.broadsword.say('\N{OK HAND SIGN}')
             print("Module {} reloaded.".format(module))
         finally:
-            try:
-                del self.module
-            except:
-                pass
+            for attr in ('module'):
+                self.__dict__.pop(attr,None)
             
     @module.command(pass_context=True, name='reloadall', hidden=True)
     async def _reloadall(self, ctx):
@@ -139,10 +136,8 @@ class Admin:
             self.msg = msg + '```'
             await self.broadsword.say("{}".format(self.msg))
         finally:
-            try:
-                del self.mgs
-            except:
-                pass
+            for attr in ('module'):
+                self.__dict__.pop(attr,None)
 
 
 class GCTask:

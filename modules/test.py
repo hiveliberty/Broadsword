@@ -1,15 +1,18 @@
 #import urllib.parse as urllib
 import time
 import json
+import datetime
+from operator import itemgetter
 from discord.ext import commands as broadsword
 from lib.utils import MailUtils
-from lib.libdb import DB
+from lib.libdb import DBMain
 from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
+from lib.libtoken import EVEToken
 #from lib.libeve import zKillboardAPI
 from config import config
 
-class Test:
+class Test():
     def __init__(self, bot):
         self.broadsword = bot
 
@@ -21,8 +24,14 @@ class Test:
     @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def code(self, ctx):
         try:
-            self.eve_api = EVEApi()
-            self.mails = await self.eve_api.get_mails(config.credentials["eve_token"])
+            self.token_api = EVEToken()
+            self.token = await self.token_api.token()
+            self.eve_api = EVEApi(self.token)
+            self.mails = await self.eve_api.get_mails()
+            for i in range(0, len(self.mails)):
+                self.mails[i] = self.mails[i].to_dict()
+            print(self.mails)
+            self.mails = self.mails.sort(key=itemgetter('timestamp'))
             print(self.mails)
             #print(config.credentials["api_key"]["character_id"])
         except Exception as e:
@@ -34,19 +43,31 @@ class Test:
     @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def code2(self, ctx):
         try:
-            pass
+            self.token_api = EVEToken()
+            self.expired = await self.token_api.expired()
+            if self.expired:
+                print("Token is expired")
+            else:
+                print("Token is not expired")
+            #print(locals())
         except Exception as e:
             print(e)
-            await self.broadsword.say('Ошибка\n```{}```'.format(self.content))
         finally:
-            del self.cnx
+            for attr in ("token_api", "expired"):
+                self.__dict__.pop(attr,None)
 
     @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def code3(self, ctx):
         try:
-            pass
+            self.token_api = EVEToken()
+            self.token = await self.token_api.token()
+            print(self.token)
         except Exception as e:
             print(e)
+        finally:
+            for attr in ("token_api", "expired"):
+                self.__dict__.pop(attr,None)
+
 
 def setup(broadsword):
     broadsword.add_cog(Test(broadsword))
