@@ -41,36 +41,14 @@ CREATE TABLE IF NOT EXISTS `storage` (
 
 CREATE TABLE IF NOT EXISTS `authUsers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `eveName` varchar(365) NOT NULL,
+  `eveName` varchar(365) DEFAULT NULL,
   `characterID` varchar(128) NOT NULL,
+  `corporationID` varchar(128) NOT NULL,
+  `allianceID` varchar(128) NOT NULL,
   `discordID` varchar(64) NOT NULL,
-  `role` varchar(128) DEFAULT NULL,
-  `active` varchar(10) NOT NULL DEFAULT 'yes',
+  `active` varchar(10) NOT NULL DEFAULT 'no',
+  `pending` varchar(10) NOT NULL,
   `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `characterID` (`characterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `pendingUsers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `characterID` varchar(128) NOT NULL,
-  `corporationID` varchar(128) NOT NULL,
-  `allianceID` varchar(128) NOT NULL,
-  `authString` varchar(128) NOT NULL,
-  `active` varchar(10) NOT NULL,
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `characterID` (`characterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `doAuthorize` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `characterID` varchar(128) NOT NULL,
-  `corporationID` varchar(128) NOT NULL,
-  `allianceID` varchar(128) NOT NULL,
-  `discordID` varchar(64) NOT NULL,
-  `active` varchar(10) NOT NULL,
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `characterID` (`characterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

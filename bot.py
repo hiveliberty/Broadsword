@@ -11,8 +11,9 @@ gc.enable() # Not sure that this working..
 
 main_modules = {
     "modules.admin",
-#    "modules.queues",
-#    "modules.userdb",
+    "modules.test",
+    "modules.queues",
+    "modules.userdb",
 }
 
 def main():
@@ -20,16 +21,16 @@ def main():
     try:
         cnx = DBStart()
         mysql_version = cnx.mysql_version()
-        stored_db_version = cnx.get_key("db_version")
-        db_version = BasicUtils.db_version()
-        if stored_db_version is None:
-            cnx.set_key("db_version", db_version)
-            stored_db_version = db_version
-        else:
+        #stored_db_version = cnx.storage_get("db_version")
+        #db_version = BasicUtils.db_version()
+        #if stored_db_version is None:
+        #    cnx.storage_add("db_version", db_version)
+        #    stored_db_version = db_version
+        #else:
             # There should be an update of the database
-            if stored_db_version["storedValue"] < db_version:
-                print("Database update required")
-                return
+        #    if stored_db_version["storedValue"] < db_version:
+        #        print("Database update required")
+        #        return
     except Exception as e:
         print(e)
         print("MySQL DB is not available! BroadswordBot will not be started!")
@@ -39,7 +40,7 @@ def main():
     
     try:
         cnx = DBStart()
-        cnx.check_message_queue()
+        cnx.message_check()
     except Exception as e:
         print(e)
     finally:
@@ -69,7 +70,7 @@ def main():
         print('User ID: {}'.format(broadsword.user.id))
         print('Version v.{}'.format(BasicUtils.bot_version()))
         print('MySQL v.{}'.format(mysql_version))
-        print('DB v.{}'.format(stored_db_version["storedValue"]))
+        #print('DB v.{}'.format(stored_db_version["storedValue"]))
         print('-----------------------')
 
         #   Load main modules

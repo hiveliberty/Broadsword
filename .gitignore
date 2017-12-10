@@ -12,3 +12,4 @@ libtemp*
 bot_old.py
 install_new.sql
 backup
+*.backup

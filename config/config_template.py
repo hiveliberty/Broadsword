@@ -76,7 +76,4 @@ plugins = {
     "modules.mail": {
         "enabled": False,
     },
-    "modules.test": {
-        "enabled": True,
-    },
 }

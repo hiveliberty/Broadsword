@@ -2,7 +2,7 @@ import sys
 import asyncio
 import discord
 from discord.ext import commands as broadsword
-import xmltodict
+#import xmltodict
 from lib.utils import MailUtils
 from lib.libdb import DBMain
 from lib.libeve import EVEBasic
@@ -15,19 +15,19 @@ class EVEMail:
         #self.server = self.broadsword.get_server(id=config.bot["guild"])
         self.interval = 300
         self.channel = config.evemails["channelID"]
-        self._task = self.broadsword.loop.create_task(self.MailTask())
+        self._task = self.broadsword.loop.create_task(self.mail_task())
         print('MailTask should have been run in background..')
         
     def __unload(self):
         self._task.cancel()
         print('MailTask should have been unloaded..')
         
-    async def MailTask(self):
+    async def mail_task(self):
         try:
             while not self.broadsword.is_closed:
                 print("Start periodic check corp\\alliance mails..")
                 self.cnx = DBMain()
-                self.latestMailID = await self.cnx.getKey("latestMailID");
+                self.latestMailID = await self.cnx.storage_get("latestMailID");
                 print("Latest checked mailID {}".format(self.latestMailID))
                 if self.latestMailID is None:
                     self.latestMailID = "0"
@@ -58,14 +58,14 @@ class EVEMail:
                                 self.msg += "**Content: **\n"
                                 self.msg += self.msg_split[0]
 
-                                await self.cnx.addQueueMessage(self.msg, self.channel)
+                                await self.cnx.message_add(self.msg, self.channel)
                                 if len(self.msg_split) > 0:
                                     for self.i in range(1, len(self.msg_split)):
-                                        await self.cnx.addQueueMessage(self.msg_split[self.i], self.channel)
+                                        await self.cnx.message_add(self.msg_split[self.i], self.channel)
                                 self.maxID = max(self.mail["@messageID"], self.maxID)
                     print("Latest mailID is {}".format(self.maxID))
                     if self.maxID > self.latestMailID:
-                        await self.cnx.setKey("latestMailID", self.maxID)
+                        await self.cnx.storage_add("latestMailID", self.maxID)
                 else:
                     print("EVE ESI is unavailable")
                 del self.cnx
@@ -73,12 +73,12 @@ class EVEMail:
         except Exception as e:
             print(e)
             self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.MailTask())
+            self._task = self.broadsword.loop.create_task(self.mail_task())
         except asyncio.CancelledError as e:
             print(e)
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.MailTask())
+            self._task = self.broadsword.loop.create_task(self.mail_task())
 
 def setup(broadsword):
     broadsword.add_cog(EVEMail(broadsword))

@@ -1,7 +1,6 @@
 import discord
 import asyncio
 from discord.ext import commands as broadsword
-from importlib import reload
 from config import config
 from lib.libdb import DBMain
 
@@ -15,7 +14,7 @@ class UserDB:
         try:
             print("User {} joined".format(member))
             self.cnx = DBMain()
-            await self.cnx.addDiscordUser(member.id)
+            await self.cnx.discord_add_user(member.id)
         except Exception as e:
             print(e)
         finally:
@@ -26,7 +25,7 @@ class UserDB:
         try:
             print("User {} left".format(member))
             self.cnx = DBMain()
-            await self.cnx.delDiscordUser(member.id)
+            await self.cnx.discord_delete_user(member.id)
         except Exception as e:
             print(e)
         finally:

@@ -97,7 +97,7 @@ class EVEApi:
         except ApiException as e:
             print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
-    async def getCharName(self, id):
+    async def char_get_name(self, id):
         try:
             self.charinfo = await self.getCharDetails(id)
             return self.charinfo.name
@@ -109,7 +109,7 @@ class EVEApi:
         except ApiException as e:
             print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
-    async def getCharID(self, name):
+    async def char_get_id(self, name):
         self.categories = ['character']
         try:
             self.api_instance = self.api.SearchApi()
@@ -118,7 +118,7 @@ class EVEApi:
         except ApiException as e:
             print("Exception when calling SearchApi->get_status: %s\n" % e)
 
-    async def getCharDetails(self, id):
+    async def char_get_details(self, id):
         try:
             self.api_instance = self.api.CharacterApi()
             self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
@@ -138,7 +138,7 @@ class EVEApi:
         except ApiException as e:
             print("Exception when calling CharacterApi->get_status: %s\n" % e)
 
-    async def getCorpID(self, name):
+    async def corp_get_id(self, name):
         self.categories = ['corporation']
         try:
             self.api_instance = self.api.SearchApi()
@@ -147,14 +147,14 @@ class EVEApi:
         except ApiException as e:
             print("Exception when calling SearchApi->get_status: %s\n" % e)
 
-    async def getCorpName(self, id):
+    async def corp_get_name(self, id):
         try:
-            self.corpinfo = await self.getCorpDetails(id)
+            self.corpinfo = await self.corp_get_details(id)
             return self.corpinfo.corporation_name
         except ApiException as e:
             print("Exception when calling CorporationApi->get_status: %s\n" % e)
 
-    async def getCorpDetails(self, id):
+    async def corp_get_details(self, id):
         try:
             self.api_instance = self.api.CorporationApi()
             self.api_response = self.api_instance.get_corporations_corporation_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
