@@ -11,5 +11,6 @@ Thumbs.db
 libtemp*
 bot_old.py
 install_new.sql
+cleanup_pycache.sh
 backup
 *.backup
