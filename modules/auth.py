@@ -10,7 +10,7 @@ from lib.libdb import DBMain
 from lib.utils import AuthUtils
 from config import config
 
-class AuthUser:    
+class AuthCMD:    
     def __init__(self, bot):
         self.broadsword = bot
         self.eveapi = EVEApi()
@@ -28,199 +28,6 @@ class AuthUser:
         except Exception as e:
             print(e)
             await self.broadsword.say("Oooops")
-
-    @authadmin.command(pass_context=True, description='''Тестовая команда добавления пользователя для авторизации.''')
-    async def addtestuser(self, ctx):
-        self.testCharID = ""
-        self.testCorpID = ""
-        self.testAllianceID = ""
-        self.testAuthString = ""
-        self.testActive = "1"
-        try:
-            self.cnx = DBMain()
-            await self.cnx.insertTestUser(self.testCharID, self.testCorpID, self.testAllianceID, self.testAuthString, self.testActive)
-            await self.broadsword.say("```User added.```")
-        except:
-            await self.broadsword.say("Oooops")
-        else:
-            del self.cnx
-
-    @authadmin.command(pass_context=True, description='''Тестовая команда добавления в очередь сообщений.''')
-    async def addmsg(self, ctx, *, msg):
-        self.channel = ctx.message.channel.id
-        self.msg = msg
-        try:
-            self.cnx = DBMain()
-            await self.cnx.addQueueMessage(self.msg, self.channel)
-        except:
-            await self.broadsword.say("Oooops")
-        else:
-            del self.cnx
-
-    @authadmin.command(pass_context=True, description='''Тестовая команда добавления в очередь переименования.''')
-    async def addrename(self, ctx, id, nick):
-        print(id)
-        print(nick)
-        try:
-            self.cnx = DBMain()
-            await self.cnx.addQueueRename(id, nick)
-        except:
-            await self.broadsword.say("Oooops")
-        else:
-            del self.cnx
-
-    @authadmin.command(pass_context=True, description='''Команда для тестирования.''')
-    async def test(self, ctx):
-        try:
-            #if config.auth["alertChannel"] is not None or config.auth["alertChannel"] != "":
-            #if config.auth["alertChannel"] != "":
-                await self.broadsword.send_message(self.server.owner, "Warning! alertChannel is not set!")
-        except Exception as e:
-            print(e)
-            await self.broadsword.say("Oooops")
-
-    @broadsword.command(pass_context=True, description='''Это команда авторизации.''')
-    async def auth(self, ctx, code):
-        self.author = ctx.message.author
-        self.code = code
-        self.failed = False
-
-        try:
-            if len(self.code) < 13:
-                self.failed = True
-                await self.broadsword.say("{0.mention}, invalid code! Check your auth code and try again.".format(self.author))
-
-            if not self.failed:
-                self.cnx = DBMain()
-                self.pending = await self.cnx.selectPending(self.code)
-                #   self.pending content:
-                #       'authString'
-                #       'allianceID'
-                #       'corporationID'
-                #       'characterID'
-                #       'dateCreated'
-                #       'id'
-                #       'active'
-
-                if self.pending == None:
-                    self.failed = True
-                    await self.broadsword.say("{0.mention}, not existing auth code or you are already authorized!".format(self.author))
-
-            if not self.failed:
-                self.auth_roles = []
-                self.doAuthorize = False
-
-                self.not_member = True
-                self.auth_group_ids = await AuthUtils().get_auth_group_ids()
-                if self.pending["allianceID"] in self.auth_group_ids:
-                    self.not_member = False
-                #if str(self.charinfo["alliance_id"]) not in self.auth_group_ids:
-                #for self.group_key, self.group_value in config.auth["authGroups"].items():
-                #    if self.group_value["id"] == self.pending["allianceID"]:
-                #        self.not_member = False
-                #        self.auth_group = self.group_value
-                #        del self.group_value
-                #        break
-                if self.not_member:
-                    await self.broadsword.say("{0.mention}, you are not alliance member!".format(self.author))
-                    return
-
-                self.auth_group = await AuthUtils().get_auth_group_values()
-
-                self.corpinfo = await self.cnx.getCorpInfo(self.pending["corporationID"])
-                #self.corpinfo._parent = weakref.ref(self)
-                #   self.corpinfo content:
-                #       'id'
-                #       'corpID'
-                #       'corpTicker'
-                #       'corpName'
-                #       'corpRole'
-
-                if self.corpinfo is None:
-                    self.corpinfo = {}
-                    self.corpinfo_temp = await self.eveapi.getCorpDetails(self.pending["corporationID"])
-                    #   self.corpinfo_temp content:
-                    #       'alliance_id'
-                    #       'ceo_id'
-                    #       'corporation_description'
-                    #       'corporation_name'
-                    #       'creation_date'
-                    #       'creator_id'
-                    #       'faction'
-                    #       'member_count'
-                    #       'tax_rate'
-                    #       'ticker'
-                    #       'url'
-                    self.corpinfo["corpTicker"] = self.corpinfo_temp["ticker"]
-                    self.corpinfo["corpName"] = self.corpinfo_temp["corporation_name"]
-                    if self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
-                        self.corpinfo["corpRole"] = self.corpinfo["corpTicker"] + " Members"
-                        print("Corp role is '{}'".format(self.corpinfo["corpRole"]))
-                    else:
-                        self.corpinfo["corpRole"] = ""
-                        print("Corp role is ''")
-                    await self.cnx.addCorpInfo(self.pending["corporationID"], self.corpinfo["corpTicker"], self.corpinfo["corpName"], self.corpinfo["corpRole"])
-
-                #if (self.corpinfo["corpRole"] is None or self.corpinfo["corpRole"] == "") and config.auth["setCorpRole"] and self.auth_group["type"] == "alliance":
-                if self.corpinfo["corpRole"] == "" and self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
-                    print("setCorpRole has been enabled")
-                    self.corpinfo["corpRole"] = self.corpinfo["corpTicker"] + " Members"
-                    await self.cnx.addCorpInfo(self.corpinfo["corpID"], self.corpinfo["corpTicker"], self.corpinfo["corpName"], self.corpinfo["corpRole"])
-
-                if self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
-                    self.corp_role_exist = False
-                    self.role = None
-                    for self.role in self.server.roles:
-                        print(self.role.name)
-                        if self.role.name == self.corpinfo["corpRole"]:
-                            self.corp_role_exist = True
-                            self.corp_role = self.role
-                            break
-                    if not self.corp_role_exist:
-                        self.corp_role = await self.broadsword.create_role(
-                            self.server,
-                            name=self.corpinfo["corpRole"],
-                            permissions=discord.Permissions(104324160),
-                            colour=discord.Colour(self.auth_group["corpColour"]),
-                            hoist=True,
-                            mentionable=True
-                        )
-                    self.auth_roles.append(self.corp_role)
-
-                self.role = None
-                for self.role in self.server.roles:
-                    if self.role.name == self.auth_group["memberRole"]:
-                        self.auth_roles.append(self.role)
-                        self.doAuthorize = True
-                        break
-
-                if self.doAuthorize:
-                    await self.broadsword.add_roles(self.author, *self.auth_roles)
-                    if config.auth["nameEnforce"]:
-                        self.charname = ""
-                        self.charinfo = await self.eveapi.getCharDetails(self.pending["characterID"])
-                        if config.auth["corpTickers"] and self.auth_group["type"] == "alliance":
-                            self.charname = "[" + self.corpinfo["corpTicker"] + "] "
-                        self.charname = self.charname + self.charinfo["name"]
-                        await self.cnx.addQueueRename(self.author.id, self.charname)
-                    await self.cnx.disableReg(self.code)
-                    await self.cnx.insertUser(self.pending["characterID"], self.author.id, self.charinfo["name"])
-                    await self.cnx.setAuthorized(self.author.id)
-                    await self.broadsword.say("{0.mention}, you have been authorized!".format(self.author))
-                else:
-                    await self.broadsword.say("{0.mention}, you cann't be authorized, because no role is set for auth!".format(self.author))
-        except Exception as e:
-            print(e)
-            await self.broadsword.say("{0.mention}, ooops! Something wrong!".format(self.author))
-        finally:
-            await asyncio.sleep(1)
-            await self.broadsword.delete_message(ctx.message)
-            for attr in ("cnx", "author", "code", "auth_roles",\
-                         "auth_group", "charname", "role",\
-                         "corp_role", "pending", "corpinfo",\
-                         "corpinfo_temp", "charinfo", "bot_answer"\
-                         ):
-                self.__dict__.pop(attr,None)
 
 
 class AuthCheck:
@@ -320,10 +127,8 @@ class AuthTask:
                     self.not_member = True
                     self.do_authorize = False
                     self.member = self.server.get_member(self.pending["discordID"])
-                    print(self.auth_roles)
                     for self.role in self.member.roles:
                         self.auth_roles.append(self.role)
-                    print(self.auth_roles)
 
                     self.auth_groups = await AuthUtils().get_auth_group_ids()
                     if self.pending["allianceID"] in self.auth_groups:
@@ -394,33 +199,32 @@ class AuthTask:
                                     hoist=True,
                                     mentionable=True
                                 )
-                            self.auth_roles.append(self.corp_role)
-                            print(self.auth_roles)
+                            if self.corp_role not in self.auth_roles:
+                                self.auth_roles.append(self.corp_role)
 
                         self.role = None
                         for self.role in self.server.roles:
                             if self.role.name == self.auth_group["memberRole"]:
-                                self.auth_roles.append(self.role)
-                                self.do_authorize = True
-                                break
-                        print(self.auth_roles)
-                        print("Test stage 0")
+                                if self.role not in self.auth_roles:
+                                    self.auth_roles.append(self.role)
+                                    self.do_authorize = True
+                                    break
+                                else:
+                                    self.do_authorize = True
+                                    break
 
                         if self.do_authorize:
                             await self.broadsword.add_roles(self.member, *self.auth_roles)
-                            print("Test stage 1")
                             if config.auth["nameEnforce"]:
                                 self.charname = ""
                                 self.charinfo = await self.eveapi.char_get_details(self.pending["characterID"])
                                 if self.auth_group["corpTickers"] and self.auth_group["type"] == "alliance":
                                     self.charname = "[" + self.corpinfo["corpTicker"] + "] "
                                 self.charname = self.charname + self.charinfo["name"]
-                                print("Test stage 2")
                                 await self.cnx.rename_add(self.member.id, self.charname)
                             await self.cnx.auth_disable(self.pending["characterID"])
                             await self.cnx.user_enabled(self.pending["characterID"])
                             await self.cnx.user_update(self.pending["characterID"], "eveName", self.charinfo["name"])
-                            print("Test stage 3")
                             await self.cnx.discord_set_authorized(self.member.id)
                             #await self.broadsword.say("{0.mention}, you have been authorized!".format(self.member))
                         #else:
@@ -445,7 +249,7 @@ class AuthTask:
 
 
 def setup(broadsword):
-    #broadsword.add_cog(AuthUser(broadsword))
+    broadsword.add_cog(AuthCMD(broadsword))
     broadsword.add_cog(AuthTask(broadsword))
     if config.auth["periodicCheck"]:
         broadsword.add_cog(AuthCheck(broadsword))
