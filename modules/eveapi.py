@@ -2,6 +2,7 @@
 import time
 import json
 import xmltodict
+import logging
 from discord.ext import commands as broadsword
 from importlib import reload
 from lib import utils
@@ -10,6 +11,8 @@ from lib.libeve import EVEBasic
 from lib.libeve import EVEApi
 from lib.libeve import zKillboardAPI
 from config import config
+
+log = logging.getLogger(__name__)
 
 class EVE_API:
     def __init__(self, bot):
@@ -85,6 +88,7 @@ class EVE_API:
             del self.msg
             del self.eve_api
             del self.zkill_api
+
 
 def setup(broadsword):
     broadsword.add_cog(EVE_API(broadsword))

@@ -1,9 +1,11 @@
 import gc
+import logging
 from memory_profiler import memory_usage
 from discord.ext import commands as broadsword
 from importlib import reload
 from config import config
 
+log = logging.getLogger(__name__)
 
 class Admin:
     """Admin-only commands that make the bot dynamic."""
@@ -163,7 +165,8 @@ class GCTask:
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.taskGC())
-            
+
+
 def setup(broadsword):
     broadsword.add_cog(Admin(broadsword))
 #    broadsword.add_cog(GCTask(broadsword))

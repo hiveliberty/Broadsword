@@ -1,19 +1,26 @@
 #import urllib.parse as urllib
 import discord
 import asyncio
+import logging
 from discord.ext import commands as broadsword
 from config import config
 from lib.libdb import DBMain
+from lib import logger
+
+#log = logger.logger_setup(__name__)
+log = logging.getLogger(__name__)
 
 class QueueMessages:
     def __init__(self, bot):
         self.broadsword = bot
         self._task = self.broadsword.loop.create_task(self.message_task())
-        print('Queues.MessageTask should have been run..')
+        #print('Queues.MessageTask should have been run..')
+        log.info("Queues.MessageTask should have been run.")
         
     def __unload(self):
         self._task.cancel()
-        print('Queues.MessageTask should have been unloaded..')
+        #print('Queues.MessageTask should have been unloaded..')
+        log.info("Queues.MessageTask should have been unloaded.")
 
     async def message_task(self):
         try:
@@ -56,11 +63,13 @@ class QueueRename:
     def __init__(self, bot):
         self.broadsword = bot
         self._task = self.broadsword.loop.create_task(self.rename_task())
-        print('Queues.RenameTask should have been run..')
+        log.info("Queues.RenameTask should have been run.")
+        #print('Queues.RenameTask should have been run..')
         
     def __unload(self):
         self._task.cancel()
-        print('Queues.RenameTask should have been unloaded..')
+        log.info("Queues.RenameTask should have been unloaded.")
+        #print('Queues.RenameTask should have been unloaded..')
 
     async def rename_task(self):
         try:

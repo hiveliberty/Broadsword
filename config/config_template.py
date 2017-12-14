@@ -7,7 +7,8 @@ bot = {
     "prefix": "!",
     "guild": "your guildID",
     "adminRoles": ["Admins", "BotAdmins"],
-    "restrictedChannels": [0, 0]
+    "restrictedChannels": [0, 0],
+    "loggingLevel": "DEBUG", # DEBUG, INFO, WARNING, ERROR, CRITICAL
 }
 
 auth = {
@@ -30,14 +31,6 @@ auth = {
     }
 }
 
-credentials = {
-    "api_key": {
-        "key_id": "",
-        "v_code": "",
-        "character_id": 0,
-    },
-}
-
 sso = {
     "character_id": 0,
     "clientID": "",
@@ -51,6 +44,7 @@ evemails = {
     "keyID": "",
     "vCode": "",
     "characterID": 0
+    "check_interval": 900,
 }
 
 db = {

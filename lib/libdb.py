@@ -12,7 +12,7 @@ import mysql.connector as mysqldb
 from config.config import db as dbcfg
 
 
-class DB():
+class DB:
     def __init__(self):
         try:
             self.cnx = mysqldb.connect(**dbcfg)
@@ -230,11 +230,17 @@ class DBMain(DB):
         await self.sql_query_exec(self.sqlquery)
         return None
 
+    async def storage_update(self, key, value):
+        self.sqlquery = "UPDATE `storage` SET storedValue='{1}' WHERE storedKey='{0}'".format(key, value)
+        await self.sql_query_exec(self.sqlquery)
+        return None
+
     async def storage_get(self, key):
-        self.sqlquery = "SELECT value FROM `storage` WHERE `storedKey`='{}'".format(key)
+        self.sqlquery = "SELECT storedValue FROM `storage` WHERE `storedKey`='{}'".format(key)
         self.sqlout = await self.sql_query(self.sqlquery)
+        print(self.sqlout)
         if len(self.sqlout) >= 1:
-            return self.sqlout[0]['value']
+            return self.sqlout[0]['storedValue']
         return None
 
     async def storage_delete(self, key):

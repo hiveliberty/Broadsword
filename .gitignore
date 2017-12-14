@@ -5,12 +5,13 @@ __pycache__/
 *.pyc
 
 # Other stuff
-config/config.py
-config/config.json
 Thumbs.db
 libtemp*
-bot_old.py
+temp*
+*.backup
+*-dev.py
 install_new.sql
 cleanup_pycache.sh
+config/config.py
+config/config.json
 backup
-*.backup

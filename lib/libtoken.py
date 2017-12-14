@@ -33,7 +33,7 @@ class NotRefreshableTokenError(TokenError):
     pass
 
 
-class EVEToken():
+class EVEToken:
     def __init__(self):
         self.url = "https://login.eveonline.com/oauth/token"
         self.grant_type = "refresh_token"
@@ -46,8 +46,8 @@ class EVEToken():
         self.user_agent = 'BroadswordBot/{}'.format(BasicUtils.bot_version())
 
     def __del__(self):
-        for attr in ("url", "grant_type", "datetime", "client_id",\
-                     "client_secret", "credentials", "auth", "auth_string",\
+        for attr in ("url", "grant_type", "datetime", "client_id",
+                     "client_secret", "credentials", "auth", "auth_string",
                      "user_agent"):
             self.__dict__.pop(attr,None)
         del self

@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from config import config
 
 
-class BasicUtils():
+class BasicUtils:
     def bot_version():
         with open("version", encoding='utf-8') as version_file:
             version_data = json.loads(version_file.read())
@@ -73,7 +73,7 @@ class BasicUtils():
         return self.stmp
 
 
-class AuthUtils():
+class AuthUtils:
     async def get_auth_group_ids(self):
         #print(config.auth["authGroups"])
         self.alliance_ids = []
@@ -102,7 +102,7 @@ class AuthUtils():
         return self.values
 
 
-class MailUtils():
+class MailUtils:
     async def clean_html(raw_html):
         #cleanr = re.compile('<.*?>')
         #cleantext = re.sub(cleanr, '', raw_html)

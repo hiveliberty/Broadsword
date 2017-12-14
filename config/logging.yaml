@@ -1,0 +1,94 @@
+# use with: logging.config.dictConfig(yaml.load(open('logging.yaml', 'r')))
+
+# Formatters detailed here: http://docs.python.org/2/library/logging.html#logrecord-attributes
+version: 1
+formatters:
+  console:
+    format: '[%(asctime)s][%(name)s]: %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  simple:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  detail:
+    format: '%(asctime)s - %(levelname)s - File: %(filename)s - %(funcName)s() - Line: %(lineno)d -  %(message)s'
+
+loggers:
+  discord:
+    handlers: [discord]
+    propagate: false
+    level: DEBUG
+  discord.http:
+    handlers: [discord_http]
+    propagate: false
+    level: DEBUG
+  library:
+    handlers: [library]
+    propagate: true  # We dont want ingenia logs going everywhere
+    qualname: library
+  modules.queues:
+    handlers: [module]
+    propagate: false
+    qualname: modules.queues
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: detail
+    stream: ext://sys.stdout
+  all:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: simple
+    encoding: utf-8
+    mode: a
+    backupCount: 3
+    filename: logs/broadsword.log
+  library:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: simple
+    encoding: utf-8
+    mode: a
+    maxBytes: 1048576
+    backupCount: 3
+    filename: logs/library.log
+  module:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: simple
+    encoding: utf-8
+    mode: a
+    maxBytes: 1048576
+    backupCount: 3
+    filename: logs/module.log
+  discord:
+    class: logging.handlers.RotatingFileHandler
+    #level: INFO
+    formatter: simple
+    encoding: utf-8
+    mode: a
+    maxBytes: 1048576
+    backupCount: 3
+    filename: logs/discord.log
+  discord_http:
+    class: logging.handlers.RotatingFileHandler
+    #level: WARNING
+    formatter: simple
+    encoding: utf-8
+    mode: a
+    maxBytes: 1048576
+    backupCount: 3
+    filename: logs/discord-http.log
+  temp:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: DEBUG
+    formatter: simple
+    encoding: utf-8
+    backupCount: 4
+    filename: logs/temp.log
+
+root:
+  level: INFO
+  handlers: [console, all]
+  propagate: true

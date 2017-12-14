@@ -2,6 +2,7 @@
 import time
 import json
 import datetime
+import logging
 from operator import itemgetter
 from discord.ext import commands as broadsword
 from lib.utils import MailUtils
@@ -12,7 +13,9 @@ from lib.libtoken import EVEToken
 #from lib.libeve import zKillboardAPI
 from config import config
 
-class Test():
+log = logging.getLogger(__name__)
+
+class Test:
     def __init__(self, bot):
         self.broadsword = bot
 
@@ -59,8 +62,12 @@ class Test():
     @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def code3(self, ctx):
         try:
-            self.token_api = EVEToken()
-            self.token = await self.token_api.token()
+            self.now = datetime.datetime.now().replace(microsecond=0)
+            self.unix_time = time.mktime(self.now.timetuple())
+            self.unix_time = str(self.unix_time)
+            self.unix_time = float(self.unix_time)
+            self.now2 = datetime.datetime.fromtimestamp(self.unix_time)
+            await self.broadsword.say("```{0}\n{1}\n{2}```".format(self.now, self.unix_time, self.now2))
             print(self.token)
         except Exception as e:
             print(e)

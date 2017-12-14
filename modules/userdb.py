@@ -1,8 +1,11 @@
 import discord
 import asyncio
+import logging
 from discord.ext import commands as broadsword
 from config import config
 from lib.libdb import DBMain
+
+log = logging.getLogger(__name__)
 
 class UserDB:
     """Store joined discord users in DB"""
