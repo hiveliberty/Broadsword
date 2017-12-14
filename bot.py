@@ -9,7 +9,7 @@ from datetime import datetime
 from discord.ext import commands
 from config import config
 from lib.utils import BasicUtils
-from lib.libdb import DBStart
+from lib.db import DBStart
 
 gc.enable() # Not sure that this working..
 
