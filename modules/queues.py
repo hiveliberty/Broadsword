@@ -113,11 +113,17 @@ class QueueRename:
                             await self.cnx.rename_delete(self.id)
                         except discord.Forbidden as e:
                             if self.queued_rename['discordID'] == self.server.owner.id:
-                                print("Sorry, but owner cann't be renamed!")
+                                if config.bot["devMode"]:
+                                    print("Owner cann't be renamed!")
+                                else:
+                                    log.info("Owner cann't be renamed!")
                                 await self.cnx.rename_delete(self.id)
                                 continue
                             if e.text == "Privilege is too low...":
-                                print("BroadswordBot needs more privileges!")
+                                if config.bot["devMode"]:
+                                    print("BroadswordBot needs more privileges for rename members!")
+                                else:
+                                    log.info("BroadswordBot needs more privileges for rename members!")
                                 continue
                     else:
                         continue

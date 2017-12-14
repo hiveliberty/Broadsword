@@ -14,7 +14,7 @@ class Admin:
         self.broadsword = bot
         self.server = self.broadsword.get_server(id=config.bot["guild"])
 
-    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
+    @broadsword.group(pass_context=True, hidden=False, description="Группа команд администратора.")
     async def admin(self, ctx):
         if ctx.invoked_subcommand is None:
             await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))

@@ -38,7 +38,9 @@ class Test:
             print(self.mails)
             #print(config.credentials["api_key"]["character_id"])
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
             #await self.broadsword.say("Ошибка\n```{}```".format(e))
         #finally:
         #    del self.cnx
@@ -54,7 +56,9 @@ class Test:
                 print("Token is not expired")
             #print(locals())
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("token_api", "expired"):
                 self.__dict__.pop(attr,None)
@@ -70,7 +74,9 @@ class Test:
             await self.broadsword.say("```{0}\n{1}\n{2}```".format(self.now, self.unix_time, self.now2))
             print(self.token)
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("token_api", "expired"):
                 self.__dict__.pop(attr,None)

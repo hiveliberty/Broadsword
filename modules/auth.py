@@ -19,10 +19,13 @@ class AuthCMD:
         self.eveapi = EVEApi()
         self.server = self.broadsword.get_server(id=config.bot["guild"])
 
-    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
+    @broadsword.group(pass_context=True, hidden=False)
+    #@broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
     async def authadmin(self, ctx):
         if ctx.invoked_subcommand is None:
-            await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))
+            await self.broadsword.say(  
+                "{0.mention}, invalid git command passed...".format(self.author)
+            )
 
     @authadmin.command(pass_context=True)
     async def reloadconf(self, ctx):
@@ -68,30 +71,50 @@ class AuthCheck:
                 self.cnx = DBMain()
                 self.auth_users = await self.cnx.select_users()
                 for self.auth_user in self.auth_users:
-                    self.member = self.server.get_member(self.auth_user["discordID"])
+                    self.member = self.server.get_member(
+                                    self.auth_user["discordID"])
                     if self.member == self.server.owner:
-                        #print("is owner!")
                         continue
-                    self.is_exempt = await AuthUtils().is_auth_exempt(self.member.roles)
+                    self.is_exempt = await AuthUtils().is_auth_exempt(
+                                            self.member.roles)
                     if not self.is_exempt:
-                        self.charinfo = await self.eveapi.char_get_details(self.auth_user["characterID"])
+                        self.charinfo = await self.eveapi.char_get_details(
+                                                self.auth_user["characterID"])
                         if self.charinfo is not None:
                             if str(self.charinfo["alliance_id"]) not in self.auth_groups:
-                                await self.cnx.user_disable(self.auth_user["characterID"])
-                                await self.broadsword.remove_roles(self.member, *self.member.roles)
+                                await self.cnx.user_disable(
+                                    self.auth_user["characterID"]
+                                )
+                                await self.broadsword.remove_roles(
+                                    self.member,
+                                    *self.member.roles
+                                )
                                 if config.auth["kickWhenLeaving"]:
                                     await self.broadsword.kick(self.member)
                                 else:
-                                    await self.cnx.discord_set_unauthorized(self.auth_user["discordID"])
+                                    await self.cnx.discord_set_unauthorized(
+                                        self.auth_user["discordID"]
+                                    )
                                 #if config.auth["alertChannel"] is not None or config.auth["alertChannel"] != "":
                                 if config.auth["alertChannel"] != "":
-                                    self.channel = self.broadsword.get_channel(config.auth["alertChannel"])
-                                    await self.broadsword.send_message(self.channel, "{} left corp\\alliance.".format(self.auth_user["eveName"]))
+                                    self.channel = self.broadsword.get_channel(
+                                        config.auth["alertChannel"]
+                                    )
+                                    await self.broadsword.send_message(
+                                        self.channel,
+                                        "{} left corp\\alliance.".\
+                                            format(self.auth_user["eveName"])
+                                    )
                                 else:
-                                    await self.broadsword.send_message(self.server.owner, "Warning! alertChannel is not set!")
+                                    await self.broadsword.send_message(
+                                        self.server.owner,
+                                        "Warning! alertChannel is not set!"
+                                    )
                         else:
-                            log.warning("EVE services temprorary unavailable!")
-                            #print("EVE services temprorary unavailable")
+                            if config.bot["devMode"]:
+                                print("EVE services temprorary unavailable!")
+                            else:
+                                log.warning("EVE services temprorary unavailable!")
                 del self.cnx
                 await asyncio.sleep(self.interval)
         except Exception as e:
@@ -249,11 +272,19 @@ class AuthTask:
                         )
 
                     # Update DB if setCorpRole has been enabled
-                    if self.corpinfo["corpRole"] == "" and self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
-                        self.corpinfo["corpRole"] = self.corpinfo["corpTicker"] + " Members"
-                        await self.cnx.corpinfo_update(self.corpinfo["corpID"], "corpRole", self.corpinfo["corpRole"])
+                    if self.corpinfo["corpRole"] == ""\
+                    and self.auth_group["setCorpRole"]\
+                    and self.auth_group["type"] == "alliance":
+                        self.corpinfo["corpRole"] = \
+                            self.corpinfo["corpTicker"] + " Members"
+                        await self.cnx.corpinfo_update(
+                            self.corpinfo["corpID"],
+                            "corpRole",
+                            self.corpinfo["corpRole"]
+                        )
 
-                    if self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
+                    if self.auth_group["setCorpRole"]\
+                    and self.auth_group["type"] == "alliance":
                         self.role_exist = False
                         self.role = None
                         for self.role in self.server.roles:
@@ -295,15 +326,19 @@ class AuthTask:
                             await self.cnx.rename_add(self.member.id, self.charname)
                         await self.cnx.auth_disable(self.pending["characterID"])
                         await self.cnx.user_enabled(self.pending["characterID"])
-                        await self.cnx.user_update(self.pending["characterID"], "eveName", self.charinfo["name"])
+                        await self.cnx.user_update(
+                            self.pending["characterID"],
+                            "eveName",
+                            self.charinfo["name"]
+                        )
                         await self.cnx.discord_set_authorized(self.member.id)
                         #await self.broadsword.say("{0.mention}, you have been authorized!".format(self.member))
                     #else:
                     #    await self.broadsword.say("{0.mention}, you cann't be authorized, because no role is set for auth!".format(self.member))
         except Exception as e:
-            log.exception("An exception: ")
-            #print(e)
-            pass
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("cnx", "pending", "auth_roles", "member",
                          "auth_groups", "auth_group", "corpinfo",
@@ -317,9 +352,3 @@ def setup(broadsword):
     broadsword.add_cog(AuthTask(broadsword))
     if config.auth["periodicCheck"]:
         broadsword.add_cog(AuthCheck(broadsword))
-
-#def setup(bot):
-#    bot.add_cog(AuthCMD(bot))
-#    bot.add_cog(AuthTask(bot))
-#    if config.auth["periodicCheck"]:
-#        bot.add_cog(AuthCheck(bot))

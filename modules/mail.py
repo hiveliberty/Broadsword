@@ -17,14 +17,24 @@ class EVEMail:
     def __init__(self, bot):
         self.broadsword = bot
         #self.server = self.broadsword.get_server(id=config.bot["guild"])
-        self.interval = 10
+        self.interval = config.evemails["check_interval"]
         self.channel = config.evemails["channelID"]
         self._task = self.broadsword.loop.create_task(self.mail_task())
-        print('MailTask should have been run in background..')
+        self.msg_start = "{} should have been run.".\
+            format(__class__.__name__)
+        self.msg_stop = "{} should have been unloaded.".\
+            format(__class__.__name__)
+        if config.bot["devMode"]:
+            print(self.msg_start)
+        else:
+            log.info(self.msg_start)
         
     def __unload(self):
         self._task.cancel()
-        print('MailTask should have been unloaded..')
+        if config.bot["devMode"]:
+            print(self.msg_stop)
+        else:
+            log.info(self.msg_stop)
         
     async def mail_task(self):
         try:
@@ -36,9 +46,11 @@ class EVEMail:
                     self.time_next = datetime.datetime.fromtimestamp(float(self.time_next))
                     self.time_now = datetime.datetime.now().replace(microsecond=0)
 
-                    print("{0} <= {1}".format(self.time_next, self.time_now))
                     if self.time_next <= self.time_now:
-                        print("Start periodic check corp\\alliance mails..")
+                        if config.bot["devMode"]:
+                            print("Start periodic check corp\\alliance mails.")
+                        else:
+                            log.info("Start periodic check corp\\alliance mails.")
                         await self.mail_check()
                 else:
                     self.time_now = datetime.datetime.now().replace(microsecond=0)
@@ -49,11 +61,15 @@ class EVEMail:
                 del self.cnx
                 await asyncio.sleep(self.interval)
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.mail_task())
-        except asyncio.CancelledError as e:
-            print(e)
+        except asyncio.CancelledError as ec:
+            if config.bot["devMode"]:
+                print(ec)
+            log.exception("asyncio.CancelledError: ")
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.mail_task())
@@ -63,7 +79,6 @@ class EVEMail:
             while not self.broadsword.is_closed:
                 self.cnx = DBMain()
                 self.latestMailID = await self.cnx.storage_get("latestMailID")
-                #print("Latest checked mailID {}".format(self.latestMailID))
                 if self.latestMailID is None:
                     self.latestMailID = "0"
                 self.maxID = self.latestMailID
@@ -107,10 +122,14 @@ class EVEMail:
                     self.time_next = time.mktime(self.time_next.timetuple())
                     await self.cnx.storage_update("nextMailCheck", self.time_next)
                 else:
-                    print("EVE ESI is unavailable")
+                    if config.bot["devMode"]:
+                        print("EVE ESI is unavailable.")
+                    else:
+                        log.warning("EVE ESI is unavailable.")
         except Exception as e:
-            print(e)
-            pass
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("cnx", "latestMailID", "maxID", "url",
                          "mails", "mail", "content", "msg_split",
