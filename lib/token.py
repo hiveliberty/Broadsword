@@ -12,7 +12,7 @@ import datetime
 import json
 
 from config import config
-from lib.libdb import DBMain
+from lib.db import DBMain
 from lib.utils import BasicUtils
 
 #==============================================================================

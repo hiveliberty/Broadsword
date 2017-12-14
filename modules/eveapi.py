@@ -6,10 +6,10 @@ import logging
 from discord.ext import commands as broadsword
 from importlib import reload
 from lib import utils
-from lib.libdb import DBMain
-from lib.libeve import EVEBasic
-from lib.libeve import EVEApi
-from lib.libeve import zKillboardAPI
+from lib.db import DBMain
+from lib.eve import EVEBasic
+from lib.eve import EVEApi
+from lib.eve import zKillboardAPI
 from config import config
 
 log = logging.getLogger(__name__)

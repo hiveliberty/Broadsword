@@ -8,13 +8,10 @@ from logging.handlers import RotatingFileHandler
 from datetime import datetime
 from discord.ext import commands
 from config import config
-from lib import logger
 from lib.utils import BasicUtils
 from lib.libdb import DBStart
 
 gc.enable() # Not sure that this working..
-
-#log = logging.getLogger(__name__)
 
 main_modules = {
     "modules.admin",

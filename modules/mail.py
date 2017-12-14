@@ -7,8 +7,8 @@ import logging
 from discord.ext import commands as broadsword
 #import xmltodict
 from lib.utils import MailUtils
-from lib.libdb import DBMain
-from lib.libeve import EVEBasic
+from lib.db import DBMain
+from lib.eve import EVEBasic
 from config import config
 
 log = logging.getLogger(__name__)

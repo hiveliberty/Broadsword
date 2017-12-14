@@ -8,7 +8,8 @@ bot = {
     "guild": "your guildID",
     "adminRoles": ["Admins", "BotAdmins"],
     "restrictedChannels": [0, 0],
-    "loggingLevel": "DEBUG", # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    #"loggingLevel": "DEBUG", # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    "devMode": True,
 }
 
 auth = {

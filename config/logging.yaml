@@ -7,10 +7,10 @@ formatters:
     format: '[%(asctime)s][%(name)s]: %(message)s'
     datefmt: '%Y-%m-%d %H:%M:%S'
   simple:
-    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format: '[%(asctime)s][%(name)s][%(levelname)s]: %(message)s'
     datefmt: '%Y-%m-%d %H:%M:%S'
   detail:
-    format: '%(asctime)s - %(levelname)s - File: %(filename)s - %(funcName)s() - Line: %(lineno)d -  %(message)s'
+    format: '[%(asctime)s][%(levelname)s][File: %(filename)s][%(funcName)s()][Line: %(lineno)d]: %(message)s'
 
 loggers:
   discord:
@@ -25,20 +25,22 @@ loggers:
     handlers: [library]
     propagate: true  # We dont want ingenia logs going everywhere
     qualname: library
+    level: DEBUG
   modules.queues:
     handlers: [module]
     propagate: false
     qualname: modules.queues
+    level: DEBUG
 
 handlers:
   console:
     class: logging.StreamHandler
-    level: INFO
+    #level: INFO
     formatter: detail
     stream: ext://sys.stdout
   all:
     class: logging.handlers.RotatingFileHandler
-    level: DEBUG
+    #level: DEBUG
     formatter: simple
     encoding: utf-8
     mode: a
@@ -46,7 +48,7 @@ handlers:
     filename: logs/broadsword.log
   library:
     class: logging.handlers.RotatingFileHandler
-    level: DEBUG
+    #level: DEBUG
     formatter: simple
     encoding: utf-8
     mode: a
@@ -55,7 +57,7 @@ handlers:
     filename: logs/library.log
   module:
     class: logging.handlers.RotatingFileHandler
-    level: DEBUG
+    #level: DEBUG
     formatter: simple
     encoding: utf-8
     mode: a
@@ -80,13 +82,6 @@ handlers:
     maxBytes: 1048576
     backupCount: 3
     filename: logs/discord-http.log
-  temp:
-    class: logging.handlers.TimedRotatingFileHandler
-    level: DEBUG
-    formatter: simple
-    encoding: utf-8
-    backupCount: 4
-    filename: logs/temp.log
 
 root:
   level: INFO

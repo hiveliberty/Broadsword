@@ -4,23 +4,29 @@ import asyncio
 import logging
 from discord.ext import commands as broadsword
 from config import config
-from lib.libdb import DBMain
-from lib import logger
+from lib.db import DBMain
 
-#log = logger.logger_setup(__name__)
 log = logging.getLogger(__name__)
 
 class QueueMessages:
     def __init__(self, bot):
         self.broadsword = bot
         self._task = self.broadsword.loop.create_task(self.message_task())
-        #print('Queues.MessageTask should have been run..')
-        log.info("Queues.MessageTask should have been run.")
+        self.msg_start = "{} should have been run.".\
+            format(__class__.__name__)
+        self.msg_stop = "{} should have been unloaded.".\
+            format(__class__.__name__)
+        if config.bot["devMode"]:
+            print(self.msg_start)
+        else:
+            log.info(self.msg_start)
         
     def __unload(self):
         self._task.cancel()
-        #print('Queues.MessageTask should have been unloaded..')
-        log.info("Queues.MessageTask should have been unloaded.")
+        if config.bot["devMode"]:
+            print(self.msg_stop)
+        else:
+            log.info(self.msg_stop)
 
     async def message_task(self):
         try:
@@ -50,11 +56,15 @@ class QueueMessages:
                 del self.cnx
                 await asyncio.sleep(7)
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.message_task())
-        except asyncio.CancelledError as e:
-            print(e)
+        except asyncio.CancelledError as ec:
+            if config.bot["devMode"]:
+                print(ec)
+            log.exception("asyncio.CancelledError: ")
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.message_task())
@@ -63,13 +73,21 @@ class QueueRename:
     def __init__(self, bot):
         self.broadsword = bot
         self._task = self.broadsword.loop.create_task(self.rename_task())
-        log.info("Queues.RenameTask should have been run.")
-        #print('Queues.RenameTask should have been run..')
+        self.msg_start = "{} should have been run.".\
+            format(__class__.__name__)
+        self.msg_stop = "{} should have been unloaded.".\
+            format(__class__.__name__)
+        if config.bot["devMode"]:
+            print(self.msg_start)
+        else:
+            log.info(self.msg_start)
         
     def __unload(self):
         self._task.cancel()
-        log.info("Queues.RenameTask should have been unloaded.")
-        #print('Queues.RenameTask should have been unloaded..')
+        if config.bot["devMode"]:
+            print(self.msg_stop)
+        else:
+            log.info(self.msg_stop)
 
     async def rename_task(self):
         try:
@@ -109,11 +127,15 @@ class QueueRename:
                 del self.cnx
                 await asyncio.sleep(10)
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.rename_task())
-        except asyncio.CancelledError as e:
-            print(e)
+        except asyncio.CancelledError as ec:
+            if config.bot["devMode"]:
+                print(ec)
+            log.exception("asyncio.CancelledError: ")
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.rename_task())
