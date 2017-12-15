@@ -4,6 +4,7 @@
 #
 #==============================================================================
 
+import logging
 import asyncio
 import aiohttp
 import requests
@@ -12,10 +13,12 @@ import datetime
 import json
 
 from config import config
-from lib.libdb import DBMain
+from lib.db import DBMain
 from lib.utils import BasicUtils
 
 #==============================================================================
+
+log = logging.getLogger(__name__)
 
 class TokenError(Exception):
     pass
@@ -33,7 +36,7 @@ class NotRefreshableTokenError(TokenError):
     pass
 
 
-class EVEToken():
+class EVEToken:
     def __init__(self):
         self.url = "https://login.eveonline.com/oauth/token"
         self.grant_type = "refresh_token"
@@ -46,8 +49,8 @@ class EVEToken():
         self.user_agent = 'BroadswordBot/{}'.format(BasicUtils.bot_version())
 
     def __del__(self):
-        for attr in ("url", "grant_type", "datetime", "client_id",\
-                     "client_secret", "credentials", "auth", "auth_string",\
+        for attr in ("url", "grant_type", "datetime", "client_id",
+                     "client_secret", "credentials", "auth", "auth_string",
                      "user_agent"):
             self.__dict__.pop(attr,None)
         del self
@@ -68,7 +71,9 @@ class EVEToken():
             else:
                 raise TokenExpiredError()
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("stored_token", "time_expired", "time_now"):
                 self.__dict__.pop(attr,None)
@@ -83,7 +88,9 @@ class EVEToken():
             else:
                 return False
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("stored_token"):
                 self.__dict__.pop(attr,None)
@@ -117,7 +124,9 @@ class EVEToken():
                                              self.refresh_token,
                                              self.created)
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("cnx", "stored_token", "custom_headers",
                          "params", "request", "response",
@@ -130,7 +139,9 @@ class EVEToken():
             self.query = await self.cnx.get_token_data(config.sso["character_id"])
             return self.query
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("cnx", "query"):
                 self.__dict__.pop(attr,None)
@@ -145,7 +156,9 @@ class EVEToken():
             self.token = await self.get_stored()
             return self.token["accessToken"]
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("token", "can_refresh", "expired"):
                 self.__dict__.pop(attr,None)

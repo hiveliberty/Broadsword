@@ -2,14 +2,17 @@
 import time
 import json
 import xmltodict
+import logging
 from discord.ext import commands as broadsword
 from importlib import reload
 from lib import utils
-from lib.libdb import DBMain
-from lib.libeve import EVEBasic
-from lib.libeve import EVEApi
-from lib.libeve import zKillboardAPI
+from lib.db import DBMain
+from lib.eve import EVEBasic
+from lib.eve import EVEApi
+from lib.eve import zKillboardAPI
 from config import config
+
+log = logging.getLogger(__name__)
 
 class EVE_API:
     def __init__(self, bot):
@@ -25,19 +28,11 @@ class EVE_API:
         try:
             reload(config)
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
             await self.broadsword.say("Oooops")
 
-    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def evestatus(self, ctx):
-        try:
-            self.author = ctx.message.author
-            self.status = await EVEBasic.getTQOnline()
-            self.stmp = '{0.mention} **TQ Status:**  {1} players online. **Version:** {2}'.format(self.author, self.status['userCount'], self.status['serverVersion'])
-            await self.broadsword.say(self.stmp)
-        except:
-            await self.broadsword.say('Ошибка при получении статуса сервера Tranquility')
-            
     @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def tq(self, ctx):
         try:
@@ -47,7 +42,13 @@ class EVE_API:
             self.stmp = '{0.mention}\n**TQ Status:**  {1} players online.\n**Version:** {2}'.format(self.author, self.response.players, self.response.server_version)
             await self.broadsword.say(self.stmp)
         except:
-            await self.broadsword.say('Ошибка при получении статуса сервера Tranquility\n```{}```'.format(self.response))
+            await self.broadsword.say("Ошибка при получении статуса сервера Tranquility")
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            for attr in ("author", "api", "response", "stmp"):
+                self.__dict__.pop(attr,None)
 
     @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def charinfo(self, ctx, *, name):
@@ -58,9 +59,6 @@ class EVE_API:
             self.charID = await self.eve_api.getCharID(name)
             self.zkill_api = zKillboardAPI(self.charID)
             self.response = await self.eve_api.getCharDetails(self.charID)
-            #self.conpinfo = await self.eve_api.getCharDetails(self.response.corporation_id)
-            #print(self.conpinfo)
-            print(self.response.corporation_id)
             self.starsystemID = await self.zkill_api.getLatestSystem()
             self.shiptypeID = await self.zkill_api.getLastShipType()
             self.lastseen = await self.zkill_api.getLastSeenDate()
@@ -80,11 +78,18 @@ class EVE_API:
             self.msg += 'zKillboard Link: https://zkillboard.com/character/{}/'.format(self.charID)
             await self.broadsword.say(self.msg)
         except:
-            await self.broadsword.say('Ошибка\n```{}```'.format(self.response))
-        else:
-            del self.msg
-            del self.eve_api
-            del self.zkill_api
+            await self.broadsword.say('Возникла проблема при получении информации о персонаже.')
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            for attr in ("msg", "eve_api", "zkill_api",
+                         "author", "charID", "response",
+                         "starsystemID", "shiptypeID",
+                         "lastseen", "lastkillmailID",
+                         "birthday"):
+                self.__dict__.pop(attr,None)
+
 
 def setup(broadsword):
     broadsword.add_cog(EVE_API(broadsword))

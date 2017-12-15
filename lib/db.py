@@ -7,28 +7,37 @@
 #============================================================================
 
 import asyncio
+import logging
 import mysql.connector as mysqldb
 #from mysql.connector import errorcode
+from config import config
 from config.config import db as dbcfg
 
+log = logging.getLogger("library")
 
-class DB():
+class DB:
     def __init__(self):
         try:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
-            print('Database connection opened')
+            log.info("Test lib.db")
+            if config.bot["devMode"]:
+                print('Database connection opened')
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
 
     def __del__(self):
         try:
             self.cursor.close()
-            print('Cursor closed')
+            if config.bot["devMode"]:
+                print('Cursor closed')
             self.cnx.close()
-            print('Database connection closed')
+            if config.bot["devMode"]:
+                print('Database connection closed')
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             for attr in ("cnx", "cursor"):
                 self.__dict__.pop(attr,None)
@@ -42,9 +51,11 @@ class DBMain(DB):
             self.sqlout = self.cursor.fetchall()
             return self.sqlout
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
-            print("{}\n".format(query))
+            if config.bot["devMode"]:
+                print("{}\n".format(query))
 
     async def sql_query_one(self, query):
         try:
@@ -52,9 +63,11 @@ class DBMain(DB):
             self.sqlout = self.cursor.fetchone()
             return self.sqlout
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
-            print("{}\n".format(query))
+            if config.bot["devMode"]:
+                print("{}\n".format(query))
 
     async def sql_query_exec(self, query):
         try:
@@ -62,9 +75,11 @@ class DBMain(DB):
             self.cnx.commit()
             return 0
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
-            print("{}\n".format(query))
+            if config.bot["devMode"]:
+                print("{}\n".format(query))
 
     async def discord_add_user(self, discordID):
         self.sqlquery = "REPLACE INTO `discordUsers` SET discordID='{0}'".format(discordID)
@@ -129,7 +144,6 @@ class DBMain(DB):
         self.sqlout = await self.sql_query(self.sqlquery)
         if len(self.sqlout) >= 1:
             return self.sqlout[0]
-        print(self.sqlout)
         return None
 
     async def select_users(self):
@@ -137,7 +151,6 @@ class DBMain(DB):
                            FROM `authUsers`
                            WHERE active='yes' AND pending='no'"""
         self.sqlout = await self.sql_query(self.sqlquery)
-        print(self.sqlout)
         return self.sqlout
 
     async def message_add(self, msg, channel):
@@ -230,11 +243,16 @@ class DBMain(DB):
         await self.sql_query_exec(self.sqlquery)
         return None
 
+    async def storage_update(self, key, value):
+        self.sqlquery = "UPDATE `storage` SET storedValue='{1}' WHERE storedKey='{0}'".format(key, value)
+        await self.sql_query_exec(self.sqlquery)
+        return None
+
     async def storage_get(self, key):
-        self.sqlquery = "SELECT value FROM `storage` WHERE `storedKey`='{}'".format(key)
+        self.sqlquery = "SELECT storedValue FROM `storage` WHERE `storedKey`='{}'".format(key)
         self.sqlout = await self.sql_query(self.sqlquery)
         if len(self.sqlout) >= 1:
-            return self.sqlout[0]['value']
+            return self.sqlout[0]['storedValue']
         return None
 
     async def storage_delete(self, key):
@@ -270,9 +288,11 @@ class DBStart(DB):
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchall()
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
-            print("{}\n".format(query))
+            if config.bot["devMode"]:
+                print("{}\n".format(query))
         return self.sqlout
 
     def sql_query_one(self, query):
@@ -281,9 +301,11 @@ class DBStart(DB):
             self.sqlout = self.cursor.fetchone()
             return self.sqlout
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
-            print("{}\n".format(query))
+            if config.bot["devMode"]:
+                print("{}\n".format(query))
 
     def sql_query_exec(self, query):
         try:
@@ -291,9 +313,11 @@ class DBStart(DB):
             self.cnx.commit()
             return 0
         except mysqldb.Error as e:
-            print('ERROR: %d: %s' % (e.args[0], e.args[1]))
+            if config.bot["devMode"]:
+                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
-            print("{}\n".format(query))
+            if config.bot["devMode"]:
+                print("{}\n".format(query))
 
     def mysql_version(self):
         self.sqlquery = "SELECT version()"
@@ -326,11 +350,13 @@ class DBStart(DB):
         self.sqlout = self.sql_query(self.sqlquery)
         if len(self.sqlout) > 35:
             self.clearMessageQueue()
-        print("Cache was checked")
         return None
 
     def message_clear(self):
         self.sqlquery = "DELETE from messageQueue"
         self.sql_query_exec(self.sqlquery)
-        print("Cache was cleaned")
+        if config.bot["devMode"]:
+            print("Cache was cleaned")
+        else:
+            log.info("Cache was cleaned")
         return None
