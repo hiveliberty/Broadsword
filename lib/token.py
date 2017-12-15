@@ -4,6 +4,7 @@
 #
 #==============================================================================
 
+import logging
 import asyncio
 import aiohttp
 import requests
@@ -16,6 +17,8 @@ from lib.db import DBMain
 from lib.utils import BasicUtils
 
 #==============================================================================
+
+log = logging.getLogger(__name__)
 
 class TokenError(Exception):
     pass
@@ -68,7 +71,9 @@ class EVEToken:
             else:
                 raise TokenExpiredError()
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("stored_token", "time_expired", "time_now"):
                 self.__dict__.pop(attr,None)
@@ -83,7 +88,9 @@ class EVEToken:
             else:
                 return False
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("stored_token"):
                 self.__dict__.pop(attr,None)
@@ -117,7 +124,9 @@ class EVEToken:
                                              self.refresh_token,
                                              self.created)
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("cnx", "stored_token", "custom_headers",
                          "params", "request", "response",
@@ -130,7 +139,9 @@ class EVEToken:
             self.query = await self.cnx.get_token_data(config.sso["character_id"])
             return self.query
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("cnx", "query"):
                 self.__dict__.pop(attr,None)
@@ -145,7 +156,9 @@ class EVEToken:
             self.token = await self.get_stored()
             return self.token["accessToken"]
         except Exception as e:
-            print(e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("token", "can_refresh", "expired"):
                 self.__dict__.pop(attr,None)

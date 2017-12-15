@@ -7,6 +7,7 @@
 import asyncio
 import aiohttp
 import requests
+import logging
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
@@ -24,6 +25,8 @@ from vendor.swagger_client import Configuration
 
 #==============================================================================
 #version = await getVersion()
+
+log = logging.getLogger(__name__)
 
 class EVEBasic:
     async def getTQOnline():
@@ -77,7 +80,9 @@ class EVEApi:
             self.api_response = self.api_instance.get_status()
             return self.api_response
         except ApiException as e:
-            print("Exception when calling StatusApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def get_mails(self):
         try:
@@ -95,7 +100,9 @@ class EVEApi:
             #        'subject'
             #        'timestamp'
         except ApiException as e:
-            print("Exception when calling CharacterApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def char_get_name(self, id):
         try:
@@ -107,7 +114,9 @@ class EVEApi:
             #self.api_response = self.api_instance.get_characters_character_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             #return self.api_response.name
         except ApiException as e:
-            print("Exception when calling CharacterApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def char_get_id(self, name):
         self.categories = ['character']
@@ -116,7 +125,9 @@ class EVEApi:
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.character[0]
         except ApiException as e:
-            print("Exception when calling SearchApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def char_get_details(self, id):
         try:
@@ -136,7 +147,9 @@ class EVEApi:
             #       'race_id'
             #       'security_status'
         except ApiException as e:
-            print("Exception when calling CharacterApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def corp_get_id(self, name):
         self.categories = ['corporation']
@@ -145,14 +158,19 @@ class EVEApi:
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.character[0]
         except ApiException as e:
-            print("Exception when calling SearchApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def corp_get_name(self, id):
         try:
             self.corpinfo = await self.corp_get_details(id)
             return self.corpinfo.corporation_name
         except ApiException as e:
-            print("Exception when calling CorporationApi->get_status: %s\n" % e)
+            #print("Exception when calling CorporationApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def corp_get_details(self, id):
         try:
@@ -172,7 +190,9 @@ class EVEApi:
             #       'ticker'
             #       'url'
         except ApiException as e:
-            print("Exception when calling CorporationApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             del self.api_instance
             del self.api_response
@@ -184,7 +204,9 @@ class EVEApi:
             self.jtmp = json.loads(self.response.read().decode())
             return self.jtmp
         except ApiException as e:
-            print("Exception when calling getCorpDetailsTest->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getAllianceName(self, id):
         try:
@@ -192,14 +214,18 @@ class EVEApi:
             self.api_response = self.api_instance.get_alliances_alliance_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.alliance_name
         except ApiException as e:
-            print("Exception when calling AllianceApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getSystemName(self, id):
         try:
             self.systeminfo = await self.getSystemDetails(id)
             return self.systeminfo.name
         except ApiException as e:
-            print("Exception when calling UniverseApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getSystemID(self, name):
         self.categories = ['solarsystem']
@@ -208,7 +234,9 @@ class EVEApi:
             self.api_response = self.api_instance.get_search(self.categories, name, datasource=self.datasource, language=self.language, strict=self.strict, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.solarsystem[0]
         except ApiException as e:
-            print("Exception when calling SearchApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getSystemDetails(self, id):
         try:
@@ -216,7 +244,9 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_systems_system_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
             return self.api_response
         except ApiException as e:
-            print("Exception when calling UniverseApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getRegionDetails(self, id):
         try:
@@ -224,7 +254,9 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_regions_region_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent).to_dict()
             return self.api_response
         except ApiException as e:
-            print("Exception when calling UniverseApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getApiTypeName(self, id):
         try:
@@ -232,7 +264,9 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_types_type_id(id, datasource=self.datasource, language=self.language, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.name
         except ApiException as e:
-            print("Exception when calling UniverseApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getApiTypeID(self, name):
         self.name = urllib.parse.quote(name, safe = '')
@@ -242,7 +276,9 @@ class EVEApi:
             self.jtmp = json.loads(self.response.read().decode())
             return self.jtmp['typeID']
         except ApiException as e:
-            print("Exception when calling getApiTypeID->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getApiMoonName(self, id):
         try:
@@ -250,7 +286,9 @@ class EVEApi:
             self.api_response = self.api_instance.get_universe_moons_moon_id(id, datasource=self.datasource, user_agent=self.user_agent, x_user_agent=self.x_user_agent)
             return self.api_response.name
         except ApiException as e:
-            print("Exception when calling UniverseApi->get_status: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
 class zKillboardAPI:
     #==============================================================================
@@ -259,18 +297,17 @@ class zKillboardAPI:
     def __init__(self, id):
         self.id = id
         self.user_agent = {'user-agent': 'BroadswordBot/{}'.format(BasicUtils.bot_version())}
-        print(self.user_agent)
         self.base_url = "https://zkillboard.com/api/"
         self.eve_api = EVEApi()
         self.request_url = self.base_url + "characterID/{}/limit/1/no-items/".format(self.id)
         try:
             self.response = requests.get(self.request_url)
-            print(self.response)
             if self.response.status_code == 200:
                 self.response = self.response.json()
-                print(self.response)
         except Exception as e:
-            print("Exception when calling __init__: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     # This reserved method, but is not good
     async def init(self):
@@ -279,9 +316,10 @@ class zKillboardAPI:
                 print(self.response)
                 if self.response.status == 200:
                     self.response = await self.response.json()
-                    print(self.response)
         except Exception as e:
-            print("Exception when calling init: %s\n" % e)
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getLatestSystem(self):
         #async with aiohttp.get(self.request_url) as self.response:
@@ -289,44 +327,43 @@ class zKillboardAPI:
         #        self.response = await self.response.json()
         try:
             self.temp = await self.eve_api.getSystemName(self.response[0]['solar_system_id'])
-            print(self.temp)
             return self.temp
         except Exception as e:
-            print("Exception when calling getLatestSystem: %s\n" % e)
-            return("Ooops.")
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     async def getLastShipType(self):
         try:
             if self.response[0]['victim']['character_id'] == self.id:
                 self.temp = await self.eve_api.getApiTypeName(self.response[0]['victim']['ship_type_id'])
-                print(self.temp)
                 return self.temp
             else:
                 for self.x in self.response[0]['attackers']:
                     if self.x['character_id'] in self.x:
                         if self.x['character_id'] == self.id:
                             self.temp = await self.eve_api.getApiTypeName(self.x['ship_type_id'])
-                            print(self.temp)
                             return self.temp
         except Exception as e:
-            print("Exception when calling getLastShipType: %s\n" % e)
-            return("Ooops.")
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         
     async def getLastSeenDate(self):
         try:
             self.timestamp = self.response[0]['killmail_time']
             self.ts = time.strptime(self.timestamp[:19], "%Y-%m-%dT%H:%M:%S")
             self.timestamp = time.strftime("%d.%m.%Y at %H:%M:%S", self.ts)
-            print(self.timestamp)
             return self.timestamp
         except Exception as e:
-            print("Exception when calling getLastSeenDate: %s\n" % e)
-            return("Ooops.")
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
         
     async def getLastKillmailID(self):
         try:
-            print(self.response[0]['killmail_id'])
             return self.response[0]['killmail_id']
         except Exception as e:
-            print("Exception when calling getLastSeenDate: %s\n" % e)
-            return("Ooops.")
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))

@@ -16,20 +16,22 @@ loggers:
   discord:
     handlers: [discord]
     propagate: false
+    qualname: discord
     level: DEBUG
   discord.http:
     handlers: [discord_http]
     propagate: false
+    qualname: discord.http
     level: DEBUG
   library:
-    handlers: [library]
-    propagate: true  # We dont want ingenia logs going everywhere
+    handlers: [library, console]
+    propagate: false  # We dont want this logs going everywhere
     qualname: library
     level: DEBUG
-  modules.queues:
+  modules:
     handlers: [module]
     propagate: false
-    qualname: modules.queues
+    qualname: modules.*
     level: DEBUG
 
 handlers:

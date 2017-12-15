@@ -1,6 +1,7 @@
 #============================================================================
 #	Config for Bot
 #============================================================================
+
 bot = {
     "checkUpdates" : True,
     "token": "input your token here",
@@ -8,30 +9,43 @@ bot = {
     "guild": "your guildID",
     "adminRoles": ["Admins", "BotAdmins"],
     "restrictedChannels": [0, 0],
-    #"loggingLevel": "DEBUG", # DEBUG, INFO, WARNING, ERROR, CRITICAL
-    "devMode": True,
+    "devMode": False, # Do not turn on this
 }
 
+# Config for 'modules.auth'
+#   'noAuthKick' - kick from guild, if member was not authorized during the one day
+#   'kickWhenLeaving' - immediately kick from guild, if member leave your alliance or corporation
+#   Auth Groups:
+#       'type' - two values is possible: "corporation" or "alliance"
+#       'id' - is your alliance or corporation ID.
+#       'memberRole' - role for authorized members. Must exist in your discord guild!
+#       'setCorpRole' and 'corpTickers' only works if 'type' is set to "alliance".
+#
+# enable:   True
+# disbale:  False
 auth = {
     "auth_url": "url",
     "exempt": ["NoAuth", "Bots"],
     "alertChannel": "",
     "periodicCheck": True,
     "periodicCheckInterval": 1800,
-    "kickWhenLeaving": True,    # Kick member when his left corp\alliance
+    "noAuthKick": False,
+    "kickWhenLeaving": False,
     "nameEnforce": True,
     "authGroups": {
         "group1": {
-            "type": "",         # Only one of the two values is possible - corporation or alliance.
-            "id": 0,            # Your alliance or corp id.
-            "memberRole": "",   # Role must exist in your discord guild!
-            "setCorpRole": True,    # Only works for alliances
-            "corpTickers": True,    # Only works for alliances
-            "corpColour": "",
+            "type": "",
+            "id": 0,
+            "memberRole": "",
+            "setCorpRole": True,
+            "corpTickers": True,
+            "corpColour": 0x1f8b4c,
         }
     }
 }
 
+# Config for token lib
+# Not currently used
 sso = {
     "character_id": 0,
     "clientID": "",
@@ -39,15 +53,17 @@ sso = {
     "token_expiry": 1199,
 }
 
+# Config for 'modules.mail'
 evemails = {
     "fromIDs": ["0",],
     "channelID": "",
     "keyID": "",
     "vCode": "",
     "characterID": 0
-    "check_interval": 900,
+    "check_interval": 300,
 }
 
+# Config for database
 db = {
     "user": "user",
     "password": "password",
@@ -56,14 +72,15 @@ db = {
     "database": "dbname",
     "charset": "utf8mb4",
     "connect_timeout": 5, #Don't change it if you don't know what it is for!
-#    "use_unicode": True,
-#    "get_warnings": True,
-#    "raise_on_warnings": "True",
 }
 
+# Some modules disabled by default.
+# You must configure the modules that you want and enable them.
+# enable:   True
+# disbale:  False
 plugins = {
     "modules.auth": {
-        "enabled": True,
+        "enabled": False,
     },
     "modules.eveapi": {
         "enabled": True,

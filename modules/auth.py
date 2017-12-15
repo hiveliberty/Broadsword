@@ -158,7 +158,7 @@ class AuthTask:
     async def auth_task(self):
         try:
             while not self.broadsword.is_closed:
-                log.info("Start periodic check for new authorizations.")
+                #log.info("Start periodic check for new authorizations.")
                 #print("Start periodic check for new authorizations..")
                 self.cnx = DBMain()
 
@@ -177,8 +177,8 @@ class AuthTask:
                 if self.pending is not None:
                     await self.auth(self.pending)
                     log.info("{} has been authorized.".format(self.pending["eveName"]))
-                else:
-                    log.info("There is no one to authorize.")
+                #else:
+                    #log.info("There is no one to authorize.")
                     #print("There is no one to authorize..")
                 for attr in ("cnx", "pending"):
                     self.__dict__.pop(attr,None)

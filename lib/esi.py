@@ -3,3 +3,6 @@
 #                   empty lib for future implementation                       #
 #                                                                             #
 #=============================================================================#
+import logging
+
+log = logging.getLogger(__name__)

@@ -20,6 +20,7 @@ class DB:
         try:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
+            log.info("Test lib.db")
             if config.bot["devMode"]:
                 print('Database connection opened')
         except mysqldb.Error as e:
@@ -250,7 +251,6 @@ class DBMain(DB):
     async def storage_get(self, key):
         self.sqlquery = "SELECT storedValue FROM `storage` WHERE `storedKey`='{}'".format(key)
         self.sqlout = await self.sql_query(self.sqlquery)
-        print(self.sqlout)
         if len(self.sqlout) >= 1:
             return self.sqlout[0]['storedValue']
         return None
