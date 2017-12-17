@@ -6,71 +6,71 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
-CREATE TABLE IF NOT EXISTS `corpCache` (
+CREATE TABLE IF NOT EXISTS `corporation_cache` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `corpID` varchar(128) NOT NULL,
-  `allianceID` varchar(128) DEFAULT NULL,
-  `corpTicker` varchar(10) NOT NULL,
-  `corpName` varchar(255) NOT NULL,
-  `corpRole` varchar(255) NOT NULL,
+  `alliance_id` varchar(128) DEFAULT NULL,
+  `corporation_id` varchar(128) NOT NULL,
+  `corporation_name` varchar(255) NOT NULL,
+  `corporation_role` varchar(255) NOT NULL,
+  `corporation_ticker` varchar(10) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `corpID` (`corpID`)
+  UNIQUE KEY `corporation_id` (`corporation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `messageQueue` (
+CREATE TABLE IF NOT EXISTS `queue_message` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `channel_id` varchar(64) NOT NULL,
   `message` varchar(2048) NOT NULL,
-  `channel` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `renameQueue` (
+CREATE TABLE IF NOT EXISTS `queue_rename` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discordID` varchar(64) NOT NULL,
+  `discord_id` varchar(64) NOT NULL,
   `nick` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `storage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `storeKey` varchar(191) NOT NULL,
-  `storeValue` varchar(255) NOT NULL,
+  `s_key` varchar(191) NOT NULL,
+  `s_value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `key` (`key`)
+  UNIQUE KEY `s_key` (`s_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `authUsers` (
+CREATE TABLE IF NOT EXISTS `discord_users_auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `eveName` varchar(365) DEFAULT NULL,
-  `characterID` varchar(128) NOT NULL,
-  `corporationID` varchar(128) NOT NULL,
-  `allianceID` varchar(128) NOT NULL,
-  `discordID` varchar(64) NOT NULL,
+  `eve_name` varchar(365) DEFAULT NULL,
+  `character_id` varchar(128) NOT NULL,
+  `corporation_id` varchar(128) NOT NULL,
+  `alliance_id` varchar(128) NOT NULL,
+  `discord_id` varchar(64) NOT NULL,
   `active` varchar(10) NOT NULL DEFAULT 'no',
   `pending` varchar(10) NOT NULL,
-  `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `characterID` (`characterID`)
+  UNIQUE KEY `character_id` (`character_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `discordUsers` (
+CREATE TABLE IF NOT EXISTS `discord_users_cache` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discordID` varchar(64) NOT NULL,
-  `isAuthorized` varchar(10) NOT NULL DEFAULT 'no',
-  `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `discord_id` varchar(64) NOT NULL,
+  `is_authorized` varchar(10) NOT NULL DEFAULT 'no',
+  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `discordID` (`discordID`)
+  UNIQUE KEY `discord_id` (`discord_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `tokenStorage` (
+CREATE TABLE IF NOT EXISTS `token_storage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `characterID` varchar(128) NOT NULL,
-  `accessToken` varchar(255) DEFAULT NULL,
-  `refreshToken` varchar(255) DEFAULT NULL,
-  `updatedOn` timestamp NULL DEFAULT NULL,
-  `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `character_id` varchar(128) NOT NULL,
+  `token_access` varchar(255) DEFAULT NULL,
+  `token_refresh` varchar(255) DEFAULT NULL,
+  `updated` timestamp NULL DEFAULT NULL,
+  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `characterID` (`characterID`)
+  UNIQUE KEY `character_id` (`character_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
