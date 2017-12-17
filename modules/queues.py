@@ -39,13 +39,13 @@ class QueueMessages:
                         break
                     self.queued_msg = await self.cnx.message_get(self.id)
                     if self.queued_msg is not None:
-                        if self.queued_msg['channel'] is None:
+                        if self.queued_msg['channel_id'] is None:
                             await self.cnx.message_delete(self.id)
                             continue
                         if self.queued_msg['message'] is None:
                             await self.cnx.message_delete(self.id)
                             continue
-                        self.channel = self.broadsword.get_channel(self.queued_msg['channel'])
+                        self.channel = self.broadsword.get_channel(self.queued_msg['channel_id'])
                         await self.broadsword.send_message(self.channel, self.queued_msg['message'])
                         await self.cnx.message_delete(self.id)
                     else:
@@ -101,18 +101,18 @@ class QueueRename:
                         break
                     self.queued_rename = await self.cnx.rename_get(self.id)
                     if self.queued_rename is not None:
-                        if self.queued_rename['discordID'] is None:
+                        if self.queued_rename['discord_id'] is None:
                             await self.cnx.rename_delete(self.id)
                             continue
                         if self.queued_rename['nick'] is None:
                             await self.cnx.rename_delete(self.id)
                             continue
                         try:
-                            self.member = self.server.get_member(self.queued_rename['discordID'])
+                            self.member = self.server.get_member(self.queued_rename['discord_id'])
                             await self.broadsword.change_nickname(self.member, self.queued_rename['nick'])
                             await self.cnx.rename_delete(self.id)
                         except discord.Forbidden as e:
-                            if self.queued_rename['discordID'] == self.server.owner.id:
+                            if self.queued_rename['discord_id'] == self.server.owner.id:
                                 if config.bot["devMode"]:
                                     print("Owner cann't be renamed!")
                                 else:
