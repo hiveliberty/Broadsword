@@ -5,13 +5,15 @@ __pycache__/
 *.pyc
 
 # Exluded some files
-lib/config_class.py
 config/config.py
 config/config_template_dev.py
 config/config.json
+install/requirements.txt
+lib/config_class.py
 install_new.sql
 cleanup_pycache.sh
 migratedb.py
+bot-sigterm.py
 
 # Exlude "dirs"
 backup
