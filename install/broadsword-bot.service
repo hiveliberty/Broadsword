@@ -1,0 +1,12 @@
+[Unit]
+Description=BroadswordBot for NAME (change NAME for what you want)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /path/to/bot/bot.py
+WorkingDirectory=/path/to/bot/
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

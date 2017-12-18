@@ -13,7 +13,8 @@ import mysql.connector as mysqldb
 from config import config
 from config.config import db as dbcfg
 
-log = logging.getLogger("library")
+#log = logging.getLogger("library.db")
+log = logging.getLogger(__name__)
 
 class DB:
     def __init__(self):
@@ -346,14 +347,14 @@ class DBStart(DB):
         return None
 
     def message_check(self):
-        self.sqlquery = "SELECT * FROM messageQueue"
+        self.sqlquery = "SELECT * FROM `queue_message`"
         self.sqlout = self.sql_query(self.sqlquery)
         if len(self.sqlout) > 35:
             self.clearMessageQueue()
         return None
 
     def message_clear(self):
-        self.sqlquery = "DELETE from messageQueue"
+        self.sqlquery = "DELETE from `queue_message`"
         self.sql_query_exec(self.sqlquery)
         if config.bot["devMode"]:
             print("Cache was cleaned")

@@ -176,7 +176,7 @@ class AuthTask:
 
                 if self.pending is not None:
                     await self.auth(self.pending)
-                    log.info("{} has been authorized.".format(self.pending["eve_name"]))
+                    log.info("Do authorized for '{}'.".format(self.pending["eve_name"]))
                 #else:
                     #log.info("There is no one to authorize.")
                     #print("There is no one to authorize..")
@@ -332,6 +332,8 @@ class AuthTask:
                             self.charinfo["name"]
                         )
                         await self.cnx.discord_set_authorized(self.member.id)
+                        await self.cnx.message_add("'{}' has been authorized.".format(self.pending["eve_name"]), config.auth["alertChannel"])
+                        log.info("'{}' has been authorized.".format(self.pending["eve_name"]))
                         #await self.broadsword.say("{0.mention}, you have been authorized!".format(self.member))
                     #else:
                     #    await self.broadsword.say("{0.mention}, you cann't be authorized, because no role is set for auth!".format(self.member))
