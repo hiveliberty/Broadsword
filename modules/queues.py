@@ -16,17 +16,15 @@ class QueueMessages:
             format(__class__.__name__)
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
+        log.info(self.msg_start)
         if config.bot["devMode"]:
             print(self.msg_start)
-        else:
-            log.info(self.msg_start)
         
     def __unload(self):
         self._task.cancel()
+        log.info(self.msg_stop)
         if config.bot["devMode"]:
             print(self.msg_stop)
-        else:
-            log.info(self.msg_stop)
 
     async def message_task(self):
         try:
@@ -56,15 +54,13 @@ class QueueMessages:
                 del self.cnx
                 await asyncio.sleep(7)
         except Exception as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.message_task())
-        except asyncio.CancelledError as ec:
-            if config.bot["devMode"]:
-                print(ec)
-            log.exception("asyncio.CancelledError: ")
+        except asyncio.CancelledError:
+            pass
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.message_task())
@@ -77,17 +73,15 @@ class QueueRename:
             format(__class__.__name__)
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
+        log.info(self.msg_start)
         if config.bot["devMode"]:
             print(self.msg_start)
-        else:
-            log.info(self.msg_start)
         
     def __unload(self):
         self._task.cancel()
+        log.info(self.msg_stop)
         if config.bot["devMode"]:
             print(self.msg_stop)
-        else:
-            log.info(self.msg_stop)
 
     async def rename_task(self):
         try:
@@ -133,15 +127,13 @@ class QueueRename:
                 del self.cnx
                 await asyncio.sleep(10)
         except Exception as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.rename_task())
-        except asyncio.CancelledError as ec:
-            if config.bot["devMode"]:
-                print(ec)
-            log.exception("asyncio.CancelledError: ")
+        except asyncio.CancelledError:
+            pass
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.rename_task())
