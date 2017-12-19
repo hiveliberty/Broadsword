@@ -24,17 +24,16 @@ class EVEMail:
             format(__class__.__name__)
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
+        log.info(self.msg_start)
         if config.bot["devMode"]:
             print(self.msg_start)
-        else:
-            log.info(self.msg_start)
         
     def __unload(self):
         self._task.cancel()
+        log.info(self.msg_stop)
         if config.bot["devMode"]:
             print(self.msg_stop)
-        else:
-            log.info(self.msg_stop)
+            
         
     async def mail_task(self):
         try:

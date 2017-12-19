@@ -13,21 +13,16 @@ formatters:
     format: '[%(asctime)s][%(levelname)s][File: %(filename)s][%(funcName)s()][Line: %(lineno)d]: %(message)s'
 
 loggers:
-  asyncio:
-    handlers: [asyncio]
-    propagate: false
-    qualname: asyncio
-    level: DEBUG
   discord:
     handlers: [discord]
     propagate: false
     qualname: discord
-    level: INFO
+    level: DEBUG
   discord.http:
     handlers: [discord_http]
     propagate: false
     qualname: discord.http
-    level: INFO
+    level: DEBUG
   library:
     handlers: [library, console]
     propagate: false  # We dont want this logs going everywhere
@@ -53,15 +48,6 @@ handlers:
     mode: a
     backupCount: 3
     filename: logs/broadsword.log
-  asyncio:
-    class: logging.handlers.RotatingFileHandler
-    #level: INFO
-    formatter: simple
-    encoding: utf-8
-    mode: a
-    maxBytes: 1048576
-    backupCount: 3
-    filename: logs/asyncio.log
   library:
     class: logging.handlers.RotatingFileHandler
     #level: DEBUG
