@@ -55,9 +55,8 @@ class TaskUserDB:
             log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.message_task())
-        except asyncio.CancelledError as ec:
-            print(ec)
-            log.exception("asyncio.CancelledError: ")
+        except asyncio.CancelledError:
+            pass
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.userdb_task())

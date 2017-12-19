@@ -55,15 +55,13 @@ class EVEMail:
                     self.__dict__.pop(attr,None)
                 await asyncio.sleep(self.interval)
         except Exception as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.mail_task())
-        except asyncio.CancelledError as ec:
-            if config.bot["devMode"]:
-                print(ec)
-            log.exception("asyncio.CancelledError: ")
+        except asyncio.CancelledError:
+            pass
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.mail_task())
@@ -121,9 +119,9 @@ class EVEMail:
             await self.cnx.storage_update("nextMailCheck", await self.next_check(self.interval))
             return 0
         except Exception as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("latestMailID", "maxID", "url",
                          "mails", "mail", "content", "msg_split",
