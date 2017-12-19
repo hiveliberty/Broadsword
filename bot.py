@@ -3,6 +3,7 @@ import gc
 import asyncio
 import logging
 import logging.config
+import signal
 import yaml
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
@@ -111,15 +112,6 @@ def run_bot():
                     print("Failed to load extension {}\n{}".format(plugin, exc))
 
     broadsword.run(config.bot["token"])
-    #broadsword.loop.close()
-    #broadsword.logout()
-
-    #if config.bot["devMode"]:
-    #    print("-----------------------")
-    #    print("BroadswordBot connection closed.")
-    #else:
-    #    log.info("-----------------------")
-    #    log.info("BroadswordBot connection closed.")
 
 def stop_bot():
     asyncio.ensure_future(broadsword.close())

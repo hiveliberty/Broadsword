@@ -1,6 +1,9 @@
 # use with: logging.config.dictConfig(yaml.load(open('logging.yaml', 'r')))
 
 # Formatters detailed here: http://docs.python.org/2/library/logging.html#logrecord-attributes
+
+# levels: INFO, DEBUG, WARNING
+
 version: 1
 formatters:
   console:
@@ -11,34 +14,35 @@ formatters:
     datefmt: '%Y-%m-%d %H:%M:%S'
   detail:
     format: '[%(asctime)s][%(levelname)s][File: %(filename)s][%(funcName)s()][Line: %(lineno)d]: %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
 
 loggers:
   discord:
     handlers: [discord]
     propagate: false
     qualname: discord
-    level: DEBUG
+    level: INFO
   discord.http:
     handlers: [discord_http]
     propagate: false
     qualname: discord.http
-    level: DEBUG
+    level: INFO
   library:
     handlers: [library, console]
     propagate: false  # We dont want this logs going everywhere
     qualname: library
-    level: DEBUG
+    level: INFO
   modules:
     handlers: [module]
     propagate: false
     qualname: modules.*
-    level: DEBUG
+    level: INFO
 
 handlers:
   console:
     class: logging.StreamHandler
     #level: INFO
-    formatter: detail
+    formatter: console
     stream: ext://sys.stdout
   all:
     class: logging.handlers.RotatingFileHandler

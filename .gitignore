@@ -7,6 +7,7 @@ __pycache__/
 # Exluded some files
 config/config.py
 config/logging.yaml
+config/logging_dev.yaml
 config/config_template_dev.py
 config/config.json
 install/requirements.txt
