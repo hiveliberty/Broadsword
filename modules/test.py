@@ -3,6 +3,7 @@ import time
 import json
 import datetime
 import logging
+import asyncio
 from operator import itemgetter
 from discord.ext import commands as broadsword
 from lib.utils import MailUtils
@@ -80,6 +81,19 @@ class Test:
         finally:
             for attr in ("token_api", "expired"):
                 self.__dict__.pop(attr,None)
+
+    @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
+    async def code4(self, ctx):
+        try:
+            for task in asyncio.Task.all_tasks():
+                task.cancel()
+        except Exception as e:
+            if config.bot["devMode"]:
+                print(e)
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        #finally:
+        #    for attr in ("token_api", "expired"):
+        #        self.__dict__.pop(attr,None)
 
 
 def setup(broadsword):

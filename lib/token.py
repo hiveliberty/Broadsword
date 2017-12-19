@@ -18,7 +18,8 @@ from lib.utils import BasicUtils
 
 #==============================================================================
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("library.token")
+#log = logging.getLogger(__name__)
 
 class TokenError(Exception):
     pass

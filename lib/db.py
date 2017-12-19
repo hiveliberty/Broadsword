@@ -13,18 +13,18 @@ import mysql.connector as mysqldb
 from config import config
 from config.config import db as dbcfg
 
-#log = logging.getLogger("library.db")
-log = logging.getLogger(__name__)
+log = logging.getLogger("library.db")
+#log = logging.getLogger(__name__)
 
 class DB:
     def __init__(self):
         try:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
-            log.info("Test lib.db")
             if config.bot["devMode"]:
                 print('Database connection opened')
         except mysqldb.Error as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print('ERROR: %d: %s' % (e.args[0], e.args[1]))
 
@@ -37,6 +37,7 @@ class DB:
             if config.bot["devMode"]:
                 print('Database connection closed')
         except mysqldb.Error as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
@@ -52,6 +53,7 @@ class DBMain(DB):
             self.sqlout = self.cursor.fetchall()
             return self.sqlout
         except mysqldb.Error as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
@@ -64,6 +66,7 @@ class DBMain(DB):
             self.sqlout = self.cursor.fetchone()
             return self.sqlout
         except mysqldb.Error as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
@@ -76,6 +79,7 @@ class DBMain(DB):
             self.cnx.commit()
             return 0
         except mysqldb.Error as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             if config.bot["devMode"]:
                 print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:

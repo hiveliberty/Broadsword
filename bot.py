@@ -3,6 +3,7 @@ import gc
 import asyncio
 import logging
 import logging.config
+import signal
 import yaml
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
@@ -23,6 +24,8 @@ main_modules = {
 logging.config.dictConfig(yaml.load(open('config/logging.yaml', 'r')))
 log = logging.getLogger("broadsword")
 
+broadsword = commands.Bot(command_prefix=config.bot["prefix"])
+
 def run_bot():
     try:
         cnx = DBStart()
@@ -38,11 +41,10 @@ def run_bot():
         #        print("Database update required")
         #        return
     except Exception as e:
+        log.info("MySQL DB is not available! BroadswordBot will not be started!")
         if config.bot["devMode"]:
             print(e)
             print("MySQL DB is not available! BroadswordBot will not be started!")
-        else:
-            log.info("MySQL DB is not available! BroadswordBot will not be started!")
         return
     finally:
         del cnx
@@ -50,54 +52,49 @@ def run_bot():
     try:
         cnx = DBStart()
         cnx.message_check()
+        log.info("Message queue was checked.")
         if config.bot["devMode"]:
             print("Message queue was checked.")
-        else:
-            log.info("Message queue was checked.")
     except Exception as e:
+        log.exception("An exception has occurred in {}: ".format(__name__))
         print(e)
     finally:
         del cnx
     
+    log.info("Connecting...")
     if config.bot["devMode"]:
         print("Connecting...")
-    else:
-        log.info("Connecting...")
-
-    broadsword = commands.Bot(command_prefix=config.bot["prefix"])
 
     @broadsword.event
     async def on_ready():
         """A function that is called when the client is
         done preparing data received from Discord.
         """
+
+        log.info("Broadsword is logged in..")
+        log.info("Username: {}".format(broadsword.user.name))
+        log.info("User ID: {}".format(broadsword.user.id))
+        log.info("Version v.{}".format(BasicUtils.bot_version()))
+        log.info("-----------------------")
         if config.bot["devMode"]:
             print("Broadsword is logged in..")
             print("Username: {}".format(broadsword.user.name))
             print("User ID: {}".format(broadsword.user.id))
             print("Version v.{}".format(BasicUtils.bot_version()))
             print("-----------------------")
-        else:
-            log.info("Broadsword is logged in..")
-            log.info("Username: {}".format(broadsword.user.name))
-            log.info("User ID: {}".format(broadsword.user.id))
-            log.info("Version v.{}".format(BasicUtils.bot_version()))
-            log.info("-----------------------")
 
         #   Load main modules
         for main_module in main_modules:
             try:
                 broadsword.load_extension(main_module)
+                log.info("{} loaded.".format(main_module))
                 if config.bot["devMode"]:
                     print("{} loaded.".format(main_module))
-                else:
-                    log.info("{} loaded.".format(main_module))
             except Exception as e:
+                log.exception("An exception has occurred in {}: ".format(__name__))
                 if config.bot["devMode"]:
                     exc = "{}: {}".format(type(e).__name__, e)
                     print("Failed to load extension {}\n{}".format(plugin, exc))
-                else:
-                    log.exception("An exception has occurred in {}: ".format(__name__))
 
         #   Load user modules
         for plugin, options in config.plugins.items():
@@ -105,27 +102,26 @@ def run_bot():
                 continue
             try:
                 broadsword.load_extension(plugin)
+                log.info("{} loaded.".format(main_module))
                 if config.bot["devMode"]:
                     print("{} loaded.".format(main_module))
-                else:
-                    log.info("{} loaded.".format(main_module))
             except Exception as e:
+                log.exception("An exception has occurred in {}: ".format(__name__))
                 if config.bot["devMode"]:
                     exc = "{}: {}".format(type(e).__name__, e)
                     print("Failed to load extension {}\n{}".format(plugin, exc))
-                else:
-                    log.exception("An exception has occurred in {}: ".format(__name__))
 
     broadsword.run(config.bot["token"])
-    broadsword.loop.close()
-    broadsword.logout()
 
+def stop_bot():
+    asyncio.ensure_future(broadsword.close())
+    log.info("-----------------------")
+    log.info("BroadswordBot connection closed.")
     if config.bot["devMode"]:
         print("-----------------------")
         print("BroadswordBot connection closed.")
-    else:
-        log.info("-----------------------")
-        log.info("BroadswordBot connection closed.")
 
 if __name__ == '__main__':
+    broadsword.loop.add_signal_handler(signal.SIGINT, stop_bot)
+    broadsword.loop.add_signal_handler(signal.SIGTERM, stop_bot)
     run_bot()
