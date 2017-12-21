@@ -41,7 +41,7 @@ class GetCorporationsCorporationIdWalletsDivisionJournal200Ok(object):
         'amount': 'float',
         'balance': 'float',
         'reason': 'str',
-        'tax_reciever_id': 'int',
+        'tax_receiver_id': 'int',
         'tax': 'float',
         'extra_info': 'GetCorporationsCorporationIdWalletsDivisionJournalExtraInfo'
     }
@@ -57,12 +57,12 @@ class GetCorporationsCorporationIdWalletsDivisionJournal200Ok(object):
         'amount': 'amount',
         'balance': 'balance',
         'reason': 'reason',
-        'tax_reciever_id': 'tax_reciever_id',
+        'tax_receiver_id': 'tax_receiver_id',
         'tax': 'tax',
         'extra_info': 'extra_info'
     }
 
-    def __init__(self, date=None, ref_id=None, ref_type=None, first_party_id=None, first_party_type=None, second_party_id=None, second_party_type=None, amount=None, balance=None, reason=None, tax_reciever_id=None, tax=None, extra_info=None):
+    def __init__(self, date=None, ref_id=None, ref_type=None, first_party_id=None, first_party_type=None, second_party_id=None, second_party_type=None, amount=None, balance=None, reason=None, tax_receiver_id=None, tax=None, extra_info=None):
         """
         GetCorporationsCorporationIdWalletsDivisionJournal200Ok - a model defined in Swagger
         """
@@ -77,7 +77,7 @@ class GetCorporationsCorporationIdWalletsDivisionJournal200Ok(object):
         self._amount = None
         self._balance = None
         self._reason = None
-        self._tax_reciever_id = None
+        self._tax_receiver_id = None
         self._tax = None
         self._extra_info = None
         self.discriminator = None
@@ -99,8 +99,8 @@ class GetCorporationsCorporationIdWalletsDivisionJournal200Ok(object):
           self.balance = balance
         if reason is not None:
           self.reason = reason
-        if tax_reciever_id is not None:
-          self.tax_reciever_id = tax_reciever_id
+        if tax_receiver_id is not None:
+          self.tax_receiver_id = tax_receiver_id
         if tax is not None:
           self.tax = tax
         if extra_info is not None:
@@ -361,27 +361,27 @@ class GetCorporationsCorporationIdWalletsDivisionJournal200Ok(object):
         self._reason = reason
 
     @property
-    def tax_reciever_id(self):
+    def tax_receiver_id(self):
         """
-        Gets the tax_reciever_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
+        Gets the tax_receiver_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
         the corporation ID receiving any tax paid
 
-        :return: The tax_reciever_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
+        :return: The tax_receiver_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
         :rtype: int
         """
-        return self._tax_reciever_id
+        return self._tax_receiver_id
 
-    @tax_reciever_id.setter
-    def tax_reciever_id(self, tax_reciever_id):
+    @tax_receiver_id.setter
+    def tax_receiver_id(self, tax_receiver_id):
         """
-        Sets the tax_reciever_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
+        Sets the tax_receiver_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
         the corporation ID receiving any tax paid
 
-        :param tax_reciever_id: The tax_reciever_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
+        :param tax_receiver_id: The tax_receiver_id of this GetCorporationsCorporationIdWalletsDivisionJournal200Ok.
         :type: int
         """
 
-        self._tax_reciever_id = tax_reciever_id
+        self._tax_receiver_id = tax_receiver_id
 
     @property
     def tax(self):

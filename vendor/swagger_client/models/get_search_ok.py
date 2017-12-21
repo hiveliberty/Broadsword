@@ -37,11 +37,10 @@ class GetSearchOk(object):
         'constellation': 'list[int]',
         'corporation': 'list[int]',
         'faction': 'list[int]',
-        'inventorytype': 'list[int]',
+        'inventory_type': 'list[int]',
         'region': 'list[int]',
-        'solarsystem': 'list[int]',
-        'station': 'list[int]',
-        'wormhole': 'list[int]'
+        'solar_system': 'list[int]',
+        'station': 'list[int]'
     }
 
     attribute_map = {
@@ -51,14 +50,13 @@ class GetSearchOk(object):
         'constellation': 'constellation',
         'corporation': 'corporation',
         'faction': 'faction',
-        'inventorytype': 'inventorytype',
+        'inventory_type': 'inventory_type',
         'region': 'region',
-        'solarsystem': 'solarsystem',
-        'station': 'station',
-        'wormhole': 'wormhole'
+        'solar_system': 'solar_system',
+        'station': 'station'
     }
 
-    def __init__(self, agent=None, alliance=None, character=None, constellation=None, corporation=None, faction=None, inventorytype=None, region=None, solarsystem=None, station=None, wormhole=None):
+    def __init__(self, agent=None, alliance=None, character=None, constellation=None, corporation=None, faction=None, inventory_type=None, region=None, solar_system=None, station=None):
         """
         GetSearchOk - a model defined in Swagger
         """
@@ -69,11 +67,10 @@ class GetSearchOk(object):
         self._constellation = None
         self._corporation = None
         self._faction = None
-        self._inventorytype = None
+        self._inventory_type = None
         self._region = None
-        self._solarsystem = None
+        self._solar_system = None
         self._station = None
-        self._wormhole = None
         self.discriminator = None
 
         if agent is not None:
@@ -88,16 +85,14 @@ class GetSearchOk(object):
           self.corporation = corporation
         if faction is not None:
           self.faction = faction
-        if inventorytype is not None:
-          self.inventorytype = inventorytype
+        if inventory_type is not None:
+          self.inventory_type = inventory_type
         if region is not None:
           self.region = region
-        if solarsystem is not None:
-          self.solarsystem = solarsystem
+        if solar_system is not None:
+          self.solar_system = solar_system
         if station is not None:
           self.station = station
-        if wormhole is not None:
-          self.wormhole = wormhole
 
     @property
     def agent(self):
@@ -238,27 +233,27 @@ class GetSearchOk(object):
         self._faction = faction
 
     @property
-    def inventorytype(self):
+    def inventory_type(self):
         """
-        Gets the inventorytype of this GetSearchOk.
-        inventorytype array
+        Gets the inventory_type of this GetSearchOk.
+        inventory_type array
 
-        :return: The inventorytype of this GetSearchOk.
+        :return: The inventory_type of this GetSearchOk.
         :rtype: list[int]
         """
-        return self._inventorytype
+        return self._inventory_type
 
-    @inventorytype.setter
-    def inventorytype(self, inventorytype):
+    @inventory_type.setter
+    def inventory_type(self, inventory_type):
         """
-        Sets the inventorytype of this GetSearchOk.
-        inventorytype array
+        Sets the inventory_type of this GetSearchOk.
+        inventory_type array
 
-        :param inventorytype: The inventorytype of this GetSearchOk.
+        :param inventory_type: The inventory_type of this GetSearchOk.
         :type: list[int]
         """
 
-        self._inventorytype = inventorytype
+        self._inventory_type = inventory_type
 
     @property
     def region(self):
@@ -284,27 +279,27 @@ class GetSearchOk(object):
         self._region = region
 
     @property
-    def solarsystem(self):
+    def solar_system(self):
         """
-        Gets the solarsystem of this GetSearchOk.
-        solarsystem array
+        Gets the solar_system of this GetSearchOk.
+        solar_system array
 
-        :return: The solarsystem of this GetSearchOk.
+        :return: The solar_system of this GetSearchOk.
         :rtype: list[int]
         """
-        return self._solarsystem
+        return self._solar_system
 
-    @solarsystem.setter
-    def solarsystem(self, solarsystem):
+    @solar_system.setter
+    def solar_system(self, solar_system):
         """
-        Sets the solarsystem of this GetSearchOk.
-        solarsystem array
+        Sets the solar_system of this GetSearchOk.
+        solar_system array
 
-        :param solarsystem: The solarsystem of this GetSearchOk.
+        :param solar_system: The solar_system of this GetSearchOk.
         :type: list[int]
         """
 
-        self._solarsystem = solarsystem
+        self._solar_system = solar_system
 
     @property
     def station(self):
@@ -328,29 +323,6 @@ class GetSearchOk(object):
         """
 
         self._station = station
-
-    @property
-    def wormhole(self):
-        """
-        Gets the wormhole of this GetSearchOk.
-        wormhole array
-
-        :return: The wormhole of this GetSearchOk.
-        :rtype: list[int]
-        """
-        return self._wormhole
-
-    @wormhole.setter
-    def wormhole(self, wormhole):
-        """
-        Sets the wormhole of this GetSearchOk.
-        wormhole array
-
-        :param wormhole: The wormhole of this GetSearchOk.
-        :type: list[int]
-        """
-
-        self._wormhole = wormhole
 
     def to_dict(self):
         """

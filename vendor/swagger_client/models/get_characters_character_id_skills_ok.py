@@ -32,27 +32,30 @@ class GetCharactersCharacterIdSkillsOk(object):
     """
     swagger_types = {
         'skills': 'list[GetCharactersCharacterIdSkillsSkill]',
-        'total_sp': 'int'
+        'total_sp': 'int',
+        'unallocated_sp': 'int'
     }
 
     attribute_map = {
         'skills': 'skills',
-        'total_sp': 'total_sp'
+        'total_sp': 'total_sp',
+        'unallocated_sp': 'unallocated_sp'
     }
 
-    def __init__(self, skills=None, total_sp=None):
+    def __init__(self, skills=None, total_sp=None, unallocated_sp=None):
         """
         GetCharactersCharacterIdSkillsOk - a model defined in Swagger
         """
 
         self._skills = None
         self._total_sp = None
+        self._unallocated_sp = None
         self.discriminator = None
 
-        if skills is not None:
-          self.skills = skills
-        if total_sp is not None:
-          self.total_sp = total_sp
+        self.skills = skills
+        self.total_sp = total_sp
+        if unallocated_sp is not None:
+          self.unallocated_sp = unallocated_sp
 
     @property
     def skills(self):
@@ -74,6 +77,8 @@ class GetCharactersCharacterIdSkillsOk(object):
         :param skills: The skills of this GetCharactersCharacterIdSkillsOk.
         :type: list[GetCharactersCharacterIdSkillsSkill]
         """
+        if skills is None:
+            raise ValueError("Invalid value for `skills`, must not be `None`")
 
         self._skills = skills
 
@@ -97,8 +102,33 @@ class GetCharactersCharacterIdSkillsOk(object):
         :param total_sp: The total_sp of this GetCharactersCharacterIdSkillsOk.
         :type: int
         """
+        if total_sp is None:
+            raise ValueError("Invalid value for `total_sp`, must not be `None`")
 
         self._total_sp = total_sp
+
+    @property
+    def unallocated_sp(self):
+        """
+        Gets the unallocated_sp of this GetCharactersCharacterIdSkillsOk.
+        Skill points available to be assigned
+
+        :return: The unallocated_sp of this GetCharactersCharacterIdSkillsOk.
+        :rtype: int
+        """
+        return self._unallocated_sp
+
+    @unallocated_sp.setter
+    def unallocated_sp(self, unallocated_sp):
+        """
+        Sets the unallocated_sp of this GetCharactersCharacterIdSkillsOk.
+        Skill points available to be assigned
+
+        :param unallocated_sp: The unallocated_sp of this GetCharactersCharacterIdSkillsOk.
+        :type: int
+        """
+
+        self._unallocated_sp = unallocated_sp
 
     def to_dict(self):
         """

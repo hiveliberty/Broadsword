@@ -105,6 +105,10 @@ class ContactsApi(object):
         if ('contact_ids' not in params) or (params['contact_ids'] is None):
             raise ValueError("Missing the required parameter `contact_ids` when calling `delete_characters_character_id_contacts`")
 
+        if 'contact_ids' in params and len(params['contact_ids']) > 100:
+            raise ValueError("Invalid value for parameter `contact_ids` when calling `delete_characters_character_id_contacts`, number of items must be less than or equal to `100`")
+        if 'contact_ids' in params and len(params['contact_ids']) < 1:
+            raise ValueError("Invalid value for parameter `contact_ids` when calling `delete_characters_character_id_contacts`, number of items must be greater than or equal to `1`")
 
         collection_formats = {}
 
@@ -113,6 +117,9 @@ class ContactsApi(object):
             path_params['character_id'] = params['character_id']
 
         query_params = []
+        if 'contact_ids' in params:
+            query_params.append(('contact_ids', params['contact_ids']))
+            collection_formats['contact_ids'] = 'csv'
         if 'datasource' in params:
             query_params.append(('datasource', params['datasource']))
         if 'token' in params:
@@ -128,8 +135,6 @@ class ContactsApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'contact_ids' in params:
-            body_params = params['contact_ids']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.\
             select_header_accept(['application/json'])
@@ -137,7 +142,7 @@ class ContactsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v1/characters/{character_id}/contacts/', 'DELETE',
+        return self.api_client.call_api('/v2/characters/{character_id}/contacts/', 'DELETE',
                                         path_params,
                                         query_params,
                                         header_params,

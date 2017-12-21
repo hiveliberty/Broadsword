@@ -33,31 +33,32 @@ class GetCharactersCharacterIdSkillsSkill(object):
     swagger_types = {
         'skill_id': 'int',
         'skillpoints_in_skill': 'int',
-        'current_skill_level': 'int'
+        'trained_skill_level': 'int',
+        'active_skill_level': 'int'
     }
 
     attribute_map = {
         'skill_id': 'skill_id',
         'skillpoints_in_skill': 'skillpoints_in_skill',
-        'current_skill_level': 'current_skill_level'
+        'trained_skill_level': 'trained_skill_level',
+        'active_skill_level': 'active_skill_level'
     }
 
-    def __init__(self, skill_id=None, skillpoints_in_skill=None, current_skill_level=None):
+    def __init__(self, skill_id=None, skillpoints_in_skill=None, trained_skill_level=None, active_skill_level=None):
         """
         GetCharactersCharacterIdSkillsSkill - a model defined in Swagger
         """
 
         self._skill_id = None
         self._skillpoints_in_skill = None
-        self._current_skill_level = None
+        self._trained_skill_level = None
+        self._active_skill_level = None
         self.discriminator = None
 
-        if skill_id is not None:
-          self.skill_id = skill_id
-        if skillpoints_in_skill is not None:
-          self.skillpoints_in_skill = skillpoints_in_skill
-        if current_skill_level is not None:
-          self.current_skill_level = current_skill_level
+        self.skill_id = skill_id
+        self.skillpoints_in_skill = skillpoints_in_skill
+        self.trained_skill_level = trained_skill_level
+        self.active_skill_level = active_skill_level
 
     @property
     def skill_id(self):
@@ -79,6 +80,8 @@ class GetCharactersCharacterIdSkillsSkill(object):
         :param skill_id: The skill_id of this GetCharactersCharacterIdSkillsSkill.
         :type: int
         """
+        if skill_id is None:
+            raise ValueError("Invalid value for `skill_id`, must not be `None`")
 
         self._skill_id = skill_id
 
@@ -102,31 +105,60 @@ class GetCharactersCharacterIdSkillsSkill(object):
         :param skillpoints_in_skill: The skillpoints_in_skill of this GetCharactersCharacterIdSkillsSkill.
         :type: int
         """
+        if skillpoints_in_skill is None:
+            raise ValueError("Invalid value for `skillpoints_in_skill`, must not be `None`")
 
         self._skillpoints_in_skill = skillpoints_in_skill
 
     @property
-    def current_skill_level(self):
+    def trained_skill_level(self):
         """
-        Gets the current_skill_level of this GetCharactersCharacterIdSkillsSkill.
-        current_skill_level integer
+        Gets the trained_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        trained_skill_level integer
 
-        :return: The current_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        :return: The trained_skill_level of this GetCharactersCharacterIdSkillsSkill.
         :rtype: int
         """
-        return self._current_skill_level
+        return self._trained_skill_level
 
-    @current_skill_level.setter
-    def current_skill_level(self, current_skill_level):
+    @trained_skill_level.setter
+    def trained_skill_level(self, trained_skill_level):
         """
-        Sets the current_skill_level of this GetCharactersCharacterIdSkillsSkill.
-        current_skill_level integer
+        Sets the trained_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        trained_skill_level integer
 
-        :param current_skill_level: The current_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        :param trained_skill_level: The trained_skill_level of this GetCharactersCharacterIdSkillsSkill.
         :type: int
         """
+        if trained_skill_level is None:
+            raise ValueError("Invalid value for `trained_skill_level`, must not be `None`")
 
-        self._current_skill_level = current_skill_level
+        self._trained_skill_level = trained_skill_level
+
+    @property
+    def active_skill_level(self):
+        """
+        Gets the active_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        active_skill_level integer
+
+        :return: The active_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        :rtype: int
+        """
+        return self._active_skill_level
+
+    @active_skill_level.setter
+    def active_skill_level(self, active_skill_level):
+        """
+        Sets the active_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        active_skill_level integer
+
+        :param active_skill_level: The active_skill_level of this GetCharactersCharacterIdSkillsSkill.
+        :type: int
+        """
+        if active_skill_level is None:
+            raise ValueError("Invalid value for `active_skill_level`, must not be `None`")
+
+        self._active_skill_level = active_skill_level
 
     def to_dict(self):
         """

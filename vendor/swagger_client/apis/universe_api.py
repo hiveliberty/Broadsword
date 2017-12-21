@@ -2748,6 +2748,116 @@ class UniverseApi(object):
                                         _request_timeout=params.get('_request_timeout'),
                                         collection_formats=collection_formats)
 
+    def post_universe_ids(self, names, **kwargs):
+        """
+        Bulk names to IDs
+        Resolve a set of names to IDs in the following categories: agents, alliances, characters, constellations, corporations factions, inventory_types, regions, stations, and systems. Only exact matches will be returned. All names searched for are cached for 12 hours.  --- 
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_universe_ids(names, async=True)
+        >>> result = thread.get()
+
+        :param async bool
+        :param list[str] names: The names to resolve (required)
+        :param str datasource: The server name you would like data from
+        :param str language: Language to use in the response
+        :param str user_agent: Client identifier, takes precedence over headers
+        :param str x_user_agent: Client identifier, takes precedence over User-Agent
+        :return: PostUniverseIdsOk
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async'):
+            return self.post_universe_ids_with_http_info(names, **kwargs)
+        else:
+            (data) = self.post_universe_ids_with_http_info(names, **kwargs)
+            return data
+
+    def post_universe_ids_with_http_info(self, names, **kwargs):
+        """
+        Bulk names to IDs
+        Resolve a set of names to IDs in the following categories: agents, alliances, characters, constellations, corporations factions, inventory_types, regions, stations, and systems. Only exact matches will be returned. All names searched for are cached for 12 hours.  --- 
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async=True
+        >>> thread = api.post_universe_ids_with_http_info(names, async=True)
+        >>> result = thread.get()
+
+        :param async bool
+        :param list[str] names: The names to resolve (required)
+        :param str datasource: The server name you would like data from
+        :param str language: Language to use in the response
+        :param str user_agent: Client identifier, takes precedence over headers
+        :param str x_user_agent: Client identifier, takes precedence over User-Agent
+        :return: PostUniverseIdsOk
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['names', 'datasource', 'language', 'user_agent', 'x_user_agent']
+        all_params.append('async')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method post_universe_ids" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'names' is set
+        if ('names' not in params) or (params['names'] is None):
+            raise ValueError("Missing the required parameter `names` when calling `post_universe_ids`")
+
+
+        collection_formats = {}
+
+        path_params = {}
+
+        query_params = []
+        if 'datasource' in params:
+            query_params.append(('datasource', params['datasource']))
+        if 'language' in params:
+            query_params.append(('language', params['language']))
+        if 'user_agent' in params:
+            query_params.append(('user_agent', params['user_agent']))
+
+        header_params = {}
+        if 'x_user_agent' in params:
+            header_params['X-User-Agent'] = params['x_user_agent']
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'names' in params:
+            body_params = params['names']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.\
+            select_header_accept(['application/json'])
+
+        # Authentication setting
+        auth_settings = []
+
+        return self.api_client.call_api('/v1/universe/ids/', 'POST',
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=local_var_files,
+                                        response_type='PostUniverseIdsOk',
+                                        auth_settings=auth_settings,
+                                        async=params.get('async'),
+                                        _return_http_data_only=params.get('_return_http_data_only'),
+                                        _preload_content=params.get('_preload_content', True),
+                                        _request_timeout=params.get('_request_timeout'),
+                                        collection_formats=collection_formats)
+
     def post_universe_names(self, ids, **kwargs):
         """
         Get names and categories for a set of ID's

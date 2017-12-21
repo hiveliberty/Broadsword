@@ -32,33 +32,25 @@ class PostCorporationsCorporationIdAssetsLocations200Ok(object):
     """
     swagger_types = {
         'item_id': 'int',
-        'x': 'float',
-        'y': 'float',
-        'z': 'float'
+        'position': 'PostCorporationsCorporationIdAssetsLocationsPosition'
     }
 
     attribute_map = {
         'item_id': 'item_id',
-        'x': 'x',
-        'y': 'y',
-        'z': 'z'
+        'position': 'position'
     }
 
-    def __init__(self, item_id=None, x=None, y=None, z=None):
+    def __init__(self, item_id=None, position=None):
         """
         PostCorporationsCorporationIdAssetsLocations200Ok - a model defined in Swagger
         """
 
         self._item_id = None
-        self._x = None
-        self._y = None
-        self._z = None
+        self._position = None
         self.discriminator = None
 
         self.item_id = item_id
-        self.x = x
-        self.y = y
-        self.z = z
+        self.position = position
 
     @property
     def item_id(self):
@@ -86,79 +78,27 @@ class PostCorporationsCorporationIdAssetsLocations200Ok(object):
         self._item_id = item_id
 
     @property
-    def x(self):
+    def position(self):
         """
-        Gets the x of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        x number
+        Gets the position of this PostCorporationsCorporationIdAssetsLocations200Ok.
 
-        :return: The x of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        :rtype: float
+        :return: The position of this PostCorporationsCorporationIdAssetsLocations200Ok.
+        :rtype: PostCorporationsCorporationIdAssetsLocationsPosition
         """
-        return self._x
+        return self._position
 
-    @x.setter
-    def x(self, x):
+    @position.setter
+    def position(self, position):
         """
-        Sets the x of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        x number
+        Sets the position of this PostCorporationsCorporationIdAssetsLocations200Ok.
 
-        :param x: The x of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        :type: float
+        :param position: The position of this PostCorporationsCorporationIdAssetsLocations200Ok.
+        :type: PostCorporationsCorporationIdAssetsLocationsPosition
         """
-        if x is None:
-            raise ValueError("Invalid value for `x`, must not be `None`")
+        if position is None:
+            raise ValueError("Invalid value for `position`, must not be `None`")
 
-        self._x = x
-
-    @property
-    def y(self):
-        """
-        Gets the y of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        y number
-
-        :return: The y of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        :rtype: float
-        """
-        return self._y
-
-    @y.setter
-    def y(self, y):
-        """
-        Sets the y of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        y number
-
-        :param y: The y of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        :type: float
-        """
-        if y is None:
-            raise ValueError("Invalid value for `y`, must not be `None`")
-
-        self._y = y
-
-    @property
-    def z(self):
-        """
-        Gets the z of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        z number
-
-        :return: The z of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        :rtype: float
-        """
-        return self._z
-
-    @z.setter
-    def z(self, z):
-        """
-        Sets the z of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        z number
-
-        :param z: The z of this PostCorporationsCorporationIdAssetsLocations200Ok.
-        :type: float
-        """
-        if z is None:
-            raise ValueError("Invalid value for `z`, must not be `None`")
-
-        self._z = z
+        self._position = position
 
     def to_dict(self):
         """
