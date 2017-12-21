@@ -21,25 +21,18 @@ class DB:
         try:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
-            if config.bot["devMode"]:
-                print('Database connection opened')
-        except mysqldb.Error as e:
+            log.info("Database connection opened.")
+        except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
 
     def __del__(self):
         try:
             self.cursor.close()
-            if config.bot["devMode"]:
-                print('Cursor closed')
+            log.info("Cursor closed.")
             self.cnx.close()
-            if config.bot["devMode"]:
-                print('Database connection closed')
-        except mysqldb.Error as e:
+            log.info("Database connection closed.")
+        except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
         finally:
             for attr in ("cnx", "cursor"):
                 self.__dict__.pop(attr,None)
@@ -49,42 +42,33 @@ class DB:
 class DBMain(DB):
     async def sql_query(self, query):
         try:
+            if config.bot["devMode"]:
+                log.info("{}\n".format(query))
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchall()
             return self.sqlout
-        except mysqldb.Error as e:
+        except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            if config.bot["devMode"]:
-                print("{}\n".format(query))
 
     async def sql_query_one(self, query):
         try:
+            if config.bot["devMode"]:
+                log.info("{}\n".format(query))
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchone()
             return self.sqlout
-        except mysqldb.Error as e:
+        except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            if config.bot["devMode"]:
-                print("{}\n".format(query))
 
     async def sql_query_exec(self, query):
         try:
+            if config.bot["devMode"]:
+                log.info("{}\n".format(query))
             self.cursor.execute(query)
             self.cnx.commit()
             return 0
-        except mysqldb.Error as e:
+        except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            if config.bot["devMode"]:
-                print("{}\n".format(query))
 
     async def discord_add_user(self, discord_id):
         self.sqlquery = "REPLACE INTO `discord_users_cache` SET discord_id='{0}'".format(discord_id)
@@ -288,41 +272,38 @@ class DBMain(DB):
 
         
 class DBStart(DB):
+    def __init__(self):
+        super().__init__()
+
     def sql_query(self, query):
         try:
+            if config.bot["devMode"]:
+                log.info("{}\n".format(query))
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchall()
-        except mysqldb.Error as e:
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            if config.bot["devMode"]:
-                print("{}\n".format(query))
-        return self.sqlout
+            return self.sqlout
+        except mysqldb.Error:
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     def sql_query_one(self, query):
         try:
+            if config.bot["devMode"]:
+                log.info("{}\n".format(query))
             self.cursor.execute(query)
             self.sqlout = self.cursor.fetchone()
             return self.sqlout
-        except mysqldb.Error as e:
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            if config.bot["devMode"]:
-                print("{}\n".format(query))
+        except mysqldb.Error:
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     def sql_query_exec(self, query):
         try:
+            if config.bot["devMode"]:
+                log.info("{}\n".format(query))
             self.cursor.execute(query)
             self.cnx.commit()
             return 0
-        except mysqldb.Error as e:
-            if config.bot["devMode"]:
-                print('ERROR: %d: %s' % (e.args[0], e.args[1]))
-        finally:
-            if config.bot["devMode"]:
-                print("{}\n".format(query))
+        except mysqldb.Error:
+            log.exception("An exception has occurred in {}: ".format(__name__))
 
     def mysql_version(self):
         self.sqlquery = "SELECT version()"

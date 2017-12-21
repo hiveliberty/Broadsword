@@ -25,16 +25,11 @@ class EVEMail:
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
         log.info(self.msg_start)
-        if config.bot["devMode"]:
-            print(self.msg_start)
-        
+
     def __unload(self):
         self._task.cancel()
         log.info(self.msg_stop)
-        if config.bot["devMode"]:
-            print(self.msg_stop)
-            
-        
+
     async def mail_task(self):
         try:
             while not self.broadsword.is_closed:
@@ -46,23 +41,19 @@ class EVEMail:
                     #if self.time_next <= await self.now():
                     if await self.now() >= self.time_next:
                         log.info("Start periodic check corp\\alliance mails.")
-                        if config.bot["devMode"]:
-                            print("Start periodic check corp\\alliance mails.")
                         await self.mail_check()
                 else:
                     await self.cnx.storage_add("nextMailCheck", await self.next_check(self.interval))
                 for attr in ("cnx", "t_next", "t_now"):
                     self.__dict__.pop(attr,None)
                 await asyncio.sleep(self.interval)
-        except Exception as e:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
-            self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.mail_task())
         except asyncio.CancelledError:
             pass
         except (OSError, discord.ConnectionClosed):
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.mail_task())
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.mail_task())
 
@@ -114,14 +105,10 @@ class EVEMail:
                     await self.cnx.storage_add("latestMailID", self.maxID)
             else:
                 log.warning("EVE Api service is unavailable.")
-                if config.bot["devMode"]:
-                    print("EVE Api service is unavailable.")
             await self.cnx.storage_update("nextMailCheck", await self.next_check(self.interval))
             return 0
-        except Exception as e:
+        except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
         finally:
             for attr in ("latestMailID", "maxID", "url",
                          "mails", "mail", "content", "msg_split",

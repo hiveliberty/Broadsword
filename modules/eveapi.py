@@ -19,32 +19,28 @@ class EVE_API:
         self.broadsword = bot
 
     @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
-    async def eveapiadmin(self, ctx):
+    async def eveapi(self, ctx):
         if ctx.invoked_subcommand is None:
-            await self.broadsword.say("{0.mention}, invalid git command passed...".format(self.author))
+            await self.broadsword.say("{0.mention}, invalid command passed...".format(self.author))
 
-    @eveapiadmin.command(pass_context=True)
+    @eveapi.command(pass_context=True, hidden=False)
     async def reloadconf(self, ctx):
         try:
             reload(config)
-        except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
+        except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            await self.broadsword.say("Oooops")
+            await self.broadsword.say("Oooops! I cann't reload config!")
 
-    @broadsword.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def tq(self, ctx):
+    @broadsword.command(name="tq",pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
+    async def _tq(self, ctx):
         try:
             self.author = ctx.message.author
             self.api = EVEApi()
             self.response = await self.api.statusTQ()
             self.stmp = '{0.mention}\n**TQ Status:**  {1} players online.\n**Version:** {2}'.format(self.author, self.response.players, self.response.server_version)
             await self.broadsword.say(self.stmp)
-        except:
-            await self.broadsword.say("Ошибка при получении статуса сервера Tranquility")
-            if config.bot["devMode"]:
-                print(e)
+        except Exception:
+            await self.broadsword.say("Ошибка при получении статуса сервера Tranquility.")
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("author", "api", "response", "stmp"):
@@ -77,10 +73,8 @@ class EVE_API:
             self.msg += 'Latest Killmail: https://zkillboard.com/kill/{}/\n'.format(self.lastkillmailID)
             self.msg += 'zKillboard Link: https://zkillboard.com/character/{}/'.format(self.charID)
             await self.broadsword.say(self.msg)
-        except:
+        except Exception:
             await self.broadsword.say('Возникла проблема при получении информации о персонаже.')
-            if config.bot["devMode"]:
-                print(e)
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
             for attr in ("msg", "eve_api", "zkill_api",
