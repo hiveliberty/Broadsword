@@ -129,8 +129,9 @@ class DBMain(DB):
         return None
 
     async def user_update(self, character_id, key, value):
-        self.sqlquery = "UPDATE `discord_users_auth` SET %s=%s WHERE character_id=%s"
-        await self._query_exec(self.sqlquery, (key, value, character_id))
+        self.sqlquery = "UPDATE `discord_users_auth` " +\
+                        "SET {}=%s WHERE character_id=%s".format(key)
+        await self._query_exec(self.sqlquery, (value, character_id))
         del self.sqlquery
         return None
 
@@ -145,8 +146,6 @@ class DBMain(DB):
                         "FROM `discord_users_auth` " +\
                         "WHERE pending='yes'"
         self.sqlout = await self._query(self.sqlquery, query_one=True)
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]
         del self.sqlquery
         if self.sqlout is not None:
             return self.sqlout
@@ -171,8 +170,6 @@ class DBMain(DB):
     async def message_get(self, id):
         self.sqlquery = "SELECT * FROM `queue_message` WHERE id=%s"
         self.sqlout = await self._query(self.sqlquery, (id,), query_one=True)
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]
         if self.sqlout is not None:
             return self.sqlout
         return None
@@ -180,8 +177,6 @@ class DBMain(DB):
     async def message_get_oldest(self):
         self.sqlquery = "SELECT MIN(id) FROM `queue_message`"
         self.sqlout = await self._query(self.sqlquery, query_one=True)
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]['MIN(id)']
         del self.sqlquery
         if self.sqlout is not None:
             return self.sqlout['MIN(id)']
@@ -218,8 +213,6 @@ class DBMain(DB):
         self.sqlquery = "SELECT * FROM `queue_rename` WHERE id=%s"
         self.sqlout = await self._query(self.sqlquery, (id,), True)
         del self.sqlquery
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]
         if self.sqlout is not None:
             return self.sqlout
         return None
@@ -227,8 +220,6 @@ class DBMain(DB):
     async def rename_get_oldest(self):
         self.sqlquery = "SELECT MIN(id) FROM `queue_rename`"
         self.sqlout = await self._query(self.sqlquery, query_one=True)
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]['MIN(id)']
         del self.sqlquery
         if self.sqlout is not None:
             return self.sqlout['MIN(id)']
@@ -263,9 +254,6 @@ class DBMain(DB):
         self.sqlquery = "SELECT * FROM `corporation_cache` " +\
                         "WHERE corporation_id=%s"
         self.sqlout = await self._query(self.sqlquery, (corporation_id,), True)
-        #if len(self.sqlout) == 0:
-        #    return
-        #return self.sqlout[0]
         del self.sqlquery
         if self.sqlout is not None:
             return self.sqlout
@@ -295,8 +283,6 @@ class DBMain(DB):
         self.sqlquery = "SELECT s_value FROM `storage` WHERE `s_key`=%s"
         self.sqlout = await self._query(self.sqlquery, (key,), True)
         del self.sqlquery
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]['s_value']
         if self.sqlout is not None:
             return self.sqlout["s_value"]
         return None
@@ -310,8 +296,6 @@ class DBMain(DB):
     async def token_get(self, character_id):
         self.sqlquery = "SELECT * FROM `token_storage` WHERE `character_id`=%s"
         self.sqlout = await self._query(self.sqlquery, (character_id,), True)
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]
         del self.sqlquery
         if self.sqlout is not None:
             return self.sqlout
