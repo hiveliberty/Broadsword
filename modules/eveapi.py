@@ -5,11 +5,12 @@ import xmltodict
 import logging
 from discord.ext import commands as broadsword
 from importlib import reload
+
 from lib import utils
 from lib.db import DBMain
-from lib.eve import EVEBasic
-from lib.eve import EVEApi
-from lib.eve import zKillboardAPI
+#from lib.eve import EVEBasic
+from lib.esi import ESIApi
+from lib.zkillboard import zKillboardAPI
 from config import config
 
 log = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ class EVE_API:
     async def _tq(self, ctx):
         try:
             self.author = ctx.message.author
-            self.api = EVEApi()
+            self.api = ESIApi()
             self.response = await self.api.statusTQ()
             self.stmp = '{0.mention}\n**TQ Status:**  {1} players online.\n**Version:** {2}'.format(self.author, self.response.players, self.response.server_version)
             await self.broadsword.say(self.stmp)
@@ -51,10 +52,10 @@ class EVE_API:
         try:
             self.author = ctx.message.author
             self.msg = ''
-            self.eve_api = EVEApi()
-            self.charID = await self.eve_api.getCharID(name)
+            self.esi = ESIApi()
+            self.charID = await self.esi.getCharID(name)
             self.zkill_api = zKillboardAPI(self.charID)
-            self.response = await self.eve_api.getCharDetails(self.charID)
+            self.response = await self.esi.char_get_details(self.charID)
             self.starsystemID = await self.zkill_api.getLatestSystem()
             self.shiptypeID = await self.zkill_api.getLastShipType()
             self.lastseen = await self.zkill_api.getLastSeenDate()
@@ -64,8 +65,8 @@ class EVE_API:
             self.msg += '{0.mention}\n```Character info:\n'.format(self.author)
             self.msg += 'Name: {}\n'.format(self.response.name)
             self.msg += 'Birthday: {}\n'.format(self.birthday)
-            self.msg += 'Alliance: {}\n'.format(await self.eve_api.getAllianceName(self.response.alliance_id))
-            self.msg += 'Corporation: {}\n'.format(await self.eve_api.getCorpName(self.response.corporation_id))
+            #self.msg += 'Alliance: {}\n'.format(await self.esi.getAllianceName(self.response.alliance_id))
+            self.msg += 'Corporation: {}\n'.format(await self.esi.corp_get_name(self.response.corporation_id))
             #self.msg += 'Corporation: {}\n'.format(self.conpinfo.name])
             self.msg += 'Last Seen In System: {}\n'.format(self.starsystemID)
             self.msg += 'Last Seen Flying a: {}\n'.format(self.shiptypeID)
@@ -77,7 +78,7 @@ class EVE_API:
             await self.broadsword.say('Возникла проблема при получении информации о персонаже.')
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("msg", "eve_api", "zkill_api",
+            for attr in ("msg", "esi", "zkill_api",
                          "author", "charID", "response",
                          "starsystemID", "shiptypeID",
                          "lastseen", "lastkillmailID",

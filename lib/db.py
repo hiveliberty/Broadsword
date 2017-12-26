@@ -21,16 +21,19 @@ class DB:
         try:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
-            log.info("Database connection opened.")
+            if config.bot["devMode"]:
+                log.info("Database connection opened.")
         except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
 
     def __del__(self):
         try:
             self.cursor.close()
-            log.info("Cursor closed.")
+            if config.bot["devMode"]:
+                log.info("Cursor closed.")
             self.cnx.close()
-            log.info("Database connection closed.")
+            if config.bot["devMode"]:
+                log.info("Database connection closed.")
         except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
@@ -103,37 +106,37 @@ class DBMain(DB):
         self.sqlquery = "REPLACE INTO `discord_users_auth` " +\
                         "(character_id, discord_id, eve_name, active) " +\
                         "VALUES (%s, %s, %s, 'yes')"
-        self._query_exec(self.sqlquery, (character_id, discord_id, eve_name))
+        await self._query_exec(self.sqlquery, (character_id, discord_id, eve_name))
         del self.sqlquery
         return None
 
     async def auth_enabled(self, character_id):
         self.sqlquery = "UPDATE `discord_users_auth` SET pending='yes' WHERE character_id=%s"
-        self._query_exec(self.sqlquery, (character_id,))
+        await self._query_exec(self.sqlquery, (character_id,))
         del self.sqlquery
         return None
 
     async def auth_disable(self, character_id):
         self.sqlquery = "UPDATE `discord_users_auth` SET pending='no' WHERE character_id=%s"
-        self._query_exec(self.sqlquery, (character_id,))
+        await self._query_exec(self.sqlquery, (character_id,))
         del self.sqlquery
         return None
 
     async def user_enabled(self, character_id):
         self.sqlquery = "UPDATE `discord_users_auth` SET active='yes' WHERE character_id=%s"
-        self._query_exec(self.sqlquery, (character_id,))
+        await self._query_exec(self.sqlquery, (character_id,))
         del self.sqlquery
         return None
 
     async def user_update(self, character_id, key, value):
         self.sqlquery = "UPDATE `discord_users_auth` SET %s=%s WHERE character_id=%s"
-        self._query_exec(self.sqlquery, (key, value, character_id))
+        await self._query_exec(self.sqlquery, (key, value, character_id))
         del self.sqlquery
         return None
 
     async def user_disable(self, character_id):
         self.sqlquery = "UPDATE `discord_users_auth` SET active='no' WHERE character_id=%s"
-        self._query_exec(self.sqlquery, (character_id,))
+        await self._query_exec(self.sqlquery, (character_id,))
         del self.sqlquery
         return None
 
@@ -161,13 +164,13 @@ class DBMain(DB):
 
     async def message_add(self, msg, channel_id):
         self.sqlquery = "INSERT INTO `queue_message` (channel_id, message) VALUES (%s, %s)"
-        self._query_exec(self.sqlquery, (character_id, msg))
+        await self._query_exec(self.sqlquery, (channel_id, msg))
         del self.sqlquery
         return None
 
     async def message_get(self, id):
-        self.sqlquery = "SELECT * FROM `queue_message` WHERE id=%d"
-        self.sqlout = await self._query(self.sqlquery, query_one=True)
+        self.sqlquery = "SELECT * FROM `queue_message` WHERE id=%s"
+        self.sqlout = await self._query(self.sqlquery, (id,), query_one=True)
         #if len(self.sqlout) >= 1:
         #    return self.sqlout[0]
         if self.sqlout is not None:
@@ -185,7 +188,7 @@ class DBMain(DB):
         return None
 
     async def message_delete(self, id):
-        self.sqlquery = "DELETE FROM `queue_message` WHERE id=%d"
+        self.sqlquery = "DELETE FROM `queue_message` WHERE id=%s"
         await self._query_exec(self.sqlquery, (id,))
         del self.sqlquery
         return None
@@ -196,7 +199,7 @@ class DBMain(DB):
             self.id = self.oldest - 1
             self.sqlquery = "INSERT INTO `queue_message` " +\
                             "(id, channel_id, message) " +\
-                            "VALUES (%d, %s, %s)"
+                            "VALUES (%s, %s, %s)"
             await self._query_exec(self.sqlquery, (self.id, channel_id, msg))
         del self.sqlquery
         del self.id
@@ -212,7 +215,7 @@ class DBMain(DB):
         return None
 
     async def rename_get(self, id):
-        self.sqlquery = "SELECT * FROM `queue_rename` WHERE id=%d"
+        self.sqlquery = "SELECT * FROM `queue_rename` WHERE id=%s"
         self.sqlout = await self._query(self.sqlquery, (id,), True)
         del self.sqlquery
         #if len(self.sqlout) >= 1:
@@ -232,7 +235,7 @@ class DBMain(DB):
         return None
 
     async def rename_delete(self, id):
-        self.sqlquery = "DELETE FROM `queue_rename` WHERE id=%d"
+        self.sqlquery = "DELETE FROM `queue_rename` WHERE id=%s"
         await self._query_exec(self.sqlquery, (id,))
         del self.sqlquery
         return None
@@ -295,7 +298,7 @@ class DBMain(DB):
         #if len(self.sqlout) >= 1:
         #    return self.sqlout[0]['s_value']
         if self.sqlout is not None:
-            return self.sqlout
+            return self.sqlout["s_value"]
         return None
 
     async def storage_delete(self, key):
@@ -379,18 +382,6 @@ class DBStart(DB):
         self.sqlout = self._query(self.sqlquery)
         if self.sqlout is not None:
             return self.sqlout[0]['version()']
-        return None
-
-    def storage_add(self, key, value):
-        self.sqlquery = "REPLACE INTO `storage` (`s_key`, `s_value`) VALUES ('{0}', '{1}')".format(key, value)
-        self.sql_query_exec(self.sqlquery)
-        return None
-
-    def storage_get(self, key):
-        self.sqlquery = "SELECT s_value FROM `storage` WHERE `s_key`='{}'".format(key)
-        self.sqlout = self.sql_query_one(self.sqlquery)
-        if self.sqlout is not None:
-            return self.sqlout
         return None
 
     def storage_add(self, key, value):

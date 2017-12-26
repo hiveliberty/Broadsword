@@ -6,16 +6,13 @@ import logging
 import asyncio
 from operator import itemgetter
 from discord.ext import commands as broadsword
+
 from lib.utils import MailUtils
 from lib.db import DBMain
-#from lib.eve import EVEBasic
-#from lib.eve import EVEApi
+from lib.esi import ESIApi
 from lib.token import EVEToken
 #from lib.libeve import zKillboardAPI
 from config import config
-
-import mysql.connector as mysqldb
-from config.config import db as dbcfg
 
 log = logging.getLogger(__name__)
 
@@ -84,16 +81,14 @@ class Test:
     async def code4(self, ctx):
         try:
             self.cnx = DBMain()
-            #await self.cnx.storage_update("test", "tes't'no'need `ok?")
-            #await asyncio.sleep(5)
-            #self.temp_values = await self.cnx.storage_get("test")
-            self.temp_values = await self.cnx.select_pending()
-            log.info(self.temp_values)
-            await self.broadsword.say("```{0}```".format(self.temp_values))
+            self.msg_id = await self.cnx.message_get_oldest()
+            self.msg = await self.cnx.message_get(self.msg_id)
+            log.info(self.msg)
+            await self.broadsword.say("```{}```".format(self.msg))
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("cnx", "temp_values"):
+            for attr in ("cnx", "temp_value"):
                 self.__dict__.pop(attr,None)
 
 
