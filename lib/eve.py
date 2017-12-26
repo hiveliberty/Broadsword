@@ -19,9 +19,9 @@ import json
 
 from config import config
 from lib.utils import BasicUtils
-from vendor import swagger_client
-from vendor.swagger_client.rest import ApiException
-from vendor.swagger_client import Configuration
+#from vendor import swagger_client
+#from vendor.swagger_client.rest import ApiException
+#from vendor.swagger_client import Configuration
 
 #==============================================================================
 #version = await getVersion()

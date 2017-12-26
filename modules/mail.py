@@ -6,6 +6,7 @@ import discord
 import logging
 from discord.ext import commands as broadsword
 #import xmltodict
+
 from lib.utils import MailUtils
 from lib.db import DBMain
 from lib.eve import EVEBasic

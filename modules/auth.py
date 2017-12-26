@@ -6,7 +6,8 @@ import discord
 import logging
 from importlib import reload
 from discord.ext import commands as broadsword
-from lib.eve import EVEApi
+
+from lib.esi import ESIApi
 from lib.db import DBMain
 from lib.utils import AuthUtils
 from config import config
@@ -16,7 +17,7 @@ log = logging.getLogger(__name__)
 class AuthCMD:
     def __init__(self, bot):
         self.broadsword = bot
-        self.eveapi = EVEApi()
+        self.esi = ESIApi()
         self.server = self.broadsword.get_server(id=config.bot["guild"])
 
     @broadsword.group(pass_context=True, hidden=False)
@@ -27,7 +28,7 @@ class AuthCMD:
                 "{0.mention}, invalid git command passed...".format(self.author)
             )
 
-    @authadmin.command(pass_context=True)
+    @auth.command(pass_context=True)
     async def reloadconf(self, ctx):
         try:
             reload(config)
@@ -39,7 +40,7 @@ class AuthCheck:
     def __init__(self, bot):
         self.broadsword = bot
         self.server = self.broadsword.get_server(id=config.bot["guild"])
-        self.eveapi = EVEApi()
+        self.esi = ESIApi()
         self.interval = config.auth["periodicCheckInterval"]
         self._task = self.broadsword.loop.create_task(self.auth_check())
         self.msg_start = "{} should have been run.".\
@@ -67,7 +68,7 @@ class AuthCheck:
                     self.is_exempt = await AuthUtils().is_auth_exempt(
                                             self.member.roles)
                     if not self.is_exempt:
-                        self.charinfo = await self.eveapi.char_get_details(
+                        self.charinfo = await self.esi.char_get_details(
                                                 self.auth_user["character_id"])
                         if self.charinfo is not None:
                             if str(self.charinfo["alliance_id"]) not in self.auth_groups:
@@ -118,7 +119,7 @@ class AuthTask:
     def __init__(self, bot):
         self.broadsword = bot
         self.server = self.broadsword.get_server(id=config.bot["guild"])
-        self.eveapi = EVEApi()
+        self.esi = ESIApi()
         self.interval = 3
         self._task = self.broadsword.loop.create_task(self.auth_task())
         self.msg_start = "{} should have been run.".\
@@ -213,7 +214,7 @@ class AuthTask:
 
                     if self.corpinfo is None:
                         self.corpinfo = {}
-                        self.temp = await self.eveapi.corp_get_details(self.pending["corporation_id"])
+                        self.temp = await self.esi.corp_get_details(self.pending["corporation_id"])
                         #   self.corpinfo_temp content:
                         #       'alliance_id'
                         #       'ceo_id'
@@ -291,7 +292,7 @@ class AuthTask:
                         await self.broadsword.add_roles(self.member, *self.auth_roles)
                         if config.auth["nameEnforce"]:
                             self.charname = ""
-                            self.charinfo = await self.eveapi.char_get_details(self.pending["character_id"])
+                            self.charinfo = await self.esi.char_get_details(self.pending["character_id"])
                             if self.auth_group["corpTickers"] and self.auth_group["type"] == "alliance":
                                 self.charname = "[" + self.corpinfo["corporation_ticker"] + "] "
                             self.charname = self.charname + self.charinfo["name"]
