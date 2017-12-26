@@ -8,11 +8,14 @@ from operator import itemgetter
 from discord.ext import commands as broadsword
 from lib.utils import MailUtils
 from lib.db import DBMain
-from lib.eve import EVEBasic
-from lib.eve import EVEApi
+#from lib.eve import EVEBasic
+#from lib.eve import EVEApi
 from lib.token import EVEToken
 #from lib.libeve import zKillboardAPI
 from config import config
+
+import mysql.connector as mysqldb
+from config.config import db as dbcfg
 
 log = logging.getLogger(__name__)
 
@@ -80,13 +83,18 @@ class Test:
     @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
     async def code4(self, ctx):
         try:
-            for task in asyncio.Task.all_tasks():
-                task.cancel()
+            self.cnx = DBMain()
+            #await self.cnx.storage_update("test", "tes't'no'need `ok?")
+            #await asyncio.sleep(5)
+            #self.temp_values = await self.cnx.storage_get("test")
+            self.temp_values = await self.cnx.select_pending()
+            log.info(self.temp_values)
+            await self.broadsword.say("```{0}```".format(self.temp_values))
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
-        #finally:
-        #    for attr in ("token_api", "expired"):
-        #        self.__dict__.pop(attr,None)
+        finally:
+            for attr in ("cnx", "temp_values"):
+                self.__dict__.pop(attr,None)
 
 
 def setup(broadsword):

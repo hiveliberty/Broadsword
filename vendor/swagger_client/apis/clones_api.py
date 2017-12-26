@@ -148,7 +148,7 @@ class ClonesApi(object):
     def get_characters_character_id_implants(self, character_id, **kwargs):
         """
         Get active implants
-        Return implants on the active clone of a character  ---  This route is cached for up to 3600 seconds
+        Return implants on the active clone of a character  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
         >>> thread = api.get_characters_character_id_implants(character_id, async=True)
@@ -174,7 +174,7 @@ class ClonesApi(object):
     def get_characters_character_id_implants_with_http_info(self, character_id, **kwargs):
         """
         Get active implants
-        Return implants on the active clone of a character  ---  This route is cached for up to 3600 seconds
+        Return implants on the active clone of a character  ---  This route is cached for up to 300 seconds
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
         >>> thread = api.get_characters_character_id_implants_with_http_info(character_id, async=True)
