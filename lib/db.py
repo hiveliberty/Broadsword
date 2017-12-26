@@ -86,19 +86,19 @@ class DBMain(DB):
 
     async def discord_set_authorized(self, discord_id):
         self.sqlquery = "UPDATE `discord_users_cache` SET is_authorized='yes' WHERE discord_id=%s"
-        await self.sql_query_exec(self.sqlquery, (discord_id,))
+        await self._query_exec(self.sqlquery, (discord_id,))
         del self.sqlquery
         return None
 
     async def discord_set_unauthorized(self, discord_id):
         self.sqlquery = "UPDATE `discord_users_cache` SET is_authorized='no' WHERE discord_id=%s"
-        await self.sql_query_exec(self.sqlquery, (discord_id,))
+        await self._query_exec(self.sqlquery, (discord_id,))
         del self.sqlquery
         return None
 
     async def discord_delete_user(self, discord_id):
         self.sqlquery = "DELETE FROM `discord_users_cache` WHERE discord_id=%s"
-        await self.sql_query_exec(self.sqlquery, (discord_id,))
+        await self._query_exec(self.sqlquery, (discord_id,))
         del self.sqlquery
         return None
 
