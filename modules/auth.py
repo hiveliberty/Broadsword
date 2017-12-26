@@ -152,7 +152,7 @@ class AuthTask:
                 #      `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
                 if self.pending is not None:
-                    await self.auth(self.pending)
+                    await self.auth()
                     log.info("Do authorized for '{}'.".format(self.pending["eve_name"]))
                 #else:
                     #log.info("There is no one to authorize.")
@@ -173,7 +173,7 @@ class AuthTask:
         #    for attr in ("cnx", "pending"):
         #        self.__dict__.pop(attr,None)
 
-    async def auth(self, pending):
+    async def auth(self):
         try:
             while not self.broadsword.is_closed:
                 self.cnx = DBMain()
