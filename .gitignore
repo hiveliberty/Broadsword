@@ -19,6 +19,7 @@ bot-sigterm.py
 
 # Exlude "dirs"
 backup
+/vendor
 
 # Other stuff
 Thumbs.db
