@@ -350,7 +350,7 @@ class SkillsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v3/characters/{character_id}/skills/', 'GET',
+        return self.api_client.call_api('/v4/characters/{character_id}/skills/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,

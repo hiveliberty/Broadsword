@@ -37,12 +37,11 @@ class GetCharactersCharacterIdSearchOk(object):
         'constellation': 'list[int]',
         'corporation': 'list[int]',
         'faction': 'list[int]',
-        'inventorytype': 'list[int]',
+        'inventory_type': 'list[int]',
         'region': 'list[int]',
-        'solarsystem': 'list[int]',
+        'solar_system': 'list[int]',
         'station': 'list[int]',
-        'structure': 'list[int]',
-        'wormhole': 'list[int]'
+        'structure': 'list[int]'
     }
 
     attribute_map = {
@@ -52,15 +51,14 @@ class GetCharactersCharacterIdSearchOk(object):
         'constellation': 'constellation',
         'corporation': 'corporation',
         'faction': 'faction',
-        'inventorytype': 'inventorytype',
+        'inventory_type': 'inventory_type',
         'region': 'region',
-        'solarsystem': 'solarsystem',
+        'solar_system': 'solar_system',
         'station': 'station',
-        'structure': 'structure',
-        'wormhole': 'wormhole'
+        'structure': 'structure'
     }
 
-    def __init__(self, agent=None, alliance=None, character=None, constellation=None, corporation=None, faction=None, inventorytype=None, region=None, solarsystem=None, station=None, structure=None, wormhole=None):
+    def __init__(self, agent=None, alliance=None, character=None, constellation=None, corporation=None, faction=None, inventory_type=None, region=None, solar_system=None, station=None, structure=None):
         """
         GetCharactersCharacterIdSearchOk - a model defined in Swagger
         """
@@ -71,12 +69,11 @@ class GetCharactersCharacterIdSearchOk(object):
         self._constellation = None
         self._corporation = None
         self._faction = None
-        self._inventorytype = None
+        self._inventory_type = None
         self._region = None
-        self._solarsystem = None
+        self._solar_system = None
         self._station = None
         self._structure = None
-        self._wormhole = None
         self.discriminator = None
 
         if agent is not None:
@@ -91,18 +88,16 @@ class GetCharactersCharacterIdSearchOk(object):
           self.corporation = corporation
         if faction is not None:
           self.faction = faction
-        if inventorytype is not None:
-          self.inventorytype = inventorytype
+        if inventory_type is not None:
+          self.inventory_type = inventory_type
         if region is not None:
           self.region = region
-        if solarsystem is not None:
-          self.solarsystem = solarsystem
+        if solar_system is not None:
+          self.solar_system = solar_system
         if station is not None:
           self.station = station
         if structure is not None:
           self.structure = structure
-        if wormhole is not None:
-          self.wormhole = wormhole
 
     @property
     def agent(self):
@@ -243,27 +238,27 @@ class GetCharactersCharacterIdSearchOk(object):
         self._faction = faction
 
     @property
-    def inventorytype(self):
+    def inventory_type(self):
         """
-        Gets the inventorytype of this GetCharactersCharacterIdSearchOk.
-        inventorytype array
+        Gets the inventory_type of this GetCharactersCharacterIdSearchOk.
+        inventory_type array
 
-        :return: The inventorytype of this GetCharactersCharacterIdSearchOk.
+        :return: The inventory_type of this GetCharactersCharacterIdSearchOk.
         :rtype: list[int]
         """
-        return self._inventorytype
+        return self._inventory_type
 
-    @inventorytype.setter
-    def inventorytype(self, inventorytype):
+    @inventory_type.setter
+    def inventory_type(self, inventory_type):
         """
-        Sets the inventorytype of this GetCharactersCharacterIdSearchOk.
-        inventorytype array
+        Sets the inventory_type of this GetCharactersCharacterIdSearchOk.
+        inventory_type array
 
-        :param inventorytype: The inventorytype of this GetCharactersCharacterIdSearchOk.
+        :param inventory_type: The inventory_type of this GetCharactersCharacterIdSearchOk.
         :type: list[int]
         """
 
-        self._inventorytype = inventorytype
+        self._inventory_type = inventory_type
 
     @property
     def region(self):
@@ -289,27 +284,27 @@ class GetCharactersCharacterIdSearchOk(object):
         self._region = region
 
     @property
-    def solarsystem(self):
+    def solar_system(self):
         """
-        Gets the solarsystem of this GetCharactersCharacterIdSearchOk.
-        solarsystem array
+        Gets the solar_system of this GetCharactersCharacterIdSearchOk.
+        solar_system array
 
-        :return: The solarsystem of this GetCharactersCharacterIdSearchOk.
+        :return: The solar_system of this GetCharactersCharacterIdSearchOk.
         :rtype: list[int]
         """
-        return self._solarsystem
+        return self._solar_system
 
-    @solarsystem.setter
-    def solarsystem(self, solarsystem):
+    @solar_system.setter
+    def solar_system(self, solar_system):
         """
-        Sets the solarsystem of this GetCharactersCharacterIdSearchOk.
-        solarsystem array
+        Sets the solar_system of this GetCharactersCharacterIdSearchOk.
+        solar_system array
 
-        :param solarsystem: The solarsystem of this GetCharactersCharacterIdSearchOk.
+        :param solar_system: The solar_system of this GetCharactersCharacterIdSearchOk.
         :type: list[int]
         """
 
-        self._solarsystem = solarsystem
+        self._solar_system = solar_system
 
     @property
     def station(self):
@@ -356,29 +351,6 @@ class GetCharactersCharacterIdSearchOk(object):
         """
 
         self._structure = structure
-
-    @property
-    def wormhole(self):
-        """
-        Gets the wormhole of this GetCharactersCharacterIdSearchOk.
-        wormhole array
-
-        :return: The wormhole of this GetCharactersCharacterIdSearchOk.
-        :rtype: list[int]
-        """
-        return self._wormhole
-
-    @wormhole.setter
-    def wormhole(self, wormhole):
-        """
-        Sets the wormhole of this GetCharactersCharacterIdSearchOk.
-        wormhole array
-
-        :param wormhole: The wormhole of this GetCharactersCharacterIdSearchOk.
-        :type: list[int]
-        """
-
-        self._wormhole = wormhole
 
     def to_dict(self):
         """

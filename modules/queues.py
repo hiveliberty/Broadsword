@@ -8,6 +8,7 @@ from lib.db import DBMain
 
 log = logging.getLogger(__name__)
 
+
 class QueueMessages:
     def __init__(self, bot):
         self.broadsword = bot
@@ -17,14 +18,10 @@ class QueueMessages:
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
         log.info(self.msg_start)
-        if config.bot["devMode"]:
-            print(self.msg_start)
-        
+
     def __unload(self):
         self._task.cancel()
         log.info(self.msg_stop)
-        if config.bot["devMode"]:
-            print(self.msg_stop)
 
     async def message_task(self):
         try:
@@ -53,17 +50,16 @@ class QueueMessages:
                         self.__dict__.pop(attr,None)
                 del self.cnx
                 await asyncio.sleep(7)
-        except Exception as e:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
-            self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.message_task())
         except asyncio.CancelledError:
             pass
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.message_task())
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.message_task())
+
 
 class QueueRename:
     def __init__(self, bot):
@@ -74,14 +70,10 @@ class QueueRename:
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
         log.info(self.msg_start)
-        if config.bot["devMode"]:
-            print(self.msg_start)
-        
+
     def __unload(self):
         self._task.cancel()
         log.info(self.msg_stop)
-        if config.bot["devMode"]:
-            print(self.msg_stop)
 
     async def rename_task(self):
         try:
@@ -107,17 +99,11 @@ class QueueRename:
                             await self.cnx.rename_delete(self.id)
                         except discord.Forbidden as e:
                             if self.queued_rename['discord_id'] == self.server.owner.id:
-                                if config.bot["devMode"]:
-                                    print("Owner cann't be renamed!")
-                                else:
-                                    log.info("Owner cann't be renamed!")
+                                log.info("Owner cann't be renamed!")
                                 await self.cnx.rename_delete(self.id)
                                 continue
                             if e.text == "Privilege is too low...":
-                                if config.bot["devMode"]:
-                                    print("BroadswordBot needs more privileges for rename members!")
-                                else:
-                                    log.info("BroadswordBot needs more privileges for rename members!")
+                                log.info("BroadswordBot needs more privileges for rename members!")
                                 continue
                     else:
                         continue
@@ -126,15 +112,13 @@ class QueueRename:
                         self.__dict__.pop(attr,None)
                 del self.cnx
                 await asyncio.sleep(10)
-        except Exception as e:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
-            self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.rename_task())
         except asyncio.CancelledError:
             pass
         except (OSError, discord.ConnectionClosed):
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.rename_task())
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.rename_task())
 

@@ -225,7 +225,7 @@ class AllianceApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api('/v2/alliances/{alliance_id}/', 'GET',
+        return self.api_client.call_api('/v3/alliances/{alliance_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -548,7 +548,7 @@ class AllianceApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api('/v1/alliances/names/', 'GET',
+        return self.api_client.call_api('/v2/alliances/names/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,

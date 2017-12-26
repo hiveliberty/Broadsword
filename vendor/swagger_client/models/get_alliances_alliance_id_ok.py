@@ -31,60 +31,123 @@ class GetAlliancesAllianceIdOk(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'alliance_name': 'str',
+        'name': 'str',
+        'creator_id': 'int',
+        'creator_corporation_id': 'int',
         'ticker': 'str',
-        'executor_corp': 'int',
-        'date_founded': 'datetime'
+        'executor_corporation_id': 'int',
+        'date_founded': 'datetime',
+        'faction_id': 'int'
     }
 
     attribute_map = {
-        'alliance_name': 'alliance_name',
+        'name': 'name',
+        'creator_id': 'creator_id',
+        'creator_corporation_id': 'creator_corporation_id',
         'ticker': 'ticker',
-        'executor_corp': 'executor_corp',
-        'date_founded': 'date_founded'
+        'executor_corporation_id': 'executor_corporation_id',
+        'date_founded': 'date_founded',
+        'faction_id': 'faction_id'
     }
 
-    def __init__(self, alliance_name=None, ticker=None, executor_corp=None, date_founded=None):
+    def __init__(self, name=None, creator_id=None, creator_corporation_id=None, ticker=None, executor_corporation_id=None, date_founded=None, faction_id=None):
         """
         GetAlliancesAllianceIdOk - a model defined in Swagger
         """
 
-        self._alliance_name = None
+        self._name = None
+        self._creator_id = None
+        self._creator_corporation_id = None
         self._ticker = None
-        self._executor_corp = None
+        self._executor_corporation_id = None
         self._date_founded = None
+        self._faction_id = None
         self.discriminator = None
 
-        self.alliance_name = alliance_name
+        self.name = name
+        self.creator_id = creator_id
+        self.creator_corporation_id = creator_corporation_id
         self.ticker = ticker
-        if executor_corp is not None:
-          self.executor_corp = executor_corp
+        if executor_corporation_id is not None:
+          self.executor_corporation_id = executor_corporation_id
         self.date_founded = date_founded
+        if faction_id is not None:
+          self.faction_id = faction_id
 
     @property
-    def alliance_name(self):
+    def name(self):
         """
-        Gets the alliance_name of this GetAlliancesAllianceIdOk.
+        Gets the name of this GetAlliancesAllianceIdOk.
         the full name of the alliance
 
-        :return: The alliance_name of this GetAlliancesAllianceIdOk.
+        :return: The name of this GetAlliancesAllianceIdOk.
         :rtype: str
         """
-        return self._alliance_name
+        return self._name
 
-    @alliance_name.setter
-    def alliance_name(self, alliance_name):
+    @name.setter
+    def name(self, name):
         """
-        Sets the alliance_name of this GetAlliancesAllianceIdOk.
+        Sets the name of this GetAlliancesAllianceIdOk.
         the full name of the alliance
 
-        :param alliance_name: The alliance_name of this GetAlliancesAllianceIdOk.
+        :param name: The name of this GetAlliancesAllianceIdOk.
         :type: str
         """
-        if alliance_name is None:
-            raise ValueError("Invalid value for `alliance_name`, must not be `None`")
+        if name is None:
+            raise ValueError("Invalid value for `name`, must not be `None`")
 
-        self._alliance_name = alliance_name
+        self._name = name
+
+    @property
+    def creator_id(self):
+        """
+        Gets the creator_id of this GetAlliancesAllianceIdOk.
+        ID of the character that created the alliance
+
+        :return: The creator_id of this GetAlliancesAllianceIdOk.
+        :rtype: int
+        """
+        return self._creator_id
+
+    @creator_id.setter
+    def creator_id(self, creator_id):
+        """
+        Sets the creator_id of this GetAlliancesAllianceIdOk.
+        ID of the character that created the alliance
+
+        :param creator_id: The creator_id of this GetAlliancesAllianceIdOk.
+        :type: int
+        """
+        if creator_id is None:
+            raise ValueError("Invalid value for `creator_id`, must not be `None`")
+
+        self._creator_id = creator_id
+
+    @property
+    def creator_corporation_id(self):
+        """
+        Gets the creator_corporation_id of this GetAlliancesAllianceIdOk.
+        ID of the corporation that created the alliance
+
+        :return: The creator_corporation_id of this GetAlliancesAllianceIdOk.
+        :rtype: int
+        """
+        return self._creator_corporation_id
+
+    @creator_corporation_id.setter
+    def creator_corporation_id(self, creator_corporation_id):
+        """
+        Sets the creator_corporation_id of this GetAlliancesAllianceIdOk.
+        ID of the corporation that created the alliance
+
+        :param creator_corporation_id: The creator_corporation_id of this GetAlliancesAllianceIdOk.
+        :type: int
+        """
+        if creator_corporation_id is None:
+            raise ValueError("Invalid value for `creator_corporation_id`, must not be `None`")
+
+        self._creator_corporation_id = creator_corporation_id
 
     @property
     def ticker(self):
@@ -112,27 +175,27 @@ class GetAlliancesAllianceIdOk(object):
         self._ticker = ticker
 
     @property
-    def executor_corp(self):
+    def executor_corporation_id(self):
         """
-        Gets the executor_corp of this GetAlliancesAllianceIdOk.
+        Gets the executor_corporation_id of this GetAlliancesAllianceIdOk.
         the executor corporation ID, if this alliance is not closed
 
-        :return: The executor_corp of this GetAlliancesAllianceIdOk.
+        :return: The executor_corporation_id of this GetAlliancesAllianceIdOk.
         :rtype: int
         """
-        return self._executor_corp
+        return self._executor_corporation_id
 
-    @executor_corp.setter
-    def executor_corp(self, executor_corp):
+    @executor_corporation_id.setter
+    def executor_corporation_id(self, executor_corporation_id):
         """
-        Sets the executor_corp of this GetAlliancesAllianceIdOk.
+        Sets the executor_corporation_id of this GetAlliancesAllianceIdOk.
         the executor corporation ID, if this alliance is not closed
 
-        :param executor_corp: The executor_corp of this GetAlliancesAllianceIdOk.
+        :param executor_corporation_id: The executor_corporation_id of this GetAlliancesAllianceIdOk.
         :type: int
         """
 
-        self._executor_corp = executor_corp
+        self._executor_corporation_id = executor_corporation_id
 
     @property
     def date_founded(self):
@@ -158,6 +221,29 @@ class GetAlliancesAllianceIdOk(object):
             raise ValueError("Invalid value for `date_founded`, must not be `None`")
 
         self._date_founded = date_founded
+
+    @property
+    def faction_id(self):
+        """
+        Gets the faction_id of this GetAlliancesAllianceIdOk.
+        Faction ID this alliance is fighting for, if this alliance is enlisted in factional warfare
+
+        :return: The faction_id of this GetAlliancesAllianceIdOk.
+        :rtype: int
+        """
+        return self._faction_id
+
+    @faction_id.setter
+    def faction_id(self, faction_id):
+        """
+        Sets the faction_id of this GetAlliancesAllianceIdOk.
+        Faction ID this alliance is fighting for, if this alliance is enlisted in factional warfare
+
+        :param faction_id: The faction_id of this GetAlliancesAllianceIdOk.
+        :type: int
+        """
+
+        self._faction_id = faction_id
 
     def to_dict(self):
         """

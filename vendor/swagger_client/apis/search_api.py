@@ -114,8 +114,8 @@ class SearchApi(object):
         if ('search' not in params) or (params['search'] is None):
             raise ValueError("Missing the required parameter `search` when calling `get_characters_character_id_search`")
 
-        if 'categories' in params and len(params['categories']) > 12:
-            raise ValueError("Invalid value for parameter `categories` when calling `get_characters_character_id_search`, number of items must be less than or equal to `12`")
+        if 'categories' in params and len(params['categories']) > 11:
+            raise ValueError("Invalid value for parameter `categories` when calling `get_characters_character_id_search`, number of items must be less than or equal to `11`")
         if 'categories' in params and len(params['categories']) < 1:
             raise ValueError("Invalid value for parameter `categories` when calling `get_characters_character_id_search`, number of items must be greater than or equal to `1`")
         if 'search' in params and len(params['search']) < 3:
@@ -159,7 +159,7 @@ class SearchApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v2/characters/{character_id}/search/', 'GET',
+        return self.api_client.call_api('/v3/characters/{character_id}/search/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -287,7 +287,7 @@ class SearchApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api('/v1/search/', 'GET',
+        return self.api_client.call_api('/v2/search/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,

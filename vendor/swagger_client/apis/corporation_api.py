@@ -126,7 +126,7 @@ class CorporationApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api('/v3/corporations/{corporation_id}/', 'GET',
+        return self.api_client.call_api('/v4/corporations/{corporation_id}/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -1032,7 +1032,7 @@ class CorporationApi(object):
     def get_corporations_corporation_id_members(self, corporation_id, **kwargs):
         """
         Get corporation members
-        Read the current list of members if the calling character is a member.  ---  This route is cached for up to 3600 seconds
+        Return the current member list of a corporation, the token's character need to be a member of the corporation.  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
         >>> thread = api.get_corporations_corporation_id_members(corporation_id, async=True)
@@ -1044,7 +1044,7 @@ class CorporationApi(object):
         :param str token: Access token to use if unable to set a header
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
-        :return: list[GetCorporationsCorporationIdMembers200Ok]
+        :return: list[int]
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1058,7 +1058,7 @@ class CorporationApi(object):
     def get_corporations_corporation_id_members_with_http_info(self, corporation_id, **kwargs):
         """
         Get corporation members
-        Read the current list of members if the calling character is a member.  ---  This route is cached for up to 3600 seconds
+        Return the current member list of a corporation, the token's character need to be a member of the corporation.  ---  This route is cached for up to 3600 seconds
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
         >>> thread = api.get_corporations_corporation_id_members_with_http_info(corporation_id, async=True)
@@ -1070,7 +1070,7 @@ class CorporationApi(object):
         :param str token: Access token to use if unable to set a header
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
-        :return: list[GetCorporationsCorporationIdMembers200Ok]
+        :return: list[int]
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1124,14 +1124,14 @@ class CorporationApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v2/corporations/{corporation_id}/members/', 'GET',
+        return self.api_client.call_api('/v3/corporations/{corporation_id}/members/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
                                         body=body_params,
                                         post_params=form_params,
                                         files=local_var_files,
-                                        response_type='list[GetCorporationsCorporationIdMembers200Ok]',
+                                        response_type='list[int]',
                                         auth_settings=auth_settings,
                                         async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),
@@ -2718,7 +2718,7 @@ class CorporationApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api('/v1/corporations/names/', 'GET',
+        return self.api_client.call_api('/v2/corporations/names/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,

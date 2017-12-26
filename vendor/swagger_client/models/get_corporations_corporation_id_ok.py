@@ -31,90 +31,102 @@ class GetCorporationsCorporationIdOk(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'corporation_name': 'str',
+        'name': 'str',
         'ticker': 'str',
         'member_count': 'int',
         'ceo_id': 'int',
         'alliance_id': 'int',
-        'corporation_description': 'str',
+        'description': 'str',
         'tax_rate': 'float',
-        'creation_date': 'datetime',
+        'date_founded': 'datetime',
         'creator_id': 'int',
         'url': 'str',
-        'faction': 'str'
+        'faction_id': 'int',
+        'home_station_id': 'int',
+        'shares': 'int'
     }
 
     attribute_map = {
-        'corporation_name': 'corporation_name',
+        'name': 'name',
         'ticker': 'ticker',
         'member_count': 'member_count',
         'ceo_id': 'ceo_id',
         'alliance_id': 'alliance_id',
-        'corporation_description': 'corporation_description',
+        'description': 'description',
         'tax_rate': 'tax_rate',
-        'creation_date': 'creation_date',
+        'date_founded': 'date_founded',
         'creator_id': 'creator_id',
         'url': 'url',
-        'faction': 'faction'
+        'faction_id': 'faction_id',
+        'home_station_id': 'home_station_id',
+        'shares': 'shares'
     }
 
-    def __init__(self, corporation_name=None, ticker=None, member_count=None, ceo_id=None, alliance_id=None, corporation_description=None, tax_rate=None, creation_date=None, creator_id=None, url=None, faction=None):
+    def __init__(self, name=None, ticker=None, member_count=None, ceo_id=None, alliance_id=None, description=None, tax_rate=None, date_founded=None, creator_id=None, url=None, faction_id=None, home_station_id=None, shares=None):
         """
         GetCorporationsCorporationIdOk - a model defined in Swagger
         """
 
-        self._corporation_name = None
+        self._name = None
         self._ticker = None
         self._member_count = None
         self._ceo_id = None
         self._alliance_id = None
-        self._corporation_description = None
+        self._description = None
         self._tax_rate = None
-        self._creation_date = None
+        self._date_founded = None
         self._creator_id = None
         self._url = None
-        self._faction = None
+        self._faction_id = None
+        self._home_station_id = None
+        self._shares = None
         self.discriminator = None
 
-        self.corporation_name = corporation_name
+        self.name = name
         self.ticker = ticker
         self.member_count = member_count
         self.ceo_id = ceo_id
         if alliance_id is not None:
           self.alliance_id = alliance_id
-        self.corporation_description = corporation_description
+        if description is not None:
+          self.description = description
         self.tax_rate = tax_rate
-        if creation_date is not None:
-          self.creation_date = creation_date
+        if date_founded is not None:
+          self.date_founded = date_founded
         self.creator_id = creator_id
-        self.url = url
-        if faction is not None:
-          self.faction = faction
+        if url is not None:
+          self.url = url
+        if faction_id is not None:
+          self.faction_id = faction_id
+        if home_station_id is not None:
+          self.home_station_id = home_station_id
+        if shares is not None:
+          self.shares = shares
 
     @property
-    def corporation_name(self):
+    def name(self):
         """
-        Gets the corporation_name of this GetCorporationsCorporationIdOk.
+        Gets the name of this GetCorporationsCorporationIdOk.
         the full name of the corporation
 
-        :return: The corporation_name of this GetCorporationsCorporationIdOk.
+        :return: The name of this GetCorporationsCorporationIdOk.
         :rtype: str
         """
-        return self._corporation_name
+        return self._name
 
-    @corporation_name.setter
-    def corporation_name(self, corporation_name):
+    @name.setter
+    def name(self, name):
         """
-        Sets the corporation_name of this GetCorporationsCorporationIdOk.
+        Sets the name of this GetCorporationsCorporationIdOk.
         the full name of the corporation
 
-        :param corporation_name: The corporation_name of this GetCorporationsCorporationIdOk.
+        :param name: The name of this GetCorporationsCorporationIdOk.
         :type: str
         """
-        if corporation_name is None:
-            raise ValueError("Invalid value for `corporation_name`, must not be `None`")
+        if name is None:
+            raise ValueError("Invalid value for `name`, must not be `None`")
 
-        self._corporation_name = corporation_name
+        self._name = name
 
     @property
     def ticker(self):
@@ -195,7 +207,7 @@ class GetCorporationsCorporationIdOk(object):
     def alliance_id(self):
         """
         Gets the alliance_id of this GetCorporationsCorporationIdOk.
-        id of alliance that corporation is a member of, if any
+        ID of the alliance that corporation is a member of, if any
 
         :return: The alliance_id of this GetCorporationsCorporationIdOk.
         :rtype: int
@@ -206,7 +218,7 @@ class GetCorporationsCorporationIdOk(object):
     def alliance_id(self, alliance_id):
         """
         Sets the alliance_id of this GetCorporationsCorporationIdOk.
-        id of alliance that corporation is a member of, if any
+        ID of the alliance that corporation is a member of, if any
 
         :param alliance_id: The alliance_id of this GetCorporationsCorporationIdOk.
         :type: int
@@ -215,29 +227,27 @@ class GetCorporationsCorporationIdOk(object):
         self._alliance_id = alliance_id
 
     @property
-    def corporation_description(self):
+    def description(self):
         """
-        Gets the corporation_description of this GetCorporationsCorporationIdOk.
-        corporation_description string
+        Gets the description of this GetCorporationsCorporationIdOk.
+        description string
 
-        :return: The corporation_description of this GetCorporationsCorporationIdOk.
+        :return: The description of this GetCorporationsCorporationIdOk.
         :rtype: str
         """
-        return self._corporation_description
+        return self._description
 
-    @corporation_description.setter
-    def corporation_description(self, corporation_description):
+    @description.setter
+    def description(self, description):
         """
-        Sets the corporation_description of this GetCorporationsCorporationIdOk.
-        corporation_description string
+        Sets the description of this GetCorporationsCorporationIdOk.
+        description string
 
-        :param corporation_description: The corporation_description of this GetCorporationsCorporationIdOk.
+        :param description: The description of this GetCorporationsCorporationIdOk.
         :type: str
         """
-        if corporation_description is None:
-            raise ValueError("Invalid value for `corporation_description`, must not be `None`")
 
-        self._corporation_description = corporation_description
+        self._description = description
 
     @property
     def tax_rate(self):
@@ -269,27 +279,27 @@ class GetCorporationsCorporationIdOk(object):
         self._tax_rate = tax_rate
 
     @property
-    def creation_date(self):
+    def date_founded(self):
         """
-        Gets the creation_date of this GetCorporationsCorporationIdOk.
-        creation_date string
+        Gets the date_founded of this GetCorporationsCorporationIdOk.
+        date_founded string
 
-        :return: The creation_date of this GetCorporationsCorporationIdOk.
+        :return: The date_founded of this GetCorporationsCorporationIdOk.
         :rtype: datetime
         """
-        return self._creation_date
+        return self._date_founded
 
-    @creation_date.setter
-    def creation_date(self, creation_date):
+    @date_founded.setter
+    def date_founded(self, date_founded):
         """
-        Sets the creation_date of this GetCorporationsCorporationIdOk.
-        creation_date string
+        Sets the date_founded of this GetCorporationsCorporationIdOk.
+        date_founded string
 
-        :param creation_date: The creation_date of this GetCorporationsCorporationIdOk.
+        :param date_founded: The date_founded of this GetCorporationsCorporationIdOk.
         :type: datetime
         """
 
-        self._creation_date = creation_date
+        self._date_founded = date_founded
 
     @property
     def creator_id(self):
@@ -336,39 +346,77 @@ class GetCorporationsCorporationIdOk(object):
         :param url: The url of this GetCorporationsCorporationIdOk.
         :type: str
         """
-        if url is None:
-            raise ValueError("Invalid value for `url`, must not be `None`")
 
         self._url = url
 
     @property
-    def faction(self):
+    def faction_id(self):
         """
-        Gets the faction of this GetCorporationsCorporationIdOk.
-        faction string
+        Gets the faction_id of this GetCorporationsCorporationIdOk.
+        faction_id integer
 
-        :return: The faction of this GetCorporationsCorporationIdOk.
-        :rtype: str
+        :return: The faction_id of this GetCorporationsCorporationIdOk.
+        :rtype: int
         """
-        return self._faction
+        return self._faction_id
 
-    @faction.setter
-    def faction(self, faction):
+    @faction_id.setter
+    def faction_id(self, faction_id):
         """
-        Sets the faction of this GetCorporationsCorporationIdOk.
-        faction string
+        Sets the faction_id of this GetCorporationsCorporationIdOk.
+        faction_id integer
 
-        :param faction: The faction of this GetCorporationsCorporationIdOk.
-        :type: str
+        :param faction_id: The faction_id of this GetCorporationsCorporationIdOk.
+        :type: int
         """
-        allowed_values = ["Minmatar", "Gallente", "Caldari", "Amarr"]
-        if faction not in allowed_values:
-            raise ValueError(
-                "Invalid value for `faction` ({0}), must be one of {1}"
-                .format(faction, allowed_values)
-            )
 
-        self._faction = faction
+        self._faction_id = faction_id
+
+    @property
+    def home_station_id(self):
+        """
+        Gets the home_station_id of this GetCorporationsCorporationIdOk.
+        home_station_id integer
+
+        :return: The home_station_id of this GetCorporationsCorporationIdOk.
+        :rtype: int
+        """
+        return self._home_station_id
+
+    @home_station_id.setter
+    def home_station_id(self, home_station_id):
+        """
+        Sets the home_station_id of this GetCorporationsCorporationIdOk.
+        home_station_id integer
+
+        :param home_station_id: The home_station_id of this GetCorporationsCorporationIdOk.
+        :type: int
+        """
+
+        self._home_station_id = home_station_id
+
+    @property
+    def shares(self):
+        """
+        Gets the shares of this GetCorporationsCorporationIdOk.
+        shares integer
+
+        :return: The shares of this GetCorporationsCorporationIdOk.
+        :rtype: int
+        """
+        return self._shares
+
+    @shares.setter
+    def shares(self, shares):
+        """
+        Sets the shares of this GetCorporationsCorporationIdOk.
+        shares integer
+
+        :param shares: The shares of this GetCorporationsCorporationIdOk.
+        :type: int
+        """
+
+        self._shares = shares
 
     def to_dict(self):
         """

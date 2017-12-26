@@ -31,33 +31,87 @@ class GetCharactersCharacterIdClonesJumpClone(object):
                             and the value is json key in definition.
     """
     swagger_types = {
+        'jump_clone_id': 'int',
+        'name': 'str',
         'location_id': 'int',
         'location_type': 'str',
         'implants': 'list[int]'
     }
 
     attribute_map = {
+        'jump_clone_id': 'jump_clone_id',
+        'name': 'name',
         'location_id': 'location_id',
         'location_type': 'location_type',
         'implants': 'implants'
     }
 
-    def __init__(self, location_id=None, location_type=None, implants=None):
+    def __init__(self, jump_clone_id=None, name=None, location_id=None, location_type=None, implants=None):
         """
         GetCharactersCharacterIdClonesJumpClone - a model defined in Swagger
         """
 
+        self._jump_clone_id = None
+        self._name = None
         self._location_id = None
         self._location_type = None
         self._implants = None
         self.discriminator = None
 
-        if location_id is not None:
-          self.location_id = location_id
-        if location_type is not None:
-          self.location_type = location_type
-        if implants is not None:
-          self.implants = implants
+        self.jump_clone_id = jump_clone_id
+        if name is not None:
+          self.name = name
+        self.location_id = location_id
+        self.location_type = location_type
+        self.implants = implants
+
+    @property
+    def jump_clone_id(self):
+        """
+        Gets the jump_clone_id of this GetCharactersCharacterIdClonesJumpClone.
+        jump_clone_id integer
+
+        :return: The jump_clone_id of this GetCharactersCharacterIdClonesJumpClone.
+        :rtype: int
+        """
+        return self._jump_clone_id
+
+    @jump_clone_id.setter
+    def jump_clone_id(self, jump_clone_id):
+        """
+        Sets the jump_clone_id of this GetCharactersCharacterIdClonesJumpClone.
+        jump_clone_id integer
+
+        :param jump_clone_id: The jump_clone_id of this GetCharactersCharacterIdClonesJumpClone.
+        :type: int
+        """
+        if jump_clone_id is None:
+            raise ValueError("Invalid value for `jump_clone_id`, must not be `None`")
+
+        self._jump_clone_id = jump_clone_id
+
+    @property
+    def name(self):
+        """
+        Gets the name of this GetCharactersCharacterIdClonesJumpClone.
+        name string
+
+        :return: The name of this GetCharactersCharacterIdClonesJumpClone.
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """
+        Sets the name of this GetCharactersCharacterIdClonesJumpClone.
+        name string
+
+        :param name: The name of this GetCharactersCharacterIdClonesJumpClone.
+        :type: str
+        """
+
+        self._name = name
 
     @property
     def location_id(self):
@@ -79,6 +133,8 @@ class GetCharactersCharacterIdClonesJumpClone(object):
         :param location_id: The location_id of this GetCharactersCharacterIdClonesJumpClone.
         :type: int
         """
+        if location_id is None:
+            raise ValueError("Invalid value for `location_id`, must not be `None`")
 
         self._location_id = location_id
 
@@ -102,6 +158,8 @@ class GetCharactersCharacterIdClonesJumpClone(object):
         :param location_type: The location_type of this GetCharactersCharacterIdClonesJumpClone.
         :type: str
         """
+        if location_type is None:
+            raise ValueError("Invalid value for `location_type`, must not be `None`")
         allowed_values = ["station", "structure"]
         if location_type not in allowed_values:
             raise ValueError(
@@ -131,6 +189,8 @@ class GetCharactersCharacterIdClonesJumpClone(object):
         :param implants: The implants of this GetCharactersCharacterIdClonesJumpClone.
         :type: list[int]
         """
+        if implants is None:
+            raise ValueError("Invalid value for `implants`, must not be `None`")
 
         self._implants = implants
 

@@ -134,7 +134,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v2/characters/{character_id}/assets/', 'GET',
+        return self.api_client.call_api('/v3/characters/{character_id}/assets/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -248,7 +248,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v1/corporations/{corporation_id}/assets/', 'GET',
+        return self.api_client.call_api('/v2/corporations/{corporation_id}/assets/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -365,7 +365,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v1/characters/{character_id}/assets/locations/', 'POST',
+        return self.api_client.call_api('/v2/characters/{character_id}/assets/locations/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -599,7 +599,7 @@ class AssetsApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v1/corporations/{corporation_id}/assets/locations/', 'POST',
+        return self.api_client.call_api('/v2/corporations/{corporation_id}/assets/locations/', 'POST',
                                         path_params,
                                         query_params,
                                         header_params,

@@ -53,7 +53,7 @@ class GetAlliancesAllianceIdNotFound(object):
     def error(self):
         """
         Gets the error of this GetAlliancesAllianceIdNotFound.
-        error message
+        Not found message
 
         :return: The error of this GetAlliancesAllianceIdNotFound.
         :rtype: str
@@ -64,7 +64,7 @@ class GetAlliancesAllianceIdNotFound(object):
     def error(self, error):
         """
         Sets the error of this GetAlliancesAllianceIdNotFound.
-        error message
+        Not found message
 
         :param error: The error of this GetAlliancesAllianceIdNotFound.
         :type: str

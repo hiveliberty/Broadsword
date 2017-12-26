@@ -260,8 +260,8 @@ class GetCorporationsCorporationIdBlueprints200Ok(object):
         """
         if material_efficiency is None:
             raise ValueError("Invalid value for `material_efficiency`, must not be `None`")
-        if material_efficiency is not None and material_efficiency > 10:
-            raise ValueError("Invalid value for `material_efficiency`, must be a value less than or equal to `10`")
+        if material_efficiency is not None and material_efficiency > 25:
+            raise ValueError("Invalid value for `material_efficiency`, must be a value less than or equal to `25`")
         if material_efficiency is not None and material_efficiency < 0:
             raise ValueError("Invalid value for `material_efficiency`, must be a value greater than or equal to `0`")
 

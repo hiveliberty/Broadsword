@@ -244,7 +244,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v2/characters/{character_id}/wallet/journal/', 'GET',
+        return self.api_client.call_api('/v3/characters/{character_id}/wallet/journal/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
@@ -593,7 +593,7 @@ class WalletApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v1/corporations/{corporation_id}/wallets/{division}/journal/', 'GET',
+        return self.api_client.call_api('/v2/corporations/{corporation_id}/wallets/{division}/journal/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,

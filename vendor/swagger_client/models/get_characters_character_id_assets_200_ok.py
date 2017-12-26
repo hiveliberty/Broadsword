@@ -65,8 +65,7 @@ class GetCharactersCharacterIdAssets200Ok(object):
         self.discriminator = None
 
         self.type_id = type_id
-        if quantity is not None:
-          self.quantity = quantity
+        self.quantity = quantity
         self.location_id = location_id
         self.location_type = location_type
         self.item_id = item_id
@@ -118,6 +117,8 @@ class GetCharactersCharacterIdAssets200Ok(object):
         :param quantity: The quantity of this GetCharactersCharacterIdAssets200Ok.
         :type: int
         """
+        if quantity is None:
+            raise ValueError("Invalid value for `quantity`, must not be `None`")
 
         self._quantity = quantity
 

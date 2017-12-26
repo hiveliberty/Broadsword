@@ -160,7 +160,7 @@ class LocationApi(object):
         :param str token: Access token to use if unable to set a header
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
-        :return: bool
+        :return: GetCharactersCharacterIdOnlineOk
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -186,7 +186,7 @@ class LocationApi(object):
         :param str token: Access token to use if unable to set a header
         :param str user_agent: Client identifier, takes precedence over headers
         :param str x_user_agent: Client identifier, takes precedence over User-Agent
-        :return: bool
+        :return: GetCharactersCharacterIdOnlineOk
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -240,14 +240,14 @@ class LocationApi(object):
         # Authentication setting
         auth_settings = ['evesso']
 
-        return self.api_client.call_api('/v1/characters/{character_id}/online/', 'GET',
+        return self.api_client.call_api('/v2/characters/{character_id}/online/', 'GET',
                                         path_params,
                                         query_params,
                                         header_params,
                                         body=body_params,
                                         post_params=form_params,
                                         files=local_var_files,
-                                        response_type='bool',
+                                        response_type='GetCharactersCharacterIdOnlineOk',
                                         auth_settings=auth_settings,
                                         async=params.get('async'),
                                         _return_http_data_only=params.get('_return_http_data_only'),

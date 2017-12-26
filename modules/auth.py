@@ -21,7 +21,7 @@ class AuthCMD:
 
     @broadsword.group(pass_context=True, hidden=False)
     #@broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
-    async def authadmin(self, ctx):
+    async def auth(self, ctx):
         if ctx.invoked_subcommand is None:
             await self.broadsword.say(  
                 "{0.mention}, invalid git command passed...".format(self.author)
@@ -31,10 +31,8 @@ class AuthCMD:
     async def reloadconf(self, ctx):
         try:
             reload(config)
-        except Exception as e:
+        except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
 
 
 class AuthCheck:
@@ -49,21 +47,15 @@ class AuthCheck:
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
         log.info(self.msg_start)
-        if config.bot["devMode"]:
-            print(self.msg_start)
         
     def __unload(self):
         self._task.cancel()
         log.info(self.msg_stop)
-        if config.bot["devMode"]:
-            print(self.msg_stop)
 
     async def auth_check(self):
         try:
             while not self.broadsword.is_closed:
                 log.info("Start periodic check authorization.")
-                if config.bot["devMode"]:
-                    print("Start periodic check authorization.")
                 self.auth_groups = await AuthUtils().get_auth_group_ids()
                 self.cnx = DBMain()
                 self.auth_users = await self.cnx.select_users()
@@ -109,19 +101,15 @@ class AuthCheck:
                                     )
                         else:
                             log.warning("EVE services temprorary unavailable!")
-                            if config.bot["devMode"]:
-                                print("EVE services temprorary unavailable!")
                 del self.cnx
                 await asyncio.sleep(self.interval)
-        except Exception as e:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
-            self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.auth_check())
         except asyncio.CancelledError:
             pass
         except (OSError, discord.ConnectionClosed):
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.auth_check())
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.auth_check())
 
@@ -138,14 +126,10 @@ class AuthTask:
         self.msg_stop = "{} should have been unloaded.".\
             format(__class__.__name__)
         log.info(self.msg_start)
-        if config.bot["devMode"]:
-            print(self.msg_start)
-        
+
     def __unload(self):
         self._task.cancel()
         log.info(self.msg_stop)
-        if config.bot["devMode"]:
-            print(self.msg_stop)
 
     async def auth_task(self):
         try:
@@ -175,27 +159,25 @@ class AuthTask:
                 for attr in ("cnx", "pending"):
                     self.__dict__.pop(attr,None)
                 await asyncio.sleep(self.interval)
-        except Exception as e:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
-            self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.auth_task())
         except asyncio.CancelledError:
             pass
         except (OSError, discord.ConnectionClosed):
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.auth_task())
-        finally:
-            for attr in ("cnx", "pending"):
-                self.__dict__.pop(attr,None)
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.auth_task())
+        #finally:
+        #    for attr in ("cnx", "pending"):
+        #        self.__dict__.pop(attr,None)
 
     async def auth(self, pending):
         try:
             while not self.broadsword.is_closed:
                 self.cnx = DBMain()
 
-                self.pending = pending
+                #self.pending = pending
                 #   self.pendings content:
                 #      `id` int(11) NOT NULL AUTO_INCREMENT,
                 #      `eve_name` varchar(365) DEFAULT NULL,
@@ -327,10 +309,8 @@ class AuthTask:
                         #await self.broadsword.say("{0.mention}, you have been authorized!".format(self.member))
                     #else:
                     #    await self.broadsword.say("{0.mention}, you cann't be authorized, because no role is set for auth!".format(self.member))
-        except Exception as e:
+        except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
-            if config.bot["devMode"]:
-                print(e)
         finally:
             for attr in ("cnx", "pending", "auth_roles", "member",
                          "auth_groups", "auth_group", "corpinfo",

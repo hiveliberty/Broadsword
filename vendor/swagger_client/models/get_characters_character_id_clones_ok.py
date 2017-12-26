@@ -31,55 +31,60 @@ class GetCharactersCharacterIdClonesOk(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'last_jump_date': 'datetime',
+        'last_clone_jump_date': 'datetime',
         'home_location': 'GetCharactersCharacterIdClonesHomeLocation',
+        'last_station_change_date': 'datetime',
         'jump_clones': 'list[GetCharactersCharacterIdClonesJumpClone]'
     }
 
     attribute_map = {
-        'last_jump_date': 'last_jump_date',
+        'last_clone_jump_date': 'last_clone_jump_date',
         'home_location': 'home_location',
+        'last_station_change_date': 'last_station_change_date',
         'jump_clones': 'jump_clones'
     }
 
-    def __init__(self, last_jump_date=None, home_location=None, jump_clones=None):
+    def __init__(self, last_clone_jump_date=None, home_location=None, last_station_change_date=None, jump_clones=None):
         """
         GetCharactersCharacterIdClonesOk - a model defined in Swagger
         """
 
-        self._last_jump_date = None
+        self._last_clone_jump_date = None
         self._home_location = None
+        self._last_station_change_date = None
         self._jump_clones = None
         self.discriminator = None
 
-        if last_jump_date is not None:
-          self.last_jump_date = last_jump_date
+        if last_clone_jump_date is not None:
+          self.last_clone_jump_date = last_clone_jump_date
         if home_location is not None:
           self.home_location = home_location
+        if last_station_change_date is not None:
+          self.last_station_change_date = last_station_change_date
         self.jump_clones = jump_clones
 
     @property
-    def last_jump_date(self):
+    def last_clone_jump_date(self):
         """
-        Gets the last_jump_date of this GetCharactersCharacterIdClonesOk.
-        last_jump_date string
+        Gets the last_clone_jump_date of this GetCharactersCharacterIdClonesOk.
+        last_clone_jump_date string
 
-        :return: The last_jump_date of this GetCharactersCharacterIdClonesOk.
+        :return: The last_clone_jump_date of this GetCharactersCharacterIdClonesOk.
         :rtype: datetime
         """
-        return self._last_jump_date
+        return self._last_clone_jump_date
 
-    @last_jump_date.setter
-    def last_jump_date(self, last_jump_date):
+    @last_clone_jump_date.setter
+    def last_clone_jump_date(self, last_clone_jump_date):
         """
-        Sets the last_jump_date of this GetCharactersCharacterIdClonesOk.
-        last_jump_date string
+        Sets the last_clone_jump_date of this GetCharactersCharacterIdClonesOk.
+        last_clone_jump_date string
 
-        :param last_jump_date: The last_jump_date of this GetCharactersCharacterIdClonesOk.
+        :param last_clone_jump_date: The last_clone_jump_date of this GetCharactersCharacterIdClonesOk.
         :type: datetime
         """
 
-        self._last_jump_date = last_jump_date
+        self._last_clone_jump_date = last_clone_jump_date
 
     @property
     def home_location(self):
@@ -101,6 +106,29 @@ class GetCharactersCharacterIdClonesOk(object):
         """
 
         self._home_location = home_location
+
+    @property
+    def last_station_change_date(self):
+        """
+        Gets the last_station_change_date of this GetCharactersCharacterIdClonesOk.
+        last_station_change_date string
+
+        :return: The last_station_change_date of this GetCharactersCharacterIdClonesOk.
+        :rtype: datetime
+        """
+        return self._last_station_change_date
+
+    @last_station_change_date.setter
+    def last_station_change_date(self, last_station_change_date):
+        """
+        Sets the last_station_change_date of this GetCharactersCharacterIdClonesOk.
+        last_station_change_date string
+
+        :param last_station_change_date: The last_station_change_date of this GetCharactersCharacterIdClonesOk.
+        :type: datetime
+        """
+
+        self._last_station_change_date = last_station_change_date
 
     @property
     def jump_clones(self):
