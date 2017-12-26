@@ -129,8 +129,9 @@ class DBMain(DB):
         return None
 
     async def user_update(self, character_id, key, value):
-        self.sqlquery = "UPDATE `discord_users_auth` SET %s=%s WHERE character_id=%s"
-        await self._query_exec(self.sqlquery, (key, value, character_id))
+        self.sqlquery = "UPDATE `discord_users_auth` " +\
+                        "SET {}=%s WHERE character_id=%s".format(key)
+        await self._query_exec(self.sqlquery, (value, character_id))
         del self.sqlquery
         return None
 
