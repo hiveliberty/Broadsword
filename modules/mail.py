@@ -9,7 +9,6 @@ from discord.ext import commands as broadsword
 
 from lib.utils import MailUtils
 from lib.db import DBMain
-from lib.eve import EVEBasic
 from config import config
 
 log = logging.getLogger(__name__)
@@ -67,7 +66,7 @@ class EVEMail:
             self.maxID = self.latestMailID
             self.url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={0}&vCode={1}&characterID={2}" \
                         .format(config.evemails["keyID"], config.evemails["vCode"], config.evemails["characterID"])
-            self.mails = await EVEBasic.make_api_request(self.url)
+            self.mails = await MailUtils.xml_request(self.url)
             self.mails = await MailUtils.xml_to_dict(self.mails, "mails")
             if self.mails is not None:
                 for self.mail in self.mails:
@@ -78,7 +77,7 @@ class EVEMail:
                                                 config.evemails["characterID"],\
                                                 self.mail["@messageID"]\
                                                 )
-                        self.content = await EVEBasic.make_api_request(self.url)
+                        self.content = await MailUtils.xml_request(self.url)
                         self.content = await MailUtils.xml_to_dict(self.content, "content")
                         if self.content is not None:
                             self.content = await MailUtils.format_mailbody(self.content)

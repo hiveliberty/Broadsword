@@ -15,26 +15,19 @@ from config import config
 from config.config import db as dbcfg
 
 log = logging.getLogger("library.db")
-#log = logging.getLogger(__name__)
 
 class DB:
     def __init__(self):
         try:
             self.cnx = mysqldb.connect(**dbcfg)
             self.cursor = self.cnx.cursor(dictionary=True)
-            if config.bot["devMode"]:
-                log.info("Database connection opened.")
         except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
 
     def __del__(self):
         try:
             self.cursor.close()
-            if config.bot["devMode"]:
-                log.info("Cursor closed.")
             self.cnx.close()
-            if config.bot["devMode"]:
-                log.info("Database connection closed.")
         except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
@@ -52,12 +45,14 @@ class DBMain(DB):
 
     async def _query(self, query, values=None, query_one=False):
         try:
-            #if config.bot["devMode"]:
-            #    log.info("{}\n".format(query))
             if values is None:
                 self.cursor.execute(query)
             else:
                 self.cursor.execute(query, values)
+
+            if config.bot["devMode"]:
+                log.info("{}\n".format(self.cursor.statement))
+
             if query_one:
                 self.sqlout = self.cursor.fetchone()
                 return self.sqlout
@@ -142,21 +137,21 @@ class DBMain(DB):
         del self.sqlquery
         return None
 
-    async def select_pending(self):
-        self.sqlquery = "SELECT * " +\
+    async def users_select(self):
+        self.sqlquery = "SELECT discord_id, character_id, eve_name " +\
                         "FROM `discord_users_auth` " +\
-                        "WHERE pending='yes'"
-        self.sqlout = await self._query(self.sqlquery, query_one=True)
+                        "WHERE active='yes' AND pending='no'"
+        self.sqlout = await self._query(self.sqlquery)
         del self.sqlquery
         if self.sqlout is not None:
             return self.sqlout
         return None
 
-    async def select_users(self):
-        self.sqlquery = "SELECT discord_id, character_id, eve_name " +\
+    async def select_pending(self):
+        self.sqlquery = "SELECT * " +\
                         "FROM `discord_users_auth` " +\
-                        "WHERE active='yes' AND pending='no'"
-        self.sqlout = await self._query(self.sqlquery)
+                        "WHERE pending='yes'"
+        self.sqlout = await self._query(self.sqlquery, query_one=True)
         del self.sqlquery
         if self.sqlout is not None:
             return self.sqlout
