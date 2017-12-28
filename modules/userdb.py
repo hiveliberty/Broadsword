@@ -5,6 +5,7 @@ from discord.ext import commands as broadsword
 
 from config import config
 from lib.db import DBMain
+from lib.utils import UserdbUtils
 
 log = logging.getLogger(__name__)
 
@@ -14,27 +15,76 @@ class UserDB:
     def __init__(self, bot):
         self.broadsword = bot
 
+    async def _selfclean(self, vars):
+        for attr in vars: self.__dict__.pop(attr,None)
+
+    async def _make_id_list(self):
+        self.list = []
+        for self.member in self.members:
+            self.list.append(self.member["discord_id"])
+        return self.list
+
+    async def _member_id_list(self):
+        try:
+            self.temp_members = await self.cnx.member_select_all()
+            await self._make_id_list()
+            return self.list
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("cnx", "members", "member", "list"))
+
+    @broadsword.group(pass_context=True, hidden=True, description='''Группа тестовых команд.''')
+    async def userdb(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.broadsword.say("{0.mention}, invalid test command passed...".\
+                format(ctx.message.author))
+
+    @userdb.command(pass_context=True, description='''Тестовая команда.''')
+    async def fill(self, ctx):
+        try:
+            self.cnx = DBMain()
+            self.members = await UserdbUtils().member_id_list()
+            self.server = self.broadsword.get_server(id=config.bot["guild"])
+            for self.member in self.server.members:
+                if not self.member.bot:
+                    if self.member.id not in self.members:
+                        log.info("User '{}' added to discord members db.".\
+                            format(self.member)
+                        )
+                        await self.cnx.member_add(self.member.id)
+
+            self.members = await UserdbUtils().member_id_list()
+            self.authorized = await self.cnx.auth_users_select()
+            for self.user in self.authorized:
+                if self.user["discord_id"] in self.members:
+                    await self.cnx.member_set_authorized(self.user["discord_id"])
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(
+                ("cnx", "authorized", "members", "member", "user")
+            )
+
     async def on_member_join(self, member):
         try:
             log.info("User '{}' joined to the server.".format(member))
             self.cnx = DBMain()
-            await self.cnx.discord_add_user(member.id)
+            await self.cnx.member_add(member.id)
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("cnx"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("cnx"))
 
     async def on_member_remove(self, member):
         try:
             log.info("User '{}' left the server.".format(member))
             self.cnx = DBMain()
-            await self.cnx.discord_delete_user(member.id)
+            await self.cnx.member_delete(member.id)
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("cnx"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("cnx"))
 
 
 class TaskUserDB:

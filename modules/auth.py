@@ -74,9 +74,10 @@ class AuthCheck:
         try:
             while not self.broadsword.is_closed:
                 log.info("Start periodic check authorization.")
+                self.users_left = False
                 self.auth_groups = await AuthUtils().get_auth_group_ids()
                 self.cnx = DBMain()
-                self.auth_users = await self.cnx.users_select()
+                self.auth_users = await self.cnx.auth_users_select()
                 if self.auth_users is not None:
                     self.msg = "```Left members:"
 
@@ -93,8 +94,14 @@ class AuthCheck:
                                                         self.auth_user["character_id"])
                                 if self.charinfo is not None:
                                     if str(self.charinfo["alliance_id"]) not in self.auth_groups:
-                                        self.msg += "\n{} - {}".format(self.member.nick, self.member)
-                                        await self.cnx.user_disable(
+                                        self.users_left = True
+                                        log.info(
+                                            "User '{}' as known as '{}' left alliance\\corporation".\
+                                            format(self.member.nick, self.member)
+                                        )
+                                        self.msg += "\n'{}' as known as '{}'".\
+                                            format(self.member, self.member.nick)
+                                        await self.cnx.auth_user_disable(
                                             self.auth_user["character_id"]
                                         )
                                         await self.broadsword.remove_roles(
@@ -104,7 +111,7 @@ class AuthCheck:
                                         if config.auth["kickWhenLeaving"]:
                                             await self.broadsword.kick(self.member)
                                         else:
-                                            await self.cnx.discord_set_unauthorized(
+                                            await self.cnx.member_set_unauthorized(
                                                 self.auth_user["discord_id"]
                                             )
                                 else:
@@ -112,18 +119,19 @@ class AuthCheck:
                                     continue
 
                     self.msg += "```"
-                    if config.auth["alertChannel"] != "":
-                        self.channel = self.broadsword.get_channel(
-                            config.auth["alertChannel"]
-                        )
-                        await self.broadsword.send_message(
-                            self.channel, self.msg
-                        )
-                    else:
-                        await self.broadsword.send_message(
-                            self.server.owner,
-                            "Warning! alertChannel is not set!"
-                        )
+                    if self.users_left:
+                        if config.auth["alertChannel"] != "":
+                            self.channel = self.broadsword.get_channel(
+                                config.auth["alertChannel"]
+                            )
+                            await self.broadsword.send_message(
+                                self.channel, self.msg
+                            )
+                        else:
+                            await self.broadsword.send_message(
+                                self.server.owner,
+                                "Warning! alertChannel is not set!"
+                            )
                 del self.cnx
                 await asyncio.sleep(self.interval)
         except asyncio.CancelledError:
@@ -135,57 +143,6 @@ class AuthCheck:
             log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.auth_check())
-
-    async def auth_check_test(self):
-        try:
-            while not self.broadsword.is_closed:
-                log.info("Start periodic check authorization.")
-                self.auth_groups = await AuthUtils().get_auth_group_ids()
-                self.cnx = DBMain()
-                self.auth_users = await self.cnx.users_select()
-                self.msg = "```Left members:"
-                if self.auth_users is not None:
-                    for self.auth_user in self.auth_users:
-                        self.member = self.server.get_member(
-                                        self.auth_user["discord_id"])
-                        if self.member is not None:
-                            if self.member == self.server.owner:
-                                continue
-                            self.is_exempt = await AuthUtils().is_auth_exempt(
-                                                    self.member.roles)
-                            if not self.is_exempt:
-                                self.charinfo = await self.esi.char_get_details(
-                                                        self.auth_user["character_id"])
-                                if self.charinfo is not None:
-                                    if str(self.charinfo["alliance_id"]) not in self.auth_groups:
-                                        self.msg += "\n{}".format(self.member.nick)
-                                else:
-                                    log.warning("EVE services temprorary unavailable!")
-                                    continue
-                    self.msg += "```"
-                    if config.auth["alertChannel"] != "":
-                        self.channel = self.broadsword.get_channel(
-                            config.auth["alertChannel"]
-                        )
-                        await self.broadsword.send_message(
-                            self.channel, self.msg
-                        )
-                    else:
-                        await self.broadsword.send_message(
-                            self.server.owner,
-                            "Warning! alertChannel is not set!"
-                        )
-                del self.cnx
-                await asyncio.sleep(self.interval)
-        except asyncio.CancelledError:
-            pass
-        except (OSError, discord.ConnectionClosed):
-            self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.auth_check_test())
-        except Exception:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-            self._task.cancel()
-            self._task = self.broadsword.loop.create_task(self.auth_check_test())
 
 
 class AuthTask:
@@ -213,7 +170,7 @@ class AuthTask:
             while not self.broadsword.is_closed:
                 self.cnx = DBMain()
 
-                self.pending = await self.cnx.select_pending()
+                self.pending = await self.cnx.auth_pending_select()
                 #   self.pendings content:
                 #      `id` int(11) NOT NULL AUTO_INCREMENT,
                 #      `eve_name` varchar(365) DEFAULT NULL,
@@ -229,7 +186,7 @@ class AuthTask:
                     log.info("Do authorize for '{}'.".format(self.pending["eve_name"]))
                     await self.auth()
 
-                await self._selfclean(("cnx", "pending"))
+                #await self._selfclean(("cnx", "pending"))
                 await asyncio.sleep(self.interval)
         except asyncio.CancelledError:
             pass
@@ -240,13 +197,10 @@ class AuthTask:
             log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.auth_task())
-        #finally:
-        #    for attr in ("cnx", "pending"):
-        #        self.__dict__.pop(attr,None)
 
     async def auth(self):
         try:
-            self.cnx = DBMain()
+            #self.cnx = DBMain()
 
             #self.pending = pending
             #   self.pendings content:
@@ -273,7 +227,6 @@ class AuthTask:
                 self.auth_group = await AuthUtils().get_auth_group_values(self.pending["alliance_id"])
 
                 self.corpinfo = await self.cnx.corpinfo_get(self.pending["corporation_id"])
-                #self.corpinfo._parent = weakref.ref(self)
                 #   self.corpinfo content:
                 #      `id` int(11) NOT NULL AUTO_INCREMENT,
                 #      `corporation_id` varchar(128) NOT NULL,
@@ -303,10 +256,8 @@ class AuthTask:
                     self.corpinfo["corporation_name"] = self.temp["corporation_name"]
                     if self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
                         self.corpinfo["corporation_role"] = self.corpinfo["corporation_ticker"] + " Members"
-                        #print("Corp role is '{}'".format(self.corpinfo["corporation_role"]))
                     else:
                         self.corpinfo["corporation_role"] = ""
-                        #print("Corp role is ''")
                     await self.cnx.corpinfo_add(
                         self.pending["corporation_id"],
                         self.corpinfo["corporation_ticker"],
@@ -367,19 +318,16 @@ class AuthTask:
                             self.charname = "[" + self.corpinfo["corporation_ticker"] + "] "
                         self.charname = self.charname + self.charinfo["name"]
                         await self.cnx.rename_add(self.member.id, self.charname)
-                    await self.cnx.auth_disable(self.pending["character_id"])
-                    await self.cnx.user_enabled(self.pending["character_id"])
-                    await self.cnx.user_update(
+                    await self.cnx.auth_pending_disable(self.pending["character_id"])
+                    await self.cnx.auth_user_enable(self.pending["character_id"])
+                    await self.cnx.auth_user_update(
                         self.pending["character_id"],
                         "eve_name",
                         self.charinfo["name"]
                     )
-                    await self.cnx.discord_set_authorized(self.member.id)
+                    await self.cnx.member_set_authorized(self.member.id)
                     await self.cnx.message_add("'{}' has been authorized.".format(self.pending["eve_name"]), config.auth["alertChannel"])
                     log.info("'{}' has been authorized.".format(self.pending["eve_name"]))
-                    #await self.broadsword.say("{0.mention}, you have been authorized!".format(self.member))
-                #else:
-                #    await self.broadsword.say("{0.mention}, you cann't be authorized, because no role is set for auth!".format(self.member))
             return 0
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))

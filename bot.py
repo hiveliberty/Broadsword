@@ -33,6 +33,8 @@ log = logging.getLogger("broadsword")
 broadsword = commands.Bot(command_prefix=config.bot["prefix"])
 
 def run_bot():
+    log.info("-----------------------")
+
     try:
         cnx = DBStart()
         mysql_version = cnx.mysql_version()
@@ -73,7 +75,6 @@ def run_bot():
         log.info("Username: {}".format(broadsword.user.name))
         log.info("User ID: {}".format(broadsword.user.id))
         log.info("Version v.{}".format(BasicUtils.bot_version()))
-        log.info("-----------------------")
 
         #   Load main modules
         for main_module in main_modules:
@@ -97,8 +98,8 @@ def run_bot():
 
 def stop_bot():
     asyncio.ensure_future(broadsword.close())
-    log.info("-----------------------")
     log.info("BroadswordBot connection closed.")
+    log.info("-----------------------")
 
 if __name__ == '__main__':
     broadsword.loop.add_signal_handler(signal.SIGINT, stop_bot)
