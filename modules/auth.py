@@ -20,12 +20,11 @@ class AuthCMD:
         self.esi = ESIApi()
         self.server = self.broadsword.get_server(id=config.bot["guild"])
 
-    @broadsword.group(pass_context=True, hidden=False)
-    #@broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
+    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора секции аутентификации.''')
     async def auth(self, ctx):
         if ctx.invoked_subcommand is None:
             await self.broadsword.say(
-                "{0.mention}, invalid git command passed...".format(self.author)
+                "{0.mention}, invalid git command passed...".format(ctx.author)
             )
 
     @auth.command(pass_context=True)
@@ -53,55 +52,78 @@ class AuthCheck:
         self._task.cancel()
         log.info(self.msg_stop)
 
+    async def _selfclean(self, vars):
+        for attr in vars: self.__dict__.pop(attr,None)
+
+    async def auth_check_task(self):
+        try:
+            while not self.broadsword.is_closed:
+                log.info("Start periodic check authorization.")
+                await asyncio.sleep(self.interval)
+        except asyncio.CancelledError:
+            pass
+        except (OSError, discord.ConnectionClosed):
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.auth_check_task())
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.auth_check_task())
+
     async def auth_check(self):
         try:
             while not self.broadsword.is_closed:
                 log.info("Start periodic check authorization.")
                 self.auth_groups = await AuthUtils().get_auth_group_ids()
                 self.cnx = DBMain()
-                self.auth_users = await self.cnx.select_users()
-                for self.auth_user in self.auth_users:
-                    self.member = self.server.get_member(
-                                    self.auth_user["discord_id"])
-                    if self.member == self.server.owner:
-                        continue
-                    self.is_exempt = await AuthUtils().is_auth_exempt(
-                                            self.member.roles)
-                    if not self.is_exempt:
-                        self.charinfo = await self.esi.char_get_details(
-                                                self.auth_user["character_id"])
-                        if self.charinfo is not None:
-                            if str(self.charinfo["alliance_id"]) not in self.auth_groups:
-                                await self.cnx.user_disable(
-                                    self.auth_user["character_id"]
-                                )
-                                await self.broadsword.remove_roles(
-                                    self.member,
-                                    *self.member.roles
-                                )
-                                if config.auth["kickWhenLeaving"]:
-                                    await self.broadsword.kick(self.member)
+                self.auth_users = await self.cnx.users_select()
+                if self.auth_users is not None:
+                    self.msg = "```Left members:"
+
+                    for self.auth_user in self.auth_users:
+                        self.member = self.server.get_member(
+                                        self.auth_user["discord_id"])
+                        if self.member is not None:
+                            if self.member == self.server.owner:
+                                continue
+                            self.is_exempt = await AuthUtils().is_auth_exempt(
+                                                    self.member.roles)
+                            if not self.is_exempt:
+                                self.charinfo = await self.esi.char_get_details(
+                                                        self.auth_user["character_id"])
+                                if self.charinfo is not None:
+                                    if str(self.charinfo["alliance_id"]) not in self.auth_groups:
+                                        self.msg += "\n{} - {}".format(self.member.nick, self.member)
+                                        await self.cnx.user_disable(
+                                            self.auth_user["character_id"]
+                                        )
+                                        await self.broadsword.remove_roles(
+                                            self.member,
+                                            *self.member.roles
+                                        )
+                                        if config.auth["kickWhenLeaving"]:
+                                            await self.broadsword.kick(self.member)
+                                        else:
+                                            await self.cnx.discord_set_unauthorized(
+                                                self.auth_user["discord_id"]
+                                            )
                                 else:
-                                    await self.cnx.discord_set_unauthorized(
-                                        self.auth_user["discord_id"]
-                                    )
-                                #if config.auth["alertChannel"] is not None or config.auth["alertChannel"] != "":
-                                if config.auth["alertChannel"] != "":
-                                    self.channel = self.broadsword.get_channel(
-                                        config.auth["alertChannel"]
-                                    )
-                                    await self.broadsword.send_message(
-                                        self.channel,
-                                        "{} left corp\\alliance.".\
-                                            format(self.auth_user["eve_name"])
-                                    )
-                                else:
-                                    await self.broadsword.send_message(
-                                        self.server.owner,
-                                        "Warning! alertChannel is not set!"
-                                    )
-                        else:
-                            log.warning("EVE services temprorary unavailable!")
+                                    log.warning("EVE services temprorary unavailable!")
+                                    continue
+
+                    self.msg += "```"
+                    if config.auth["alertChannel"] != "":
+                        self.channel = self.broadsword.get_channel(
+                            config.auth["alertChannel"]
+                        )
+                        await self.broadsword.send_message(
+                            self.channel, self.msg
+                        )
+                    else:
+                        await self.broadsword.send_message(
+                            self.server.owner,
+                            "Warning! alertChannel is not set!"
+                        )
                 del self.cnx
                 await asyncio.sleep(self.interval)
         except asyncio.CancelledError:
@@ -113,6 +135,57 @@ class AuthCheck:
             log.exception("An exception has occurred in {}: ".format(__name__))
             self._task.cancel()
             self._task = self.broadsword.loop.create_task(self.auth_check())
+
+    async def auth_check_test(self):
+        try:
+            while not self.broadsword.is_closed:
+                log.info("Start periodic check authorization.")
+                self.auth_groups = await AuthUtils().get_auth_group_ids()
+                self.cnx = DBMain()
+                self.auth_users = await self.cnx.users_select()
+                self.msg = "```Left members:"
+                if self.auth_users is not None:
+                    for self.auth_user in self.auth_users:
+                        self.member = self.server.get_member(
+                                        self.auth_user["discord_id"])
+                        if self.member is not None:
+                            if self.member == self.server.owner:
+                                continue
+                            self.is_exempt = await AuthUtils().is_auth_exempt(
+                                                    self.member.roles)
+                            if not self.is_exempt:
+                                self.charinfo = await self.esi.char_get_details(
+                                                        self.auth_user["character_id"])
+                                if self.charinfo is not None:
+                                    if str(self.charinfo["alliance_id"]) not in self.auth_groups:
+                                        self.msg += "\n{}".format(self.member.nick)
+                                else:
+                                    log.warning("EVE services temprorary unavailable!")
+                                    continue
+                    self.msg += "```"
+                    if config.auth["alertChannel"] != "":
+                        self.channel = self.broadsword.get_channel(
+                            config.auth["alertChannel"]
+                        )
+                        await self.broadsword.send_message(
+                            self.channel, self.msg
+                        )
+                    else:
+                        await self.broadsword.send_message(
+                            self.server.owner,
+                            "Warning! alertChannel is not set!"
+                        )
+                del self.cnx
+                await asyncio.sleep(self.interval)
+        except asyncio.CancelledError:
+            pass
+        except (OSError, discord.ConnectionClosed):
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.auth_check_test())
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+            self._task.cancel()
+            self._task = self.broadsword.loop.create_task(self.auth_check_test())
 
 
 class AuthTask:
@@ -132,11 +205,12 @@ class AuthTask:
         self._task.cancel()
         log.info(self.msg_stop)
 
+    async def _selfclean(self, vars):
+        for attr in vars: self.__dict__.pop(attr,None)
+
     async def auth_task(self):
         try:
             while not self.broadsword.is_closed:
-                #log.info("Start periodic check for new authorizations.")
-                #print("Start periodic check for new authorizations..")
                 self.cnx = DBMain()
 
                 self.pending = await self.cnx.select_pending()
@@ -154,8 +228,8 @@ class AuthTask:
                 if self.pending is not None:
                     log.info("Do authorize for '{}'.".format(self.pending["eve_name"]))
                     await self.auth()
-                for attr in ("cnx", "pending"):
-                    self.__dict__.pop(attr,None)
+
+                await self._selfclean(("cnx", "pending"))
                 await asyncio.sleep(self.interval)
         except asyncio.CancelledError:
             pass
@@ -224,7 +298,7 @@ class AuthTask:
                     #       'ticker'
                     #       'url'
                     if self.temp is None:
-                        continue
+                        return
                     self.corpinfo["corporation_ticker"] = self.temp["ticker"]
                     self.corpinfo["corporation_name"] = self.temp["corporation_name"]
                     if self.auth_group["setCorpRole"] and self.auth_group["type"] == "alliance":
@@ -310,11 +384,11 @@ class AuthTask:
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("cnx", "pending", "auth_roles", "member",
-                         "auth_groups", "auth_group", "corpinfo",
-                         "temp", "role", "corp_role", "do_authorize",
-                         "charinfo", "charname"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(
+                ("cnx", "pending", "auth_roles", "member", "auth_groups"
+                "auth_group", "corpinfo", "temp", "role", "corp_role"
+                "do_authorize", "charinfo", "charname")
+            )
 
 
 def setup(broadsword):

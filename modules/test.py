@@ -21,13 +21,16 @@ class Test:
     def __init__(self, bot):
         self.broadsword = bot
 
-    @broadsword.group(pass_context=True, hidden=False, description='''Группа команд администратора.''')
+    async def _selfclean(self, vars):
+        for attr in vars: self.__dict__.pop(attr,None)
+
+    @broadsword.group(pass_context=True, hidden=False, description='''Группа тестовых команд.''')
     async def test(self, ctx):
         if ctx.invoked_subcommand is None:
-            await self.broadsword.say("{0.mention}, invalid test command passed...".format(ctx.author))
+            await self.broadsword.say("{0.mention}, invalid test command passed...".format(ctx.message.author))
 
-    @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def code(self, ctx):
+    @test.command(name="token", pass_context=True, description='''Описание отсутствует.''')
+    async def _token(self, ctx):
         try:
             self.token_api = EVEToken()
             self.token = await self.token_api.token()
@@ -45,24 +48,19 @@ class Test:
         #finally:
         #    del self.cnx
 
-    @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def code2(self, ctx):
+    @test.command(name="token2", pass_context=True, description='''Тестовая команда.''')
+    async def _token2(self, ctx):
         try:
             self.token_api = EVEToken()
-            self.expired = await self.token_api.expired()
-            if self.expired:
-                print("Token is expired")
-            else:
-                print("Token is not expired")
-            #print(locals())
+            self.token = await self.token_api.get_token()
+            log.info("Your access token: {}".format(self.token))
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("token_api", "expired"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("token_api", "expired"))
 
-    @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def code3(self, ctx):
+    @test.command(pass_context=True, description='''Тестовая команда.''')
+    async def time(self, ctx):
         try:
             self.now = datetime.datetime.now().replace(microsecond=0)
             self.unix_time = time.mktime(self.now.timetuple())
@@ -77,8 +75,8 @@ class Test:
             for attr in ("token_api", "expired"):
                 self.__dict__.pop(attr,None)
 
-    @test.command(pass_context=True, description='''Это команда получения статуса сервера Tranquility.''')
-    async def code4(self, ctx):
+    @test.command(pass_context=True, description='''Тестовая команда.''')
+    async def db(self, ctx):
         try:
             self.cnx = DBMain()
             self.msg_id = await self.cnx.message_get_oldest()
@@ -90,6 +88,33 @@ class Test:
         finally:
             for attr in ("cnx", "temp_value"):
                 self.__dict__.pop(attr,None)
+
+    @test.command(pass_context=True, description='''Тестовая команда.''')
+    async def esi(self, ctx, *, str):
+        try:
+            self.esi = ESIApi()
+            self.esi_data = await self.esi.char_get_id(str)
+            log.info(self.esi_data)
+            await self.broadsword.say("```{}```".format(self.esi_data))
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("esi", "esi_data"))
+
+    @test.command(pass_context=True, description='''Тестовая команда.''')
+    async def mailbody(self, ctx, mail_id):
+        try:
+            self.token_api = EVEToken(config.sso["character_id"])
+            self.token = await self.token_api.get_token()
+            self.esi = ESIApi()
+            self.body = await self.esi.mails_get_mail(
+                config.sso["character_id"], mail_id, self.token
+            )
+            await self.broadsword.say("```{}```".format(self.body))
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("token_api", "token", "esi", "body"))
 
 
 def setup(broadsword):

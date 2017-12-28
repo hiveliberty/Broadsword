@@ -2,10 +2,11 @@
 #Мусорка мини функций
 #============================================================================
 
-import os
 import asyncio
+import aiohttp
 import json
 import logging
+import os
 #import bleach
 #import requests
 import urllib.request
@@ -17,6 +18,7 @@ import xmltodict
 from operator import itemgetter
 from bs4 import BeautifulSoup
 #from bs4 import NavigableString
+
 from config import config
 
 log = logging.getLogger(__name__)
@@ -105,6 +107,14 @@ class AuthUtils:
 
 
 class MailUtils:
+    async def xml_request(url):
+        #url = url.replace(" ","%20") #Подготовить пробелы для URL (если надо)
+        xml_response = await aiohttp.get(url)
+        if xml_response.status == 200:
+            xml_response = await xml_response.text()
+            return(xml_response)
+        return None
+
     async def clean_html(raw_html):
         clean = bleach.clean(raw_html, tags=[], strip=True)
         return clean

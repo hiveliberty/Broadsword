@@ -1,6 +1,6 @@
 #==============================================================================
 #
-#   Все связанное с API запросами
+#   Library for work with token
 #
 #==============================================================================
 
@@ -19,7 +19,6 @@ from lib.utils import BasicUtils
 #==============================================================================
 
 log = logging.getLogger("library.token")
-#log = logging.getLogger(__name__)
 
 class TokenError(Exception):
     pass
@@ -38,10 +37,11 @@ class NotRefreshableTokenError(TokenError):
 
 
 class EVEToken:
-    def __init__(self):
+    def __init__(self, char_id):
         self.url = "https://login.eveonline.com/oauth/token"
         self.grant_type = "refresh_token"
         self.datetime = datetime.datetime
+        self.char_id = char_id
         self.client_id = config.sso["clientID"]
         self.client_secret = config.sso["secretKey"]
         self.credentials = "{0}:{1}".format(self.client_id, self.client_secret)
@@ -52,17 +52,28 @@ class EVEToken:
     def __del__(self):
         for attr in ("url", "grant_type", "datetime", "client_id",
                      "client_secret", "credentials", "auth", "auth_string",
-                     "user_agent"):
+                     "user_agent", "char_id"):
             self.__dict__.pop(attr,None)
         del self
 
-    async def expired(self):
+    async def _selfclean(self, vars):
+        for attr in vars: self.__dict__.pop(attr,None)
+
+    async def _can_refresh(self):
         try:
-            if await self.can_refresh():
-                self.stored_token = await self.get_stored()
-                if self.stored_token is None:
-                    return
-                self.time_expired = self.stored_token["updatedOn"] +\
+            if self.stored_token is None:
+                return False
+            if self.stored_token["token_refresh"]:
+                return True
+            else:
+                return False
+        except Exception as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+
+    async def _expired(self):
+        try:
+            if await self._can_refresh():
+                self.time_expired = self.stored_token["updated"] +\
                                     datetime.timedelta(seconds=config.sso["token_expiry"])
                 self.time_now = self.datetime.now().replace(microsecond=0)
                 if self.time_expired > self.time_now:
@@ -70,43 +81,31 @@ class EVEToken:
                 else:
                     return True
             else:
-                raise TokenExpiredError()
+                raise NotRefreshableTokenError()
         except Exception as e:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+
+    async def _get_stored(self):
+        try:
+            self.cnx = DBMain()
+            self.stored_token = await self.cnx.token_get(self.char_id)
             if config.bot["devMode"]:
-                print(e)
+                log.info("Stored token: {}".format(self.stored_token))
+        except Exception as e:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("stored_token", "time_expired", "time_now"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("cnx"))
 
-    async def can_refresh(self):
+    async def _refresh(self):
         try:
-            self.stored_token = await self.get_stored()
-            if self.stored_token is None:
-                return False
-            if self.stored_token["refreshToken"]:
-                return True
-            else:
-                return False
-        except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
-        finally:
-            for attr in ("stored_token"):
-                self.__dict__.pop(attr,None)
-
-    async def refresh(self):
-        try:
-            self.stored_token = await self.get_stored()
             self.custom_headers = {
-                'User-Agent': self.user_agent,
-                'Content-Type': 'application/json',
-                'Authorization': self.auth_string,
+                "User-Agent": self.user_agent,
+                "Content-Type": "application/json",
+                "Authorization": self.auth_string,
             }
             self.params = {
-                'grant_type': self.grant_type,
-                'refresh_token': self.stored_token["refreshToken"],
+                "grant_type": self.grant_type,
+                "refresh_token": self.stored_token["token_refresh"],
             }
             self.request = await aiohttp.post(self.url,
                                               params=self.params,
@@ -117,49 +116,32 @@ class EVEToken:
             self.created = self.datetime.now().replace(microsecond=0)
             self.access_token = self.response["access_token"]
             self.refresh_token = self.response["refresh_token"]
-            #print("New access token: {}".format(self.access_token))
-            #print("Old access token: {}".format(self.stored_token["accessToken"]))
             self.cnx = DBMain()
-            await self.cnx.update_token_data(config.sso["character_id"],
+            await self.cnx.token_update(config.sso["character_id"],
                                              self.access_token,
                                              self.refresh_token,
                                              self.created)
         except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("cnx", "stored_token", "custom_headers",
-                         "params", "request", "response",
-                         "access_token", "refresh_token"):
-                self.__dict__.pop(attr,None)
-        
-    async def get_stored(self):
-        try:
-            self.cnx = DBMain()
-            self.query = await self.cnx.get_token_data(config.sso["character_id"])
-            return self.query
-        except Exception as e:
             if config.bot["devMode"]:
-                print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
-        finally:
-            for attr in ("cnx", "query"):
-                self.__dict__.pop(attr,None)
+                log.info("Old token: {}".format(self.stored_token["token_access"]))
+                log.info("New token: {}".format(self.access_token))
+            await self._selfclean(("cnx"))
 
-    async def token(self):
+    async def get_token(self):
         try:
-            if await self.expired():
-                if await self.can_refresh():
-                    await self.refresh()
-                else:
-                    raise NotRefreshableTokenError()
-            self.token = await self.get_stored()
-            return self.token["accessToken"]
+            await self._get_stored()
+            if await self._expired():
+                await self._refresh()
+            else:
+                self.access_token = self.stored_token["token_access"]
+            return self.access_token
         except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("token", "can_refresh", "expired"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(
+                ("stored_token", "time_expired", "time_now", "custom_headers",
+                 "params", "request", "response", "created", "access_token",
+                 "refresh_token")
+            )

@@ -18,7 +18,7 @@ class Admin:
     @broadsword.group(pass_context=True, hidden=False, description="Группа команд администратора.")
     async def admin(self, ctx):
         if ctx.invoked_subcommand is None:
-            await self.broadsword.say("{0.mention}, invalid command passed...".format(self.author))
+            await self.broadsword.say("{0.mention}, invalid command passed...".format(ctx.message.author))
 
     @admin.command(pass_context=True, name='reload')
     async def _reload_a(self, ctx):

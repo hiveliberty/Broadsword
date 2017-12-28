@@ -14,13 +14,13 @@ from lib.token import EVEToken
 from lib.utils import BasicUtils
 
 log = logging.getLogger("library.esi")
-#log = logging.getLogger(__name__)
+
 
 class ESIApi:
     def __init__(self, auth=False):
         self.headers = {}
         self.endpoint_url = "https://esi.tech.ccp.is"
-        self.headers["User-Agent"] = "BroadswordBot v.{}".format(BasicUtils.bot_version())
+        self.headers["X-User-Agent"] = "BroadswordBot v.{}".format(BasicUtils.bot_version())
         self.headers["Accept"] = "application/json"
         self.language = "en-us"
         self.datasource = "tranquility"
@@ -31,27 +31,52 @@ class ESIApi:
             self.__dict__.pop(attr,None)
         del self
 
-    async def status_tq(self, id):
-        # response content:
-        #   'server_version'
-        #   'players'
-        #   'start_time'
+    async def _request(self, url):
         try:
-            self.url = "{url}/v1/status/?datasource={src}".\
-                format(url=self.endpoint_url, src=self.datasource)
             async with aiohttp.ClientSession(headers=self.headers) as self.session:
-                async with self.session.get(self.url) as self.resp:
+                async with self.session.get(url) as self.resp:
                     if self.resp.status == 200:
                         self.data = await self.resp.text()
                         self.data = json.loads(self.data)
+                        if config.bot["devMode"]:
+                            log.info("URL: {}".format(url))
+                            log.info("Response Data: {}".format(self.data))
                         return self.data
                     else:
                         return None
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("url", "resp", "data"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("resp", "data", "session"))
+
+    async def _search(self, categories, strict, str):
+        try:
+            str = str.replace(" ", "%20")
+            self.url = "{}/v2/search/".format(self.endpoint_url) +\
+                       "?categories={}".format(categories) +\
+                       "&datasource={}".format(self.datasource) +\
+                       "&language={}".format(self.language) +\
+                       "&search={}".format(str) +\
+                       "&strict={}".format(strict)
+            self.response = await self._request(self.url)
+            return self.response
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("url", "response"))
+
+    async def _selfclean(self, vars):
+        for attr in vars: self.__dict__.pop(attr,None)
+
+    async def char_get_id(self, name):
+        try:
+            self.char_id = await self._search("character", "false", name)
+            self.char_id = self.char_id["character"]
+            return self.char_id
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("url", "response"))
 
     async def char_get_details(self, id):
         # response content:
@@ -68,19 +93,12 @@ class ESIApi:
         try:
             self.url = "{url}/v4/characters/{id}/?datasource={src}".\
                 format(url=self.endpoint_url, id=id, src=self.datasource)
-            async with aiohttp.ClientSession(headers=self.headers) as self.session:
-                async with self.session.get(self.url) as self.resp:
-                    if self.resp.status == 200:
-                        self.data = await self.resp.text()
-                        self.data = json.loads(self.data)
-                        return self.data
-                    else:
-                        return None
+            self.response = await self._request(self.url)
+            return self.response
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("url", "resp", "data"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("url", "response"))
 
     async def corp_get_details(self, id):
         # response content:
@@ -99,19 +117,12 @@ class ESIApi:
         try:
             self.url = "{url}/v4/corporations/{id}/?datasource={src}".\
                 format(url=self.endpoint_url, id=id, src=self.datasource)
-            async with aiohttp.ClientSession(headers=self.headers) as self.session:
-                async with self.session.get(self.url) as self.resp:
-                    if self.resp.status == 200:
-                        self.data = await self.resp.text()
-                        self.data = json.loads(self.data)
-                        return self.data
-                    else:
-                        return None
+            self.response = await self._request(self.url)
+            return self.response
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("url", "resp", "data"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("url", "response"))
 
     async def corp_get_name(self, id):
         # return Name
@@ -124,8 +135,65 @@ class ESIApi:
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("system_data"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("corp_data"))
+
+    async def mails_get_headers(self, char_id, labels, token):
+        # response content:
+        #   'mail_id'
+        #   'subject'
+        #   'from'
+        #   'timestamp'
+        #   'labels': []
+        #   'recipients': [{'recipient_type', 'recipient_id'},]
+        try:
+            self.url = "{}/v1/".format(self.endpoint_url) +\
+                       "characters/{}/mail/".format(char_id) +\
+                       "?datasource={}".format(self.datasource) +\
+                       "&labels={}".format(labels) +\
+                       "&token={}".format(token)
+            self.response = await self._request(self.url)
+            return self.response
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("url", "response"))
+
+    async def mails_get_mail(self, char_id, mail_id, token):
+        # response content:
+        #   'subject'
+        #   'from'
+        #   'timestamp'
+        #   'recipients': [{'recipient_type', 'recipient_id'},]
+        #   'body'
+        #   'labels': []
+        #   'read'
+        try:
+            self.url = "{}/v1/".format(self.endpoint_url) +\
+                       "characters/{}/".format(char_id) +\
+                       "mail/{}/".format(mail_id) +\
+                       "?datasource={}".format(self.datasource) +\
+                       "&token={}".format(token)
+            self.response = await self._request(self.url)
+            return self.response
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("url", "response"))
+
+    async def status_tq(self):
+        # response content:
+        #   'server_version'
+        #   'players'
+        #   'start_time'
+        try:
+            self.url = "{url}/v1/status/?datasource={src}".\
+                format(url=self.endpoint_url, src=self.datasource)
+            self.response = await self._request(self.url)
+            return self.response
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("url", "response"))
 
     async def system_get_details(self, id):
         # response content:
@@ -141,19 +209,12 @@ class ESIApi:
         try:
             self.url = "{url}/v3/universe/systems/{id}/?datasource={src}&language={lang}".\
                 format(url=self.endpoint_url, id=id, src=self.datasource, lang=self.language)
-            async with aiohttp.ClientSession(headers=self.headers) as self.session:
-                async with self.session.get(self.url) as self.resp:
-                    if self.resp.status == 200:
-                        self.data = await self.resp.text()
-                        self.data = json.loads(self.data)
-                        return self.data
-                    else:
-                        return None
+            self.response = await self._request(self.url)
+            return self.response
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("url", "resp", "data"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("url", "response"))
 
     async def system_get_name(self, id):
         # return Name
@@ -166,24 +227,16 @@ class ESIApi:
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("system_data"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("system_data"))
 
     async def type_get_name(self, id):
         # return Name
         try:
             self.url = "{url}/v3/universe/types/{id}/?datasource={src}&language={lang}".\
                 format(url=self.endpoint_url, id=id, src=self.datasource, lang=self.language)
-            async with aiohttp.ClientSession(headers=self.headers) as self.session:
-                async with self.session.get(self.url) as self.resp:
-                    if self.resp.status == 200:
-                        self.data = await self.resp.text()
-                        self.data = json.loads(self.data)
-                        return self.data["name"]
-                    else:
-                        return None
+            self.response = await self._request(self.url)
+            return self.response
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
-            for attr in ("url", "resp", "data"):
-                self.__dict__.pop(attr,None)
+            await self._selfclean(("system_data"))
