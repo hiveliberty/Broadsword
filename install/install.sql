@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `storage` (
   UNIQUE KEY `s_key` (`s_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `discord_users_auth` (
+CREATE TABLE IF NOT EXISTS `discord_auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `eve_name` varchar(365) DEFAULT NULL,
   `character_id` varchar(128) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `discord_users_auth` (
   UNIQUE KEY `character_id` (`character_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `discord_users_cache` (
+CREATE TABLE IF NOT EXISTS `discord_members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `discord_id` varchar(64) NOT NULL,
   `is_authorized` varchar(10) NOT NULL DEFAULT 'no',

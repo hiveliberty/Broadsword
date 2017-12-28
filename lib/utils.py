@@ -20,6 +20,7 @@ from bs4 import BeautifulSoup
 #from bs4 import NavigableString
 
 from config import config
+from lib.db import DBMain
 
 log = logging.getLogger(__name__)
 
@@ -140,8 +141,6 @@ class MailUtils:
                 data = data["eveapi"]["result"]["rowset"]["row"]["#text"]
             return data
         except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
             log.exception("An exception has occurred in {}: ".format(__name__))
             return None
 
@@ -170,6 +169,24 @@ class MailUtils:
                 ret.append(s[i:i+n])
             return ret
         except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
             log.exception("An exception has occurred in {}: ".format(__name__))
+
+class UserdbUtils:
+    async def _selfclean(self, vars):
+        for attr in vars: self.__dict__.pop(attr,None)
+
+    async def _make_id_list(self):
+        self.list = []
+        for self.member in self.members:
+            self.list.append(self.member["discord_id"])
+
+    async def member_id_list(self):
+        try:
+            self.cnx = DBMain()
+            self.members = await self.cnx.member_select_all()
+            await self._make_id_list()
+            return self.list
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("cnx", "members", "member", "list"))
