@@ -71,8 +71,7 @@ class ESIApi:
     async def char_get_id(self, name):
         try:
             self.char_id = await self._search("character", "false", name)
-            self.char_id = self.char_id["character"]
-            return self.char_id
+            return self.char_id["character"]
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
