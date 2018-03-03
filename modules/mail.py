@@ -81,23 +81,25 @@ class EVEMail:
                         self.content = await MailUtils.xml_to_dict(self.content, "content")
                         if self.content is not None:
                             self.content = await MailUtils.format_mailbody(self.content)
-                            self.msg_split = await MailUtils.str_split(self.content, 1800)
 
                             #self.msg = "**------------------------------------**\n"
+                            self.msg = "@everyone, __new mail!__ \n\n"
                             self.msg = "**-------------Start Mail-------------**\n"
                             self.msg += "**Mail By: **{}\n".format(self.mail["@senderName"])
                             self.msg += "**Sent Date: **{}\n".format(self.mail["@sentDate"])
                             self.msg += "**Title: ** {}\n".format(self.mail["@title"])
                             self.msg += "**Content: **\n"
-                            self.msg += self.msg_split[0]
-
-                            await self.cnx.message_add(self.msg, self.channel)
-                            if len(self.msg_split) > 0:
+                            if len(self.content) < 1800:
+                                self.msg += self.content
+                                self.msg += "\n**--------------End Mail--------------**\n"
+                                await self.cnx.message_add(self.msg, self.channel)
+                            else:
+                                self.msg_split = await MailUtils.str_split(self.content, 1800)
+                                self.msg_split[-1] += "\n**--------------End Mail--------------**\n"
+                                self.msg += self.msg_split[0]
+                                await self.cnx.message_add(self.msg, self.channel)
                                 for self.i in range(1, len(self.msg_split)):
                                     await self.cnx.message_add(self.msg_split[self.i], self.channel)
-
-                            self.endmsg = "**--------------End Mail--------------**\n"
-                            await self.cnx.message_add(self.endmsg, self.channel)
 
                             self.maxID = max(self.mail["@messageID"], self.maxID)
 
