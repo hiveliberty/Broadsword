@@ -1,8 +1,10 @@
 #import urllib.parse as urllib
-import time
+import datetime
+import discord
 import json
-import xmltodict
 import logging
+import time
+import xmltodict
 from discord.ext import commands as broadsword
 from importlib import reload
 
@@ -55,36 +57,47 @@ class EVE_API:
     @broadsword.command(pass_context=True, description='''Команда получения информации о персонаже.''')
     async def charinfo(self, ctx, *, name):
         try:
-            self.author = ctx.message.author
-            self.msg = ''
             self.esi = ESIApi()
             self.char_id = await self.esi.char_get_id(name)
             if len(self.char_id) == 1:
                 self.char_id = self.char_id[0]
-                log.info("char_id: {}".format(self.char_id))
+
             self.zkill_api = zKillboardAPI(self.char_id)
-            self.response = await self.esi.char_get_details(self.char_id)
-            log.info("char_info: {}".format(self.response))
-            self.starsystemID = await self.zkill_api.system_get_latest()
-            self.shiptypeID = await self.zkill_api.shiptype_get_last()
-            self.lastseen = await self.zkill_api.seendate_get_last()
-            self.lastkillmailID = await self.zkill_api.killmail_id_get_last()
-            self.birthday = time.strptime(self.response["birthday"][:19], "%Y-%m-%dT%H:%M:%S")
+            self.char_info = await self.esi.char_get_details(self.char_id)
+
+            self.star_system_id = await self.zkill_api.system_get_latest()
+            self.ship_type_id = await self.zkill_api.shiptype_get_last()
+            self.last_seen = await self.zkill_api.seendate_get_last()
+            if self.last_seen is None:
+                self.last_seen = "Unknown"
+            self.killmail_last_id = await self.zkill_api.killmail_id_get_last()
+            self.corp_name = await self.esi.corp_get_name(
+                self.char_info["corporation_id"])
+
+            self.birthday = time.strptime(self.char_info["birthday"][:19], "%Y-%m-%dT%H:%M:%S")
             self.birthday = time.strftime("%d.%m.%Y at %H:%M:%S", self.birthday)
-            self.msg += '{0.mention}\n```Character info:\n'.format(self.author)
-            self.msg += 'Name: {}\n'.format(self.response["name"])
-            self.msg += 'Birthday: {}\n'.format(self.birthday)
-            #self.msg += 'Alliance: {}\n'.format(await self.esi.getAllianceName(self.response.alliance_id))
-            self.msg += 'Corporation: {}\n'.format(
-                await self.esi.corp_get_name(self.response["corporation_id"]))
-            self.msg += 'Last Seen In System: {}\n'.format(self.starsystemID)
-            self.msg += 'Last Seen Flying a: {}\n'.format(self.shiptypeID)
-            self.msg += 'Last Seen On: {}```'.format(self.lastseen)
-            self.msg += 'Latest Killmail: https://zkillboard.com/kill/{}/\n'.\
-                        format(self.lastkillmailID)
-            self.msg += 'zKillboard Link: https://zkillboard.com/character/{}/'.\
-                        format(self.char_id)
-            await self.broadsword.say(self.msg)
+
+            self.desc = "**Birthday:** {}\n".format(self.birthday) +\
+                        "**Corporation:** {}\n".format(self.corp_name) +\
+                        "**Last Seen In System:** {}\n".format(self.star_system_id) +\
+                        "**Last Seen Flying at:** {}\n".format(self.ship_type_id) +\
+                        "**Last Seen On:** {}\n".format(self.last_seen) +\
+                        "**Latest Killmail:** https://zkillboard.com/kill/{}/\n".\
+                        format(self.killmail_last_id)
+
+            self.embed = discord.Embed(
+                title="{}".format(self.char_info["name"]),
+                description=self.desc,
+                url="https://zkillboard.com/character/{}/".format(self.char_id),
+                color=0xe25822
+            )
+            self.embed.set_thumbnail(
+                url="https://imageserver.eveonline.com/Character/{}_256.jpg".\
+                format(self.char_id)
+            )
+            self.embed.set_footer(text=datetime.datetime.now().replace(microsecond=0))
+
+            await self.broadsword.say(embed=self.embed)
         except Exception:
             await self.broadsword.say("Cann't get character information. Something wrong.")
             log.exception("An exception has occurred in {}: ".format(__name__))

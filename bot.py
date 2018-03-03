@@ -18,7 +18,7 @@ gc.enable() # Not sure that this working..
 main_modules = {
     "modules.admin",
     "modules.test",
-#    "modules.queues",
+    "modules.queues",
     "modules.userdb",
 }
 

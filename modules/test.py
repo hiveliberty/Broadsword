@@ -1,17 +1,18 @@
 #import urllib.parse as urllib
-import time
-import json
-import datetime
-import logging
 import asyncio
-from operator import itemgetter
+import datetime
+import discord
+import json
+import logging
+import time
 from discord.ext import commands as broadsword
+from operator import itemgetter
 
 from lib.utils import MailUtils
 from lib.db import DBMain
 from lib.esi import ESIApi
 from lib.token import EVEToken
-#from lib.libeve import zKillboardAPI
+from lib.zkillboard import zKillboardAPI
 from config import config
 
 log = logging.getLogger(__name__)
@@ -111,6 +112,55 @@ class Test:
                 config.sso["character_id"], mail_id, self.token
             )
             await self.broadsword.say("```{}```".format(self.body))
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(("token_api", "token", "esi", "body"))
+
+    @test.command(name="embed", pass_context=True, description='''Тестовая команда.''')
+    async def _embed(self, ctx, *, name):
+        try:
+            self.esi = ESIApi()
+            self.char_id = await self.esi.char_get_id(name)
+            if len(self.char_id) == 1:
+                self.char_id = self.char_id[0]
+
+            self.zkill_api = zKillboardAPI(self.char_id)
+            self.char_info = await self.esi.char_get_details(self.char_id)
+
+            self.star_system_id = await self.zkill_api.system_get_latest()
+            self.ship_type_id = await self.zkill_api.shiptype_get_last()
+            self.last_seen = await self.zkill_api.seendate_get_last()
+            if self.last_seen is None:
+                self.last_seen = "Unknown"
+            self.killmail_last_id = await self.zkill_api.killmail_id_get_last()
+            self.corp_name = await self.esi.corp_get_name(
+                self.char_info["corporation_id"])
+
+            self.birthday = time.strptime(self.char_info["birthday"][:19], "%Y-%m-%dT%H:%M:%S")
+            self.birthday = time.strftime("%d.%m.%Y at %H:%M:%S", self.birthday)
+
+            self.desc = "**Birthday:** {}\n".format(self.birthday) +\
+                        "**Corporation:** {}\n".format(self.corp_name) +\
+                        "**Last Seen In System:** {}\n".format(self.star_system_id) +\
+                        "**Last Seen Flying at:** {}\n".format(self.ship_type_id) +\
+                        "**Last Seen On:** {}\n".format(self.last_seen) +\
+                        "**Latest Killmail:** https://zkillboard.com/kill/{}/\n".\
+                        format(self.killmail_last_id)
+
+            self.embed = discord.Embed(
+                title="{}".format(self.char_info["name"]),
+                description=self.desc,
+                url="https://zkillboard.com/character/{}/".format(self.char_id),
+                color=0xe25822
+            )
+            self.embed.set_thumbnail(
+                url="https://imageserver.eveonline.com/Character/{}_256.jpg".\
+                format(self.char_id)
+            )
+            self.embed.set_footer(text=datetime.datetime.now().replace(microsecond=0))
+
+            await self.broadsword.say(embed=self.embed)
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:

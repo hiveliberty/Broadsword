@@ -77,7 +77,7 @@ db = {
 # Some modules disabled by default.
 # You must configure the modules that you want and enable them.
 # enable:   True
-# disbale:  False
+# disable:  False
 plugins = {
     "modules.auth": {
         "enabled": False,
@@ -86,6 +86,9 @@ plugins = {
         "enabled": True,
     },
     "modules.mail": {
+        "enabled": False,
+    },
+    "modules.teamspeak": {
         "enabled": False,
     },
 }

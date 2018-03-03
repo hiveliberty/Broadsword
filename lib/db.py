@@ -154,9 +154,8 @@ class DBMain(DB):
         return None
 
     async def corpinfo_delete(self, corporation_id):
-        self.sqlquery = "DELETE FROM `corporation_cache` " +\
-                        "WHERE corporation_id=%s"
-        await self._query_exec(self.sqlquery)
+        self.sqlquery = "DELETE FROM `corporation_cache` WHERE corporation_id=%s"
+        await self._query_exec(self.sqlquery, (corporation_id,))
         del self.sqlquery
         return None
 
@@ -304,6 +303,44 @@ class DBMain(DB):
         self.sqlquery = "DELETE FROM `storage` WHERE `s_key`=%s"
         await self._query_exec(self.sqlquery, (key,))
         del self.sqlquery
+        return None
+
+    async def teamspeak_uid_get(self, character_id):
+        self.sqlquery = "SELECT teamspeak_uid FROM `teamspeak_uids` " +\
+                        "WHERE character_id=%s"
+        self.sqlout = await self._query(self.sqlquery, (character_id,), True)
+        del self.sqlquery
+        if self.sqlout is not None:
+            return self.sqlout
+        return None
+
+    async def teamspeak_role_add(self, role_name):
+        self.sqlquery = "REPLACE INTO `teamspeak_roles` SET role_name=%s"
+        await self._query_exec(self.sqlquery, (role_name,))
+        del self.sqlquery
+        return None
+
+    async def teamspeak_role_delete(self, role_name):
+        self.sqlquery = "DELETE FROM `teamspeak_roles` WHERE role_name=%s"
+        await self._query_exec(self.sqlquery, (role_name,))
+        del self.sqlquery
+        return None
+
+    async def teamspeak_role_get(self, role_name):
+        self.sqlquery = "SELECT role_name FROM `teamspeak_roles` " +\
+                        "WHERE role_name=%s"
+        self.sqlout = await self._query(self.sqlquery, (role_name,), True)
+        del self.sqlquery
+        if self.sqlout is not None:
+            return self.sqlout
+        return None
+
+    async def teamspeak_roles_get(self):
+        self.sqlquery = "SELECT role_name FROM `teamspeak_roles`"
+        self.sqlout = await self._query(self.sqlquery, (corporation_id,))
+        del self.sqlquery
+        if self.sqlout is not None:
+            return self.sqlout
         return None
 
     async def token_get(self, character_id):
