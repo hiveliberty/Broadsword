@@ -84,7 +84,7 @@ class EVEMail:
 
                             #self.msg = "**------------------------------------**\n"
                             self.msg = "@everyone, __new mail!__ \n\n"
-                            self.msg = "**-------------Start Mail-------------**\n"
+                            self.msg += "**-------------Start Mail-------------**\n"
                             self.msg += "**Mail By: **{}\n".format(self.mail["@senderName"])
                             self.msg += "**Sent Date: **{}\n".format(self.mail["@sentDate"])
                             self.msg += "**Title: ** {}\n".format(self.mail["@title"])
