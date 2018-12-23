@@ -125,4 +125,4 @@ class QueueRename:
 
 def setup(broadsword):
     broadsword.add_cog(QueueMessages(broadsword))
-    broadsword.add_cog(QueueRename(broadsword))
+    # broadsword.add_cog(QueueRename(broadsword))

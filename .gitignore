@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 *.pyc
 
+*.old.py
+
 # Exluded some files
 config/config.py
 config/logging.yaml
@@ -12,10 +14,12 @@ config/config_template_dev.py
 config/config.json
 install/requirements.txt
 lib/config_class.py
+lib/db.old.py
 install_new.sql
 cleanup_pycache.sh
 migratedb.py
 bot-sigterm.py
+modules/test.py
 
 # Exlude "dirs"
 backup

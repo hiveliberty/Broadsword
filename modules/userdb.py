@@ -34,43 +34,45 @@ class UserDB:
         finally:
             await self._selfclean(("cnx", "members", "member", "list"))
 
-    @broadsword.group(pass_context=True, hidden=True, description='''Группа тестовых команд.''')
-    async def userdb(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await self.broadsword.say("{0.mention}, invalid test command passed...".\
-                format(ctx.message.author))
+    # @broadsword.group(pass_context=True, hidden=True, description='''Группа тестовых команд.''')
+    # async def userdb(self, ctx):
+        # if ctx.invoked_subcommand is None:
+            # await self.broadsword.say("{0.mention}, invalid test command passed...".\
+                # format(ctx.message.author))
 
-    @userdb.command(pass_context=True, description='''Тестовая команда.''')
-    async def fill(self, ctx):
-        try:
-            self.cnx = DBMain()
-            self.members = await UserdbUtils().member_id_list()
-            self.server = self.broadsword.get_server(id=config.bot["guild"])
-            for self.member in self.server.members:
-                if not self.member.bot:
-                    if self.member.id not in self.members:
-                        log.info("User '{}' added to discord members db.".\
-                            format(self.member)
-                        )
-                        await self.cnx.member_add(self.member.id)
+    # @userdb.command(pass_context=True, description='''Тестовая команда.''')
+    # async def fill(self, ctx):
+        # try:
+            # self.cnx = DBMain()
+            # self.members = await UserdbUtils().member_id_list()
+            # self.server = self.broadsword.get_server(id=config.bot["guild"])
+            # for self.member in self.server.members:
+                # if not self.member.bot:
+                    # if self.member.id not in self.members:
+                        # log.info("User '{}' added to discord members db.".\
+                            # format(self.member)
+                        # )
+                        # await self.cnx.member_add(self.member.id)
 
-            self.members = await UserdbUtils().member_id_list()
-            self.authorized = await self.cnx.auth_users_select()
-            for self.user in self.authorized:
-                if self.user["discord_id"] in self.members:
-                    await self.cnx.member_set_authorized(self.user["discord_id"])
-        except Exception:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-        finally:
-            await self._selfclean(
-                ("cnx", "authorized", "members", "member", "user")
-            )
+            # self.members = await UserdbUtils().member_id_list()
+            # self.authorized = await self.cnx.auth_users_select()
+            # for self.user in self.authorized:
+                # if self.user["discord_id"] in self.members:
+                    # await self.cnx.member_set_authorized(self.user["discord_id"])
+        # except Exception:
+            # log.exception("An exception has occurred in {}: ".format(__name__))
+        # finally:
+            # await self._selfclean(
+                # ("cnx", "authorized", "members", "member", "user")
+            # )
 
     async def on_member_join(self, member):
         try:
             log.info("User '{}' joined to the server.".format(member))
             self.cnx = DBMain()
-            await self.cnx.member_add(member.id)
+            exist = await self.cnx.member_exist(member.id)
+            if not exist:
+                await self.cnx.member_add(member.id,member.name,member.bot)
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:
@@ -80,7 +82,8 @@ class UserDB:
         try:
             log.info("User '{}' left the server.".format(member))
             self.cnx = DBMain()
-            await self.cnx.member_delete(member.id)
+            await self.cnx.authorized_del(member.id)
+            await self.cnx.member_del(member.id)
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:

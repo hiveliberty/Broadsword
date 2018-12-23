@@ -14,6 +14,8 @@ import urllib.request
 import re
 import html
 import xmltodict
+import time
+from datetime import datetime
 #from collections import OrderedDict
 from operator import itemgetter
 from bs4 import BeautifulSoup
@@ -26,49 +28,11 @@ log = logging.getLogger(__name__)
 
 
 class BasicUtils:
-    def bot_version():
-        with open("version", encoding='utf-8') as version_file:
-            version_data = json.loads(version_file.read())
-        version_file.close()
-        return version_data["bot_version"]
-
-    def db_version():
-        with open("version", encoding='utf-8') as version_file:
-            version_data = json.loads(version_file.read())
-        version_file.close()
-        return version_data["db_version"]
-
-    def load_version():
-        url = "https://raw.githubusercontent.com/hiveliberty/Broadsword/master/version"
-        try:
-            with urllib.request.urlopen("https://raw.githubusercontent.com/hiveliberty/Broadsword/master/version") as response:
-                if response.getcode() == 200:
-                    data = response.read()
-                    data = json.loads(data.decode())
-                    return data["bot_version"]
-                else:
-                    return
-        except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
-        finally:
-            for attr in ("url", "data", "response"):
-                self.__dict__.pop(attr,None)
-
-    def check_update():
-        try:
-            remote_version = BasicUtils.load_version()
-            if remote_version is None:
-                return
-            local_version = BasicUtils.bot_version()
-            if local_version < remote_version:
-                return True
-            return False
-        except Exception as e:
-            if config.bot["devMode"]:
-                print(e)
-            log.exception("An exception has occurred in {}: ".format(__name__))
+    async def eve_timestamp_convert(self, timestamp):
+        # return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %H:%M:%S')
+        converted = time.strptime(timestamp[:19], "%Y-%m-%dT%H:%M:%S")
+        converted = time.strftime("%d.%m.%Y %H:%M:%S", converted)
+        return converted
 
     async def cmdGetParams(cmd):
         self.parsed = cmd.split()
@@ -80,6 +44,30 @@ class BasicUtils:
                 self.stmp += " "
             self.stmp += self.elem
         return self.stmp
+
+class EVEUtils:
+    # async def convert_timestamp(timestamp):
+    async def timestamp_to_date(timestamp):
+        converted = time.strptime(timestamp[:19], "%Y-%m-%dT%H:%M:%S")
+        converted = time.strftime("%d.%m.%Y %H:%M:%S", converted)
+        return converted
+
+    async def epoch_to_date(microseconds):
+        seconds = microseconds/10000000 - 11644473600
+        converted = datetime.utcfromtimestamp(seconds)
+        converted = time.strftime("%d.%m.%Y %H:%M:%S", converted)
+        return converted
+
+    async def duration_to_date(timestamp, microseconds):
+        seconds = microseconds/10000000
+        converted = time.strptime(timestamp[:19], "%Y-%m-%dT%H:%M:%S")
+        converted = converted + datetime.timedelta(seconds=seconds)
+        return time.strftime('%d.%m.%Y %H:%M:%S', converted)
+
+    async def conv_to_percentage(value):
+        if value <= 1:
+            value = value * 100
+        return '%.1f%%' % value
 
 
 class AuthUtils:

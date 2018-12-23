@@ -74,155 +74,21 @@ class DBMain(DB):
         except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
 
-    async def auth_pending_enable(self, character_id):
-        self.sqlquery = "UPDATE `discord_auth` SET pending='yes' WHERE character_id=%s"
-        await self._query_exec(self.sqlquery, (character_id,))
-        del self.sqlquery
-        return None
-
-    async def auth_pending_disable(self, character_id):
-        self.sqlquery = "UPDATE `discord_auth` SET pending='no' WHERE character_id=%s"
-        await self._query_exec(self.sqlquery, (character_id,))
-        del self.sqlquery
-        return None
-
-    async def auth_pending_select(self):
-        self.sqlquery = "SELECT * " +\
-                        "FROM `discord_auth` " +\
-                        "WHERE pending='yes'"
-        self.sqlout = await self._query(self.sqlquery, query_one=True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
-
-    async def auth_user_enable(self, character_id):
-        self.sqlquery = "UPDATE `discord_auth` SET active='yes' WHERE character_id=%s"
-        await self._query_exec(self.sqlquery, (character_id,))
-        del self.sqlquery
-        return None
-
-    async def auth_user_update(self, character_id, key, value):
-        self.sqlquery = "UPDATE `discord_auth` " +\
-                        "SET {}=%s WHERE character_id=%s".format(key)
-        await self._query_exec(self.sqlquery, (value, character_id))
-        del self.sqlquery
-        return None
-
-    async def auth_user_disable(self, character_id):
-        self.sqlquery = "UPDATE `discord_auth` SET active='no' WHERE character_id=%s"
-        await self._query_exec(self.sqlquery, (character_id,))
-        del self.sqlquery
-        return None
-
-    async def auth_users_select(self):
-        self.sqlquery = "SELECT discord_id, character_id, eve_name " +\
-                        "FROM `discord_auth` " +\
-                        "WHERE active='yes' AND pending='no'"
-        self.sqlout = await self._query(self.sqlquery)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
-
-    async def corpinfo_add(self, corporation_id, corporation_ticker, corporation_name, corporation_role):
-        self.sqlquery = "REPLACE INTO `corporation_cache` " +\
-                        "(corporation_id, corporation_ticker, corporation_name, corporation_role) " +\
-                        "VALUES ('{0}', '{1}', '{2}', '{3}')"
-        await self._query_exec(
-            self.sqlquery,
-            (corporation_id, corporation_ticker,
-             corporation_name, corporation_role)
-        )
-        del self.sqlquery
-        return None
-        
-    async def corpinfo_update(self, corporation_id, key, value):
-        self.sqlquery = "UPDATE `corporation_cache` " +\
-                        "SET %s=%s WHERE corporation_id=%s"
-        await self._query_exec(self.sqlquery, (key, value, corporation_id))
-        del self.sqlquery
-        return None
-
-    async def corpinfo_get(self, corporation_id):
-        self.sqlquery = "SELECT * FROM `corporation_cache` " +\
-                        "WHERE corporation_id=%s"
-        self.sqlout = await self._query(self.sqlquery, (corporation_id,), True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
-
-    async def corpinfo_delete(self, corporation_id):
-        self.sqlquery = "DELETE FROM `corporation_cache` WHERE corporation_id=%s"
-        await self._query_exec(self.sqlquery, (corporation_id,))
-        del self.sqlquery
-        return None
-
-    async def insert_user(self, character_id, discord_id, eve_name):
-        self.sqlquery = "REPLACE INTO `discord_auth` " +\
-                        "(character_id, discord_id, eve_name, active) " +\
-                        "VALUES (%s, %s, %s, 'yes')"
-        await self._query_exec(self.sqlquery, (character_id, discord_id, eve_name))
-        del self.sqlquery
-        return None
-
-    async def member_add(self, discord_id):
-        self.sqlquery = "REPLACE INTO `discord_members` SET discord_id=%s"
-        #self.sqlquery = "INSERT INTO `discordUsers` SET discord_id=%s"
-        await self._query_exec(self.sqlquery, (discord_id,))
-        del self.sqlquery
-        return None
-
-    async def member_add_authorized(self, discord_id):
-        self.sqlquery = "REPLACE INTO `discord_members` " +\
-                        "(discord_id, is_authorized) " +\
-                        "VALUES (%s, 'yes')"
-        await self._query_exec(self.sqlquery, (discord_id,))
-        del self.sqlquery
-        return None
-
-    async def member_delete(self, discord_id):
-        self.sqlquery = "DELETE FROM `discord_members` WHERE discord_id=%s"
-        await self._query_exec(self.sqlquery, (discord_id,))
-        del self.sqlquery
-        return None
-
-    async def member_select_all(self):
-        self.sqlquery = "SELECT * FROM `discord_members`"
-        self.sqlout = await self._query(self.sqlquery)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
-
-    async def member_set_authorized(self, discord_id):
-        self.sqlquery = "UPDATE `discord_members` SET is_authorized='yes' WHERE discord_id=%s"
-        await self._query_exec(self.sqlquery, (discord_id,))
-        del self.sqlquery
-        return None
-
-    async def member_set_unauthorized(self, discord_id):
-        self.sqlquery = "UPDATE `discord_members` SET is_authorized='no' WHERE discord_id=%s"
-        await self._query_exec(self.sqlquery, (discord_id,))
-        del self.sqlquery
-        return None
-
     async def message_add(self, msg, channel_id):
-        self.sqlquery = "INSERT INTO `queue_message` (channel_id, message) VALUES (%s, %s)"
+        self.sqlquery = "INSERT INTO `discord_queue_message` (channel_id, message) VALUES (%s, %s)"
         await self._query_exec(self.sqlquery, (channel_id, msg))
         del self.sqlquery
         return None
 
     async def message_get(self, id):
-        self.sqlquery = "SELECT * FROM `queue_message` WHERE id=%s"
+        self.sqlquery = "SELECT * FROM `discord_queue_message` WHERE id=%s"
         self.sqlout = await self._query(self.sqlquery, (id,), query_one=True)
         if self.sqlout is not None:
             return self.sqlout
         return None
 
     async def message_get_oldest(self):
-        self.sqlquery = "SELECT MIN(id) FROM `queue_message`"
+        self.sqlquery = "SELECT MIN(id) FROM `discord_queue_message`"
         self.sqlout = await self._query(self.sqlquery, query_one=True)
         del self.sqlquery
         if self.sqlout is not None:
@@ -230,7 +96,7 @@ class DBMain(DB):
         return None
 
     async def message_delete(self, id):
-        self.sqlquery = "DELETE FROM `queue_message` WHERE id=%s"
+        self.sqlquery = "DELETE FROM `discord_queue_message` WHERE id=%s"
         await self._query_exec(self.sqlquery, (id,))
         del self.sqlquery
         return None
@@ -239,7 +105,7 @@ class DBMain(DB):
         self.oldest = await self.message_get_oldest()
         if self.oldest is not None:
             self.id = self.oldest - 1
-            self.sqlquery = "INSERT INTO `queue_message` " +\
+            self.sqlquery = "INSERT INTO `discord_queue_message` " +\
                             "(id, channel_id, message) " +\
                             "VALUES (%s, %s, %s)"
             await self._query_exec(self.sqlquery, (self.id, channel_id, msg))
@@ -248,128 +114,105 @@ class DBMain(DB):
         del self.oldest
         return None
 
-    async def rename_add(self, discord_id, nick):
-        self.sqlquery = "INSERT INTO `queue_rename` " +\
-                        "(discord_id, nick) " +\
-                        "VALUES (%s, %s)"
-        await self._query_exec(self.sqlquery, (discord_id, nick))
-        del self.sqlquery
-        return None
+    async def custom_add(self, key, value):
+        sql = ("INSERT INTO `custom_storage`"
+               " (custom_key, custom_value) VALUES (%s, %s);")
+        result = await self._query_exec(sql, (key, value))
+        return result
 
-    async def rename_get(self, id):
-        self.sqlquery = "SELECT * FROM `queue_rename` WHERE id=%s"
-        self.sqlout = await self._query(self.sqlquery, (id,), True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
+    async def custom_update(self, key, value):
+        sql = ("UPDATE `custom_storage`"
+               " SET custom_value = %s WHERE custom_key = %s;")
+        result = await self._query_exec(sql, (value, key))
+        return result
 
-    async def rename_get_oldest(self):
-        self.sqlquery = "SELECT MIN(id) FROM `queue_rename`"
-        self.sqlout = await self._query(self.sqlquery, query_one=True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout['MIN(id)']
-        return None
+    async def custom_get(self, key):
+        sql = ("SELECT custom_value FROM `custom_storage`"
+               " WHERE custom_key = %s LIMIT 1;")
+        result = await self._query(sql, (key,), True)
+        if result is not None:
+            return result['custom_value']
+        else:
+            return None
 
-    async def rename_delete(self, id):
-        self.sqlquery = "DELETE FROM `queue_rename` WHERE id=%s"
-        await self._query_exec(self.sqlquery, (id,))
-        del self.sqlquery
-        return None
+    async def custom_del(self, key):
+        sql = ("DELETE FROM `custom_storage` WHERE custom_key = %s;")
+        result = await self._query_exec(sql, (key,))
+        return result
 
-    async def storage_add(self, key, value):
-        self.sqlquery = "REPLACE INTO `storage` " +\
-                        "(`s_key`, `s_value`) VALUES (%s, %s)"
-        await self._query_exec(self.sqlquery, (key, value))
-        del self.sqlquery
-        return None
+    async def token_update(self, id, access_t, scope, expire_date):
+        sql = ("UPDATE `esi_tokens` SET access_token = %s, expire_date = %s"
+               " WHERE character_id = %s AND scope_name = %s;")
+        result = await self._query_exec(sql,
+            (access_t, expire_date, id, scope))
+        return result
 
-    async def storage_update(self, key, value):
-        self.sqlquery = "UPDATE `storage` SET s_value=%s WHERE s_key=%s"
-        await self._query_exec(self.sqlquery, (value, key))
-        del self.sqlquery
-        return None
+    async def token_updatefull(self, id, access_t, refresh_t, scope, expire_date):
+        sql = ("UPDATE `esi_tokens` SET access_token = %s, refresh_token = %s,"
+               " expire_date = %s WHERE character_id = %s AND scope_name = %s;")
+        result = await self._query_exec(sql,
+            (access_t, refresh_t, expire_date, id, scope))
+        return result
 
-    async def storage_get(self, key):
-        self.sqlquery = "SELECT s_value FROM `storage` WHERE `s_key`=%s"
-        self.sqlout = await self._query(self.sqlquery, (key,), True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout["s_value"]
-        return None
+    async def token_get(self, type, scope):
+        id = await self.custom_get(type)
+        sql = ("SELECT"
+               " character_id, access_token, refresh_token, expire_date, scope_name"
+               " FROM `esi_tokens`"
+               " WHERE character_id = %s AND scope_name = %s LIMIT 1;")
+        result = await self._query(sql, (id, scope), True)
+        return result
 
-    async def storage_delete(self, key):
-        self.sqlquery = "DELETE FROM `storage` WHERE `s_key`=%s"
-        await self._query_exec(self.sqlquery, (key,))
-        del self.sqlquery
-        return None
+    # async def authorized_get(self, id):
+        # sql = ("SELECT * FROM `discord_users`"
+               # " WHERE discord_id = %s LIMIT 1;")
+        # result = await self._query(sql, (id,), True)
+        # if result is not None:
+            # return result['custom_value']
+        # else:
+            # return None
 
-    async def teamspeak_uid_get(self, character_id):
-        self.sqlquery = "SELECT teamspeak_uid FROM `teamspeak_uids` " +\
-                        "WHERE character_id=%s"
-        self.sqlout = await self._query(self.sqlquery, (character_id,), True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
+    async def authorized_exist(self, id):
+        sql = ("SELECT * FROM `discord_users`"
+               " WHERE discord_id = %s LIMIT 1;")
+        result = await self._query(sql, (id,), True)
+        if result is not None:
+            if result['user_id'] is not None:
+                return True
+            else:
+                return False
+        else:
+            return False
 
-    async def teamspeak_role_add(self, role_name):
-        self.sqlquery = "REPLACE INTO `teamspeak_roles` SET role_name=%s"
-        await self._query_exec(self.sqlquery, (role_name,))
-        del self.sqlquery
-        return None
+    async def authorized_del(self, id):
+        sql = ("DELETE FROM `discord_users` WHERE discord_id = %s;")
+        result = await self._query_exec(sql, (id,))
+        return result
 
-    async def teamspeak_role_delete(self, role_name):
-        self.sqlquery = "DELETE FROM `teamspeak_roles` WHERE role_name=%s"
-        await self._query_exec(self.sqlquery, (role_name,))
-        del self.sqlquery
-        return None
+    async def member_add(self, id, nickname, bot):
+        sql = ("INSERT INTO `discord_members`"
+               " (discord_id, discord_username, is_bot) VALUES (%s, %s, %s);")
+        result = await self._query_exec(sql, (id, nickname))
+        return result
 
-    async def teamspeak_role_get(self, role_name):
-        self.sqlquery = "SELECT role_name FROM `teamspeak_roles` " +\
-                        "WHERE role_name=%s"
-        self.sqlout = await self._query(self.sqlquery, (role_name,), True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
+    async def member_exist(self, id):
+        sql = ("SELECT * FROM `discord_members`"
+               " WHERE discord_id = %s;")
+        result = await self._query(sql, (id,), True)
+        if result is not None:
+            if result['discord_username'] is not None:
+                return True
+            else:
+                return False
+        else:
+            return False
 
-    async def teamspeak_roles_get(self):
-        self.sqlquery = "SELECT role_name FROM `teamspeak_roles`"
-        self.sqlout = await self._query(self.sqlquery, (corporation_id,))
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
+    async def member_del(self, id):
+        sql = ("DELETE FROM `discord_members` WHERE discord_id = %s;")
+        result = await self._query_exec(sql, (id,))
+        return result
 
-    async def token_get(self, character_id):
-        self.sqlquery = "SELECT * FROM `token_storage` WHERE `character_id`=%s"
-        self.sqlout = await self._query(self.sqlquery, (character_id,), True)
-        del self.sqlquery
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
 
-    async def token_update(self, character_id, token_access, token_refresh, updated):
-        self.sqlquery = "REPLACE INTO `token_storage` " +\
-                        "(`character_id`, `token_access`, `token_refresh`, `updated`) " +\
-                        "VALUES (%s, %s, %s, %s)"
-        await self._query_exec(
-            self.sqlquery,
-            (character_id, token_access, token_refresh, updated)
-        )
-        del self.sqlquery
-        return None
-
-    async def token_delete(self, character_id):
-        self.sqlquery = "DELETE FROM `token_storage` " +\
-                        "WHERE `character_id`=%s"
-        await self._query_exec(self.sqlquery, (character_id,))
-        del self.sqlquery
-        return None
-
-        
 class DBStart(DB):
     def __init__(self):
         super().__init__()
@@ -388,17 +231,20 @@ class DBStart(DB):
                 log.info("{}\n".format(self.cursor.statement))
 
             if query_one:
-                self.sqlout = self.cursor.fetchone()
-                return self.sqlout
+                out = self.cursor.fetchone()
+                return out
             else:
-                self.sqlout = self.cursor.fetchall()
-                return self.sqlout
+                out = self.cursor.fetchall()
+                return out
         except mysqldb.Error:
             log.exception("An exception has occurred in {}: ".format(__name__))
 
-    def _query_exec(self, query, values):
+    def _query_exec(self, query, values=None):
         try:
-            self.cursor.execute(query, values)
+            if values is None:
+                self.cursor.execute(query)
+            else:
+                self.cursor.execute(query, values)
 
             if config.bot["devMode"]:
                 log.info("{}\n".format(self.cursor.statement))
@@ -422,43 +268,15 @@ class DBStart(DB):
             return self.sqlout[0]['version()']
         return None
 
-    def storage_add(self, key, value):
-        self.sqlquery = "REPLACE INTO `storage` " +\
-                        "(`s_key`, `s_value`) VALUES (%s, %s)"
-        self._query_exec(self.sqlquery, (key, value))
-        del self.sqlquery
-        return None
-
-    def storage_update(self, key, value):
-        self.sqlquery = "UPDATE `storage` SET s_value=%s WHERE s_key=%s"
-        self._query_exec(self.sqlquery, (value, key))
-        del self.sqlquery
-        return None
-
-    def storage_get(self, key):
-        self.sqlquery = "SELECT s_value FROM `storage` WHERE `s_key`=%s"
-        self.sqlout = self._query(self.sqlquery, (key,), True)
-        del self.sqlquery
-        #if len(self.sqlout) >= 1:
-        #    return self.sqlout[0]['s_value']
-        if self.sqlout is not None:
-            return self.sqlout
-        return None
-
     def message_check(self):
-        self.sqlquery = "SELECT * FROM `queue_message`"
-        self.sqlout = self._query(self.sqlquery)
-        del self.sqlquery
-        if len(self.sqlout) > 35:
-            self.clearMessageQueue()
+        sql = "SELECT * FROM `discord_queue_message`"
+        out = self._query(sql)
+        if len(out) > 35:
+            self.message_clear()
         return None
 
     def message_clear(self):
-        self.sqlquery = "DELETE from `queue_message`"
-        self._query_exec(self.sqlquery)
-        if config.bot["devMode"]:
-            print("Cache was cleaned")
-        else:
-            log.info("Cache was cleaned")
-        del self.sqlquery
-        return None
+        sql = "DELETE from `discord_queue_message`"
+        self._query_exec(sql)
+        log.info("Cache was cleaned")
+        return

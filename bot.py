@@ -1,5 +1,5 @@
 import os
-import gc
+#import gc
 import asyncio
 import logging
 import logging.config
@@ -9,16 +9,18 @@ from logging.handlers import RotatingFileHandler
 from datetime import datetime
 from discord.ext import commands
 
+from __init__ import __version__
 from config import config
-from lib.utils import BasicUtils
+#from lib.utils import BasicUtils
 from lib.db import DBStart
 
-gc.enable() # Not sure that this working..
+# Not sure that this working..
+# gc.enable()
 
 main_modules = {
     "modules.admin",
-    "modules.test",
-    "modules.queues",
+    # "modules.test",
+    # "modules.queues",
     "modules.userdb",
 }
 
@@ -38,16 +40,6 @@ def run_bot():
     try:
         cnx = DBStart()
         mysql_version = cnx.mysql_version()
-        #stored_db_version = cnx.storage_get("db_version")
-        #db_version = BasicUtils.db_version()
-        #if stored_db_version is None:
-        #    cnx.storage_add("db_version", db_version)
-        #    stored_db_version = db_version
-        #else:
-            # There should be an update of the database
-        #    if stored_db_version["storedValue"] < db_version:
-        #        print("Database update required")
-        #        return
     except Exception:
         log.info("MySQL DB is not available! BroadswordBot will not be started!")
         return
@@ -74,7 +66,7 @@ def run_bot():
         log.info("Broadsword is logged in..")
         log.info("Username: {}".format(broadsword.user.name))
         log.info("User ID: {}".format(broadsword.user.id))
-        log.info("Version v.{}".format(BasicUtils.bot_version()))
+        log.info("Version v.{}".format(__version__))
 
         #   Load main modules
         for main_module in main_modules:
