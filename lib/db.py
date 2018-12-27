@@ -192,7 +192,7 @@ class DBMain(DB):
     async def member_add(self, id, nickname, bot):
         sql = ("INSERT INTO `discord_members`"
                " (discord_id, discord_username, is_bot) VALUES (%s, %s, %s);")
-        result = await self._query_exec(sql, (id, nickname))
+        result = await self._query_exec(sql, (id, nickname, bot))
         return result
 
     async def member_exist(self, id):

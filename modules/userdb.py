@@ -34,11 +34,22 @@ class UserDB:
         finally:
             await self._selfclean(("cnx", "members", "member", "list"))
 
-    # @broadsword.group(pass_context=True, hidden=True, description='''Группа тестовых команд.''')
-    # async def userdb(self, ctx):
-        # if ctx.invoked_subcommand is None:
-            # await self.broadsword.say("{0.mention}, invalid test command passed...".\
-                # format(ctx.message.author))
+    @broadsword.group(pass_context=True, hidden=False, description='''Группа тестовых команд.''')
+    async def userdb(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.broadsword.say("{0.mention}, invalid test command passed...".\
+                format(ctx.message.author))
+
+    @userdb.command(pass_context=True, description='''Тестовая команда.''')
+    async def test(self, ctx):
+        try:
+            await self.broadsword.say(str(ctx.message.author))
+        except Exception:
+            log.exception("An exception has occurred in {}: ".format(__name__))
+        finally:
+            await self._selfclean(
+                ("cnx", "authorized", "members", "member", "user")
+            )
 
     # @userdb.command(pass_context=True, description='''Тестовая команда.''')
     # async def fill(self, ctx):
@@ -72,7 +83,7 @@ class UserDB:
             self.cnx = DBMain()
             exist = await self.cnx.member_exist(member.id)
             if not exist:
-                await self.cnx.member_add(member.id,member.name,member.bot)
+                await self.cnx.member_add(member.id,str(member),member.bot)
         except Exception:
             log.exception("An exception has occurred in {}: ".format(__name__))
         finally:

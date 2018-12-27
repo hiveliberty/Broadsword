@@ -20,15 +20,15 @@ class Admin:
         if ctx.invoked_subcommand is None:
             await self.broadsword.say("{0.mention}, invalid command passed...".format(ctx.message.author))
 
-    @admin.command(pass_context=True, name='reload')
-    async def _reload_a(self, ctx):
-        try:
-            reload(config)
-            self.broadsword.unload_extension(modules.admin)
-            self.broadsword.load_extension(modules.admin)
-        except Exception:
-            log.exception("An exception has occurred in {}: ".format(__name__))
-            await self.broadsword.say("Oooops! I cann't reload admin module. See logs.")
+    # @admin.command(pass_context=True, name='reload')
+    # async def _reload_a(self, ctx):
+        # try:
+            # reload(config)
+            # self.broadsword.unload_extension(modules.admin)
+            # self.broadsword.load_extension(modules.admin)
+        # except Exception:
+            # log.exception("An exception has occurred in {}: ".format(__name__))
+            # await self.broadsword.say("Oooops! I cann't reload admin module. See logs.")
 
     @admin.command(pass_context=True, hidden=False)
     async def clearchat(self, ctx):
