@@ -1,6 +1,7 @@
 import gc
+import discord
+import asyncio
 import logging
-from memory_profiler import memory_usage
 from discord.ext import commands as broadsword
 from importlib import reload
 
@@ -45,15 +46,15 @@ class Admin:
         finally:
             del self.mgs
 
-    @admin.command(pass_context=True, hidden=False)
-    async def memory(self, ctx):
-        """Memory usage."""
-        try:
-            self.mem_usage = memory_usage(-1, interval=.2, timeout=1)
-            await self.broadsword.say("```Memory usage:\n{}```".format(self.mem_usage))
-        except Exception as e:
-            exc = '{}: {}'.format(type(e).__name__, e)
-            await self.broadsword.say('```py\n{}\n```'.format(exc))
+    # @admin.command(pass_context=True, hidden=False)
+    # async def memory(self, ctx):
+        # """Memory usage."""
+        # try:
+            # self.mem_usage = memory_usage(-1, interval=.2, timeout=1)
+            # await self.broadsword.say("```Memory usage:\n{}```".format(self.mem_usage))
+        # except Exception as e:
+            # exc = '{}: {}'.format(type(e).__name__, e)
+            # await self.broadsword.say('```py\n{}\n```'.format(exc))
 
     @broadsword.group(pass_context=True, hidden=False, description='''Группа команд управления модулями.''')
     async def module(self, ctx):
@@ -113,29 +114,24 @@ class Admin:
     async def _reload_m_all(self, ctx):
         """Reloads all modules."""
         try:
-            self.msg = '```Reloaded modules:\n'
+            msg = '```Reloaded modules:\n'
             for module, options in config.plugins.items():
                 self.broadsword.unload_extension(module)
                 if not options.get('enabled', True):
                     continue
                 self.broadsword.load_extension(module)
                 log.info("{} reloaded.".format(module))
-                self.msg = self.msg + module + '\n'
+                msg += module + '\n'
         except Exception as e:
             log.exception("An exception has occurred in {}: ".format(__name__))
             await self.broadsword.say("Oooops! I cann't reload modules. See logs.")
         else:
-            self.msg = msg + '```'
-            await self.broadsword.say("{}".format(self.msg))
+            msg += '```'
+            await self.broadsword.say("{}".format(msg))
         finally:
             for attr in ('module'):
                 self.__dict__.pop(attr,None)
 
 
-class AdminTask:
-    pass
-
-
 def setup(broadsword):
     broadsword.add_cog(Admin(broadsword))
-#    broadsword.add_cog(AdminTask(broadsword))
