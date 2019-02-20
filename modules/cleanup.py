@@ -15,7 +15,7 @@ class CleanUp:
                           .format(__class__.__name__))
         self.msg_stop = ("{} should have been unloaded."
                          .format(__class__.__name__))
-        self.channels = config.bot["cleanupchannels"]
+        self.channels = config.cleanup["channels"]
         self.log_channel = self.broadsword.get_channel(config.bot["log_channel"])
         log.info("CleanUp.Task log channel is {}.".format(self.log_channel))
         self._task = self.broadsword.loop.create_task(self.cleanup_task())
@@ -29,17 +29,16 @@ class CleanUp:
         try:
             while not self.broadsword.is_closed:
                 utc = datetime.datetime.utcnow()
-                offset = datetime.timedelta(hours = 12)
-                before = utc - offset
-                # log.info("UTC Time: {} | Offset Time: {}".format(utc,before))
-                for id in self.channels:
-                    channel = self.broadsword.get_channel(id)
+                for name, cfg in self.channels.items():
+                    channel = self.broadsword.get_channel(cfg["id"])
                     if channel is not None:
+                        offset = datetime.timedelta(hours = cfg["offset"])
+                        before = utc - offset
                         log.info("CleanUp: try purge old messages"
                                  " from channel '{}'.".format(channel))
                         await self.broadsword.purge_from(
                             channel, limit = 99, before = before)
-                del utc,before
+                del utc,before,offset
                 await asyncio.sleep(60)
         except asyncio.CancelledError:
             pass

@@ -8,6 +8,17 @@ bot = {
     "devMode": False, # Do not turn on this
 }
 
+# Config for database
+db = {
+    "user": "user",
+    "password": "password",
+    "host": "localhost",
+    "port": "3306",
+    "database": "dbname",
+    "charset": "utf8mb4",
+    "connect_timeout": 5, #Don't change it if you don't know what it is for!
+}
+
 # Config for token lib
 # Not currently used
 sso = {
@@ -53,15 +64,14 @@ notifications = {
     ],
 }
 
-# Config for database
-db = {
-    "user": "user",
-    "password": "password",
-    "host": "localhost",
-    "port": "3306",
-    "database": "dbname",
-    "charset": "utf8mb4",
-    "connect_timeout": 5, #Don't change it if you don't know what it is for!
+# CleanUp list
+cleanup = {
+    "channels": {
+        "channelname": {
+            "id": "channel_id",
+            "offset": 12, # hours
+        },
+    },
 }
 
 # Some modules disabled by default.
